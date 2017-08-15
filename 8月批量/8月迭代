@@ -1,0 +1,1356 @@
+
+一、视频上传
+1、
+http://fes1.study.163.com/enterprise/UploaderCenterManager/getEduUploaderToken.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+type:2
+fileSize:86965726
+fileGmtModifiedTime:1499254712943
+
+
+
+code:0
+message:"ok"
+result:"3dfd3db1fc0642c29712304bde66a0ad"
+
+
+2、
+http://up.study.163.com/j/uploader-server/UploaderCenterManager/exchangeNosTokenByEduToken.do
+
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+fileGmtModifiedTime:1499254712943
+
+
+code:0
+message:"ok"
+result:{status: 0, msg: "ok", nosKey: "12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4", expire: 1502116946,…}
+bucketName:"edu-video"
+expire:1502116946
+msg:"ok"
+nosKey:"12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4"
+status:0
+xnosToken:"UPLOAD 7ba71f968e4340f1ab476ecb300190fa:eq/JUlAiDrpgyMZaKLuUkDrOpFCDEshMsyulagvZyjY=:eyJCdWNrZXQiOiJlZHUtdmlkZW8iLCJFeHBpcmVzIjoxNTAyMTE2OTQ2LCJPYmplY3QiOiIxMmU1ZmRmZS03ZjZjLTQ3MDEtOTZhZS1jMzljOTcxMGZlNzEubXA0IiwiUmV0dXJuQm9keSI6IntcIk5vc0tleVwiOlwiMTJlNWZkZmUtN2Y2Yy00NzAxLTk2YWUtYzM5Yzk3MTBmZTcxLm1wNFwiLFwiQnVja2V0XCI6XCJlZHUtdmlkZW9cIn0ifQ=="
+
+
+3、
+http://wanproxy.127.net/lbs?version=1.0&bucketname=edu-video
+
+version:1.0
+bucketname:edu-video
+
+
+lbs:"http://223.252.196.38/lbs"
+upload:["http://223.252.216.48", "http://223.252.216.49"]
+0:"http://223.252.216.48"
+1:"http://223.252.216.49"
+
+
+
+4、http://up.study.163.com/j/uploader-server/UploaderCenterManager/getContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"contex或者已经失效，请重新上传"
+result:{context: "", offset: 0}
+	context:""
+	offset:0
+
+
+5.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=0&complete=false&version=1.0
+
+offset:0
+complete:false
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:1048576
+requestId:"70dabc53dffc000000005987d392d831"	[每次都不同]
+
+
+5.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+offset:1048576
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"ok"
+result:null
+
+
+6.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=1048576&complete=false&context=e490ec2f-e75d-6b6e-453a-99ed2be7f929&version=1.0
+
+offset:1048576
+complete:false
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:2097152
+requestId:"6bea8dbddffc000000005987d393d831"
+
+
+6.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+offset:2097152
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+
+code:0
+message:"ok"
+result:null
+
+
+
+7.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=84934656&complete=false&context=e490ec2f-e75d-6b6e-453a-99ed2be7f929&version=1.0
+
+offset:84934656
+complete:false
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:85983232
+requestId:"53ce1edddffc000000005987d3acd831"
+
+
+7.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+offset:85983232
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"ok"
+result:null
+
+
+8.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=85983232&complete=true&context=e490ec2f-e75d-6b6e-453a-99ed2be7f929&version=1.0【上传完成】
+
+offset:85983232
+complete:true
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:86965726
+requestId:"2449b767dffc000000005987d3acd831"
+
+
+8.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do 	【上传完成】
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:
+offset:0
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"ok"
+result:null
+
+
+9、http://up.study.163.com/j/uploader-server/UploaderCenterManager/checkUploadSuccess.do 	【校验是否上传完成】
+
+bucketName:edu-video
+nosKey:12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4
+
+code:0
+message:"ok"
+result:true
+
+
+10、http://fes1.study.163.com/j/coursedesign/TermManager/updateVideoRepoOfTerm.do
+
+termId:400000002573001
+nosKey:12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4
+fileName:年轻真好！红魔时期的C罗脚下生花.mp4
+nosBucket:edu-video
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "videoId": 0,
+        "videoImgUrl": null,
+        "duration": null,
+        "flvSdUrl": null,
+        "flvHdUrl": null,
+        "flvShdUrl": null,
+        "mp4SdUrl": null,
+        "mp4HdUrl": null,
+        "mp4ShdUrl": null,
+        "key": "12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4",
+        "needKeyTimeValidate": null,
+        "playerCollection": null,
+        "isEncrypt": false,
+        "clientEncryptKeyVersion": null,
+        "videoDecryptData": null,
+        "mp4Caption": null,
+        "flvCaption": null,
+        "srtKeys": null,
+        "name": "年轻真好！红魔时期的C罗脚下生花.mp4",
+        "origNosKey": null,
+        "status": null,
+        "uploadTime": null,
+        "start": null
+    }
+}
+
+
+11、http://fes1.study.163.com/j/coursedesign/TermManager/getAllVideoOfTermPaged.json?termId=400000002573001&pageSize=10&pageIndex=1&searchKey=&_t=1502073773939
+
+termId:400000002573001
+pageSize:10
+pageIndex:1
+searchKey:
+
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "videoReopList": [
+            {
+                "videoVo": {
+                    "videoId": 1006304001,
+                    "videoImgUrl": null,
+                    "duration": null,
+                    "flvSdUrl": null,
+                    "flvHdUrl": null,
+                    "flvShdUrl": null,
+                    "mp4SdUrl": null,
+                    "mp4HdUrl": null,
+                    "mp4ShdUrl": null,
+                    "key": null,
+                    "needKeyTimeValidate": null,
+                    "playerCollection": null,
+                    "isEncrypt": false,
+                    "clientEncryptKeyVersion": null,
+                    "videoDecryptData": null,
+                    "mp4Caption": null,
+                    "flvCaption": null,
+                    "srtKeys": null,
+                    "status": -1,
+                    "name": "年轻真好！红魔时期的C罗脚下生花.mp4",
+                    "origNosKey": null,
+                    "uploadTime": 1502073773783,
+                    "start": null
+                },
+                "videoFrom": 0
+            }
+        ],
+        "pagination": {
+            "pageSize": 10,
+            "pageIndex": 1,
+            "totlePageCount": 1,
+            "totleCount": 1,
+            "offset": 0,
+            "limit": 10,
+            "sortCriterial": null
+        }
+    }
+}
+
+
+****************************************************************
+二、创建课件
+
+1、http://fes1.study.163.com/j/lecture/create.do 		// 预获取 unit_id
+
+termId:400000002573001
+nodeType:3
+to:undefined
+delta:1
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": 400000002694001
+}
+
+
+2、http://fes1.study.163.com/p/lecture/updateCatalog.do
+
+catalogList:[,…]
+draftStatus:2
+isOrderChange:1
+termId:400000002573001
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": true
+}
+
+
+{
+    "catalogList": [
+        {
+            "id": 400000002688002,
+            "gmtCreate": 1502090558317,
+            "draftStatus": 1,
+            "type": 3,
+            "name": "年轻真好！红魔时期的C罗脚下生花",
+            "data": {
+                "contentType": 1,
+                "contentId": 1006304001,
+                "jsonContent": null,
+                "viewPriviledge": 10,
+                "contentStatus": 1,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "clientVisible": 0,
+                "releaseTime": null,
+                "description": "",
+                "startTime": null,
+                "endTime": null,
+                "studyType": null,
+                "totalAuthCount": null,
+                "restAuthCount": null,
+                "termType": null,
+                "courseStatus": null,
+                "examStatus": null,
+                "testStatus": null,
+                "questionnaireStatus": null,
+                "taskStatus": null,
+                "totalProcessCount": null,
+                "finishProcessCount": null,
+                "onlineFlag": null,
+                "bigPhoto": null,
+                "examAnswerformId": null,
+                "unsignedCount": null,
+                "testAnswerformId": null,
+                "questionnaireAnswerformId": null,
+                "score": null,
+                "courseIntroduction": null,
+                "taskProgressStatus": null,
+                "resourceIsRemove": false,
+                "termLearnProgress": null,
+                "answerBeforeEnroll": null,
+                "contentTypeLabel": "视频",
+                "releaseTimeLabel": "已发布",
+                "viewPriviledgeLabel": ""
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null,
+            "draftStatusLabel": ""
+        },
+        {
+            "id": 400000002688003,
+            "gmtCreate": 1502096959791,
+            "draftStatus": 1,
+            "type": 3,
+            "name": "年轻真好！红魔时期的C罗脚下生花",
+            "data": {
+                "contentType": 1,
+                "contentId": 1006304001,
+                "jsonContent": null,
+                "viewPriviledge": 10,
+                "contentStatus": 1,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "clientVisible": 0,
+                "releaseTime": null,
+                "description": "",
+                "startTime": null,
+                "endTime": null,
+                "studyType": null,
+                "totalAuthCount": null,
+                "restAuthCount": null,
+                "termType": null,
+                "courseStatus": null,
+                "examStatus": null,
+                "testStatus": null,
+                "questionnaireStatus": null,
+                "taskStatus": null,
+                "totalProcessCount": null,
+                "finishProcessCount": null,
+                "onlineFlag": null,
+                "bigPhoto": null,
+                "examAnswerformId": null,
+                "unsignedCount": null,
+                "testAnswerformId": null,
+                "questionnaireAnswerformId": null,
+                "score": null,
+                "courseIntroduction": null,
+                "taskProgressStatus": null,
+                "resourceIsRemove": false,
+                "termLearnProgress": null,
+                "answerBeforeEnroll": null,
+                "contentTypeLabel": "视频",
+                "releaseTimeLabel": "已发布",
+                "viewPriviledgeLabel": ""
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null,
+            "draftStatusLabel": ""
+        },
+        {
+            "termId": 400000002573001,
+            "nodeType": 3,
+            "to": "3-400000002688003",
+            "delta": 1,
+            "id": 400000002694001,
+            "type": 3,
+            "draftStatus": 0,
+            "children": [],
+            "data": {
+                "clientVisible": 0,
+                "contentTypeLabel": "",
+                "validateLabelShow": "请添加课件内容",
+                "viewPriviledgeLabel": ""
+            },
+            "name": "课件",
+            "draftStatusLabel": ""
+        }
+    ],
+    "termId": 400000002573001,
+    "isOrderChange": 1,
+    "draftStatus": 2
+}
+
+
+
+/p/lecture/updateCatalog.do 		// 只是存储草稿
+	catalogManager.saveCatalog(...)
+		catalogService.saveCatalog(termId, catalogList, isOrderChange, draftStatus);
+			TermDto termDto = getAndCheckTermDto(termId);		// 读草稿，如果草稿没有 则从 数据库 初始化 草稿再存储； 如果草稿中 不是按照树节点存储资源，则将 数据库 chapter、lesson、unit等转换成 树节点返回；
+
+			termDto.getCatalog().setCatalogList(catalogList);	// 使用新的树结构
+	        termDto.getCatalog().setIsOrderChange(isOrderChange);
+	        if (null != draftStatus) {
+	            termDto.getCatalog().setDraftStatus(draftStatus);
+	        }
+
+	        saveTermDraftDoc(termDto);		// 存储新的草稿到 mongo
+	        	TermDraftDoc termDraftDoc = BeanConvertUtils.deepSafeConvert(termDto, TermDto.class, TermDraftDoc.class);
+        		termDraftDocDao.save(termDraftDoc);
+
+
+
+
+3、编辑课件内容
+
+3.1、点击跳转 课件编辑页 
+http://fes1.study.163.com/p/lecture/end/getLectureResource.json
+
+id:400000002694001
+nodeType:3
+preview:1
+scene-type-id:"end-3-400000002694001"
+termId:400000002573001
+
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "id": 400000002694001,
+        "contentId": null,
+        "contentType": null,
+        "nodeVo": {
+            "id": 400000002694001,
+            "gmtCreate": null,
+            "draftStatus": 0,
+            "type": 3,
+            "name": "课件",
+            "data": {
+                "contentType": null,
+                "contentId": null,
+                "jsonContent": null,
+                "viewPriviledge": null,
+                "contentStatus": null,
+                "draftStatus": null,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "releaseTime": null,
+                "description": "",
+                "clientVisible": 0,
+                "viewStatus": null,
+                "lastLearnTime": null,
+                "studyType": null
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null
+        },
+        "unitRichResourceVo": null,
+        "unitDocResourceVo": null,
+        "unitVideoResourceVo": null,
+        "unitDiscussResourceVo": null,
+        "unitTestResourceVo": null,
+        "unitLiveResourceVo": null,
+        "unitScormResourceVo": null,
+        "termResourceVo": null,
+        "testResourceVo": null,
+        "examResourceVo": null,
+        "questionnaireResourceVo": null
+    }
+}
+
+主要是获取：unit_id，name，type，draftStatus，其他均为空；【 看样子是  为了展示用；】
+
+
+3.2、视频库选择课件
+获取视频库列表： http://fes1.study.163.com/j/coursedesign/TermManager/getAllVideoOfTermPaged.json
+
+termId:400000002573001
+pageSize:8
+pageIndex:1
+searchKey:
+
+响应略
+
+
+3.3、选择视频 并确定
+http://fes1.study.163.com/p/lecture/updateLectureResource.do
+
+{
+    "richContent": null,
+    "id": 400000002694001,  			// unit_id
+    "termId": 400000002573001,
+    "nodeType": 3, 						// 课件类型
+    "postTitle": null,
+    "postContent": null,
+    "contentId": 1006306003, 			// 使用资源id，即 video_id
+    "contentType": 1, 					// 资源类型，即 视频类型
+    "uploadFileVo": {
+        "name": "正能量！C罗最让人尊敬时刻.mp4"
+    },
+    "attachment": null,
+    "unitLiveResourceVo": null,
+    "viewPriviledge": null,
+    "name": null
+}
+
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "id": 400000002694001,
+        "contentId": 1006306003,
+        "contentType": 1,
+        "nodeVo": {
+            "id": 400000002694001,
+            "gmtCreate": 1502346881610,
+            "draftStatus": 0,
+            "type": 3,
+            "name": "课件",
+            "data": {
+                "contentType": 1,
+                "contentId": 1006306003,
+                "jsonContent": null,
+                "viewPriviledge": null,
+                "contentStatus": null,
+                "draftStatus": null,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "releaseTime": null,
+                "description": "",
+                "clientVisible": 0,
+                "viewStatus": null,
+                "lastLearnTime": null,
+                "studyType": null
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null
+        },
+        "unitRichResourceVo": null,
+        "unitDocResourceVo": null,
+        "unitVideoResourceVo": {
+            "videoId": 1006306003,
+            "videoImgUrl": null,
+            "duration": 671,
+            "flvSdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_c18c337c1ca548afb0a8a6aedf04640e_sd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433281&Signature=2rts2xfbYEDCLuIwQvV2xfYFyZwTeiNhtTP9s0Y3qWI%3D",
+            "flvHdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_ec912f606c2c41058d98751a8984dc38_hd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433281&Signature=BPCCOcWcNuUJM%2BPTwi2r0hi3O1wKq%2FfHIC5Uq3J9k8I%3D",
+            "flvShdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_dd31d43119b14a8e95ceb7ba1db41a29_shd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433281&Signature=pE%2FXvNm2FNVPW1bT9htaF970Q%2BvrZVsm6oIBRmYDsHA%3D",
+            "mp4SdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c5fed6a305394615b21d0fdfd42851a9_sd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433281&Signature=iKHqImipu5CbCjFnuNGfwL1t0s8VIC7L0r4QewI9pOE%3D",
+            "mp4HdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c0e315b8662949569f2454777b539484_hd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433281&Signature=adjWErnsOQPOS4pB%2FCysU1s%2Ba2FsJonFAi1GbWxpTPY%3D",
+            "mp4ShdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_290224bde3a64c538da75fe17bcc9ef9_shd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433281&Signature=zMbbA9dsSUZ16vJZli2FSQY5FiR46kpN9631k4aSCJs%3D",
+            "key": "67893b097cf3274fd7e9aa32635495715f7bcfb1a5ad53e16d058fdb40d83e4aaf8b201d912e706deb63fc6c6bb22f7b4d7d6ff1f0c80a735ca4dcd3a2e0d2a263dca9a89d9de018ed01c6f90c45d5a8e570cb013ee6bee3bd53b5f0f4fb4e5b07170b06bfbe5442a18d44011e73c7855a01f38ccf0c565cdbfe5253f27cdaa540e23b55d9d3423ee3c83cfaa6477cdbba65555b4389e0502aaf0f357cd5c654da4e9c73bda29d9db6ca663c389ed848",
+            "needKeyTimeValidate": false,
+            "playerCollection": 3,
+            "isEncrypt": false,
+            "clientEncryptKeyVersion": null,
+            "videoDecryptData": null,
+            "mp4Caption": null,
+            "flvCaption": null,
+            "name": "正能量！C罗最让人尊敬时刻.mp4",
+            "origNosKey": null,
+            "status": 1,
+            "start": 0,
+            "cluPointData": [],
+            "lastLearnTime": null
+        },
+        "unitDiscussResourceVo": null,
+        "unitTestResourceVo": null,
+        "unitLiveResourceVo": null,
+        "unitScormResourceVo": null,
+        "termResourceVo": null,
+        "testResourceVo": null,
+        "examResourceVo": null,
+        "questionnaireResourceVo": null
+    }
+}
+
+
+【总结】将课件对应的资源内容 存储进 期次草稿中保存
+/p/lecture/updateLectureResource.do
+	nodeUploadResourceVo.setOwnerId(WebUser.getUserId() == null ? -1 : WebUser.getUserId());
+	NodeResourceVo nodeResourceVo = nodeResourceManager.saveContentForNode(nodeUploadResourceVo);		// 保存变更到 期次草稿
+		// 1、校验草稿中 该课件是否存在？
+		Long unitId = nodeUploadResourceVo.getId();
+		CatalogNodeDto catalogNodeDto = getCatalogNodeDto(term_id，unit_id，unit_type);	
+			List<CatalogNodeDto> catalogList = catalogService.getSimpleCatalogDraftList(termId);
+			TreeNode<CatalogNodeDto> tree = nodeHelper.convertCatalogList2TreeNode(catalogList);
+			TreeNode treeNode = nodeHelper.findNodeByIdAndType(tree, nodeId, nodeType);
+			CatalogNodeDto catalogNodeDto = (CatalogNodeDto) treeNode.getWrapper();
+		if (catalogNodeDto == null)：课件节点不存在，抛异常：节点找不到
+
+		// 2、校验 并将 新目录内容存 期次草稿
+		Long contentId = nodeUploadResourceVo.getContentId();
+		if (contentId == null && 草稿中contentId != null && 草稿中contentId != -1} {
+			contentId = catalogNodeDto.getData().getContentId();		// 取草稿中已有的 contentId
+			nodeUploadResourceVo.setContentId(contentId);				// 塞到参数中去
+
+			// 校验草稿中 contentType 与参数传递的 是否一致？ 不一致抛异常：课件资源不可更改
+		}
+
+		if (LessonUnitConstants.CONTENT_ID_DELETED.equals(contentId)) {...}		// 跳过，走 else 逻辑
+		else {
+			2.1、校验contentId 对应的视频是否存在
+			contentId = this.changeResourceId(nodeUploadResourceVo); 
+				return resourceStrategy.changeResourceId(resourceVo);			// 视频类型
+					return resourceVo.getContentId();							// 本视频课件场景下，contentId 为videoId，数据正常，直接原样返回
+			boolean isResourceExist = this.checkResourceExist(contentId, nodeUploadResourceVo.getContentType());
+				return resourceStrategy.checkResourceExist(contentId);
+					return videoShareService.isVideoExist(contentId);			// 校验视频是否存在
+			不存在 抛异常：资源不存在
+
+			2.2、 目录内容存 期次草稿
+			this.updateLessonNodeContent(nodeUploadResourceVo.getTermId(), unitId, CatalogNodeTypeEnum.UNIT.getValue(),
+                    contentId, nodeUploadResourceVo.getName(), nodeUploadResourceVo.getViewPriviledge(), nodeUploadResourceVo.getContentType());
+                草稿中读取 该课件 node；catalogNodeDto			// 方式如 步骤1
+
+                catalogNodeDto.getData().setContentType(resourceType);	// 草稿中存在的 该课件node 无content_type，则set；【视频】
+                catalogNodeDto.getData().setContentId(contentId);		// 草稿中读取 课件node，set
+                catalogNodeDto.setGmtCreate(new Date().getTime());
+                catalogNodeDto.setName(name);
+                if(null != viewPriviledge) { ...} 						// 本场景下，viewPriviledge 默认为 null，此逻辑跳过
+
+                changeNodeStatus(catalogNodeDto, DraftStatusEnum.MODIFIED.getValue());	// 变更该节点的状态：DraftStatus【本场景为 新建，则保持create状态，即草稿】
+                	if (DraftStatusEnum.MODIFIED.getValue().equals(status)) {
+            			if (DraftStatusEnum.PUBLISHED.getValue().equals(catalogNodeDto.getDraftStatus())) {
+                			catalogNodeDto.setDraftStatus(DraftStatusEnum.MODIFIED.getValue());
+            			}
+        			}		
+
+                catalogService.saveCatalogDraftList(termId, catalogList, true);
+                	TermDto termDto = getAndCheckTermDto(termId);
+                	termDto.getCatalog().setCatalogList(catalogList);
+
+                	if (modify) {
+            			termDto.getCatalog().setDraftStatus(DraftStatusEnum.MODIFIED.getValue());		// 设置整个目录有变更
+        			}
+
+        			saveTermDraftDoc(termDto);		// 所有东西存 期次草稿
+        				TermDraftDoc termDraftDoc = BeanConvertUtils.deepSafeConvert(termDto, TermDto.class, TermDraftDoc.class);
+        				termDraftDocDao.save(termDraftDoc);
+		}
+    responseView.setResult(nodeResourceVo);
+
+    //打事件日志： "admin_upload_video"
+    StatisticsHelper.saveResourceStatistics(nodeResourceVo.getContentId(), nodeResourceVo.getContentType(), request);
+    	if(LessonUnitConstants.CONTENT_TYPE_VIDEO.equals(contentType)){
+            saveVideoStatistics(contentId, request);
+            	Map<String, Object> map = new WeakHashMap<String, Object>();
+            	map.put("video_id", videoId);
+            	statisticsLogInfo(StatisticEventConstant.ADMIN_UPLOAD_VIDEO, map, request);
+        }
+    // 打管理员编辑课件资源日志： "admin_edit_lesson_unit";
+    StatisticsHelper.saveLessonUnitContentStatistics(s, request);	
+    	Map<String, Object> map = new WeakHashMap<String, Object>();
+        map.put("unitUploadResourceVo", s);
+        statisticsLogInfo(StatisticEventConstant.ADMIN_EDIT_LESSON_UNIT, map, request);
+
+    return responseView;
+
+
+
+
+3.4、保存并返回课件
+
+（1）http://fes1.study.163.com/p/lecture/updateLectureResource.do
+
+{
+    "richContent": null,
+    "id": 400000002694001,
+    "termId": 400000002573001,
+    "nodeType": 3,
+    "postTitle": null,
+    "postContent": null,
+    "contentId": null,
+    "contentType": 1,
+    "uploadFileVo": null,
+    "attachment": null,
+    "unitLiveResourceVo": null,
+    "viewPriviledge": 10,
+    "name": "正能量！C罗最让人尊敬时刻"
+}
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "id": 400000002694001,
+        "contentId": 1006306003,
+        "contentType": 1,
+        "nodeVo": {
+            "id": 400000002694001,
+            "gmtCreate": 1502347072491,
+            "draftStatus": 0,
+            "type": 3,
+            "name": "正能量！C罗最让人尊敬时刻",
+            "data": {
+                "contentType": 1,
+                "contentId": 1006306003,
+                "jsonContent": null,
+                "viewPriviledge": 10,
+                "contentStatus": null,
+                "draftStatus": null,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "releaseTime": null,
+                "description": "",
+                "clientVisible": 0,
+                "viewStatus": null,
+                "lastLearnTime": null,
+                "studyType": null
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null
+        },
+        "unitRichResourceVo": null,
+        "unitDocResourceVo": null,
+        "unitVideoResourceVo": {
+            "videoId": 1006306003,
+            "videoImgUrl": null,
+            "duration": 671,
+            "flvSdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_c18c337c1ca548afb0a8a6aedf04640e_sd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433472&Signature=evmUFbT9GAAMqszzPPn1MH2Qw4pLc2DJK5pd5xObCnQ%3D",
+            "flvHdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_ec912f606c2c41058d98751a8984dc38_hd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433472&Signature=1n8txAw8B%2F7zg5oXGVABFCfRbI2cMYhm%2BDWDYrrXfDE%3D",
+            "flvShdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_dd31d43119b14a8e95ceb7ba1db41a29_shd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433472&Signature=LIs%2FuKzVUw0vBWo2IsWgakUnPskVmj1xjCFP9sz%2BPMI%3D",
+            "mp4SdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c5fed6a305394615b21d0fdfd42851a9_sd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433472&Signature=xp%2BZ0AK1E61%2Bq9ixULnmV4PWcRbOtIE5y%2FEX3y5mPVw%3D",
+            "mp4HdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c0e315b8662949569f2454777b539484_hd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433472&Signature=zrhH3PuryUtRACT0LfQEC0tG499Dnp9ru7XrbG%2FjAGo%3D",
+            "mp4ShdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_290224bde3a64c538da75fe17bcc9ef9_shd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502433472&Signature=nQHIwa%2FqY6V2IiT%2B7eiK9%2BKm%2B%2FRLYURg9q5syLz%2FiiY%3D",
+            "key": "67893b097cf3274fd7e9aa32635495713a46123c184607b3fcb23f1f89ed70a4c292cc4c1a3a141c1ca6ec8cc7458ee44d7d6ff1f0c80a735ca4dcd3a2e0d2a263dca9a89d9de018ed01c6f90c45d5a8e570cb013ee6bee3bd53b5f0f4fb4e5b07170b06bfbe5442a18d44011e73c7855a01f38ccf0c565cdbfe5253f27cdaa540e23b55d9d3423ee3c83cfaa6477cdbba65555b4389e0502aaf0f357cd5c654da4e9c73bda29d9db6ca663c389ed848",
+            "needKeyTimeValidate": false,
+            "playerCollection": 3,
+            "isEncrypt": false,
+            "clientEncryptKeyVersion": null,
+            "videoDecryptData": null,
+            "mp4Caption": null,
+            "flvCaption": null,
+            "name": "正能量！C罗最让人尊敬时刻.mp4",
+            "origNosKey": null,
+            "status": 1,
+            "start": 0,
+            "cluPointData": [],
+            "lastLearnTime": null
+        },
+        "unitDiscussResourceVo": null,
+        "unitTestResourceVo": null,
+        "unitLiveResourceVo": null,
+        "unitScormResourceVo": null,
+        "termResourceVo": null,
+        "testResourceVo": null,
+        "examResourceVo": null,
+        "questionnaireResourceVo": null
+    }
+}
+
+
+（2）http://fes1.study.163.com/j/lecture/getUpdatingFlag.json
+
+termId:400000002573001
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": null
+}
+
+
+j/lecture/getUpdatingFlag.json
+	termDraftManager.getOptions(termId)
+		s2_term 表字段；
+
+
+（3）http://fes1.study.163.com/j/lecture/end/getList.json
+
+limit:1000
+offset:0
+pageIndex:1
+pageSize:1000
+relativeOffset:0
+termId:400000002573001
+
+
+code:0
+message:"ok"
+result:
+	{catalogList: [,…], catalogType: 2, isOrderChange: 1, draftStatus: 2}
+	catalogList:[,…]
+	catalogType:2
+	draftStatus:2
+	isOrderChange:1
+
+
+（4）http://fes1.study.163.com/j/lecture/getGuide.json
+
+scopeTypes:1,2,3
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": [1,2,3]
+}
+
+
+
+******************************************* 
+三、指派
+
+单期次 指派全部员工：
+p/org/coursedesign/saveEntryMode.json
+
+enrollRange:1
+enrollType:1
+id:400000002573002
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": true
+}
+
+
+获取指派进度
+j/coursedesign/getEntryModeProcessingStatus.json
+
+id:400000002573002
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "retCode": 0,
+        "loaded": 0,			// 0 即完成
+        "total": 1,
+        "message": "OK"
+    }
+}
+
+
+
+************************************************************************************************ 2017-08-08  设计
+
+一、、批量上传视频
+
+1.1、提供查询 视频是否有被 添加过的状态 接口；
+
+1.2、添加以上全部视频
+调用 全量接口，后端做过滤；
+list<unitId> 返回；
+
+
+
+2部分过程：
+第一步： 获取 所选视频对应的 预取unit的 id list； 
+		后端可能返回一个 id 的 list 一次性给 所有 视频预申请好 id 返回；
+第二步： 前端 调用 /p/lecture/updateCatalog.do 接口，参数传递 组合好的整棵树；【原逻辑，后端不做额外变动】
+
+注意： 已经添加到目录的将自动排除，这部分 前端处理 还是 后端处理？
+	1、前端 组装整棵树，组装的时候 就排除；
+	2、前端 组装所有，后端 在收到整棵树的时候 做判断，过滤掉 重复的？？【但是 后端如何区分重复 而且 区分 和哪部分重复？】
+		检查是否存在 整棵树 中 课件名称为视频名称 + 类型 为课件类型，有的话就去掉本次新加的；
+	结论：建议前端处理，因为后端收到的 参数中是 整棵树，不容易区分 哪部分节点 是本次批量新加的,而且1.1中，后端已返回 所有视频 是否有被 添加过的 状态； 
+
+
+1.3、添加所选视频
+前提：已被添加过的 视频 不会被勾选，所以 勾选的一定是 没有别 添加过的；
+	前端传递的整棵树 可以直接 按原逻辑存储草稿；
+处理： 复用原来逻辑处理；
+
+
+1.4、视频库列表（转码完成 + 转码中）
+http://fes1.study.163.com/j/coursedesign/TermManager/getAllVideoOfTermPaged.json
+
+termId:400000002573001
+pageSize:10
+pageIndex:1
+searchKey:
+
+
+二、批量指派
+
+2.1、报名管理
+
+1、列表搜索
+
+课程名称 + 课程来源 + 报名方式 + 已发布状态课程 + 当前权限；【权限过滤 如果索引无讲师，可以搜索出来课程/期次后，再对结果 进行过滤】
+
+1.1、课程来源： 全部【忽略该条件】、选购、附赠、自建
+	课程 牵扯字段：
+	`copyright_type` smallint(2) DEFAULT '0' COMMENT '课程获取类型 0 自建， 1 购买',
+	`bonus_type` smallint(4) DEFAULT '0' COMMENT '[选课中心] 课程附赠类型 0选购 1附赠',
+
+	查询条件：
+	自建课程： copyright_type = 0；
+	附赠课程：copyright_type = 1 and bonus_type =1；
+	购买课程：copyright_type = 1 and bonus_type =0
+
+1.2、报名方式：	未设置、指派-全部、指派-特定、主动报名
+
+authorizationVisible 【待定】
+
+[s2_term_entry_mode] 
+`enroll_type` tinyint(4) NOT NULL COMMENT '报名方式 1：指派员工学习 2：员工需主动报名',
+`enroll_range` tinyint(4) NOT NULL COMMENT '报名指派范围方式 1：全部学习 2：特定员工',
+
+
+1.3、方案：
+1.3.1、搜索课程接口 按照索引，并将 用户权限 考虑进去【现有机构后台 课程列表 已有】；
+1.3.2、列表按照 期次维度显示：
+	课程名称 + 课程来源 ： 搜索出课程， 显示课程下 所有已发布期次；
+
+
+问题： 
+1、列表 按照 期次维度一条记录显示，但是 预览 跳转到 课程详情页； 多期次课程 预览都到课程详情页？
+2、报名列表中，排列顺序按期次的发布时间，最先发布的在前面； 所有课程的 所有期次 统一按照发布时间排序？ 【可能需要用 term 维度的索引】
+3、课程名称 + 课程来源 是课程维度的搜索条件， 报名方式 是期次维度的搜索条件 ，二者混用？ 
+	课程来源、 报名方式、 课程名称 三个条件 理论上可以是 C33 组合的查询； 不过 搜索框名称搜索 每次都会重置 课程来源和报名方式 为全部
+
+
+结论： 列表依赖 搜索引擎，复用 CourseTermRelDocument
+	增加： enroll_type + enroll_range 
+
+
+1.3 已选5门课程
+
+后台要存储已勾选的期次； 新增表 类似 购物车记录；
+id 	批次id【待定】  provider_id		term_id   opuser_id	  status 【 un_start ，has_start ，查询时候用】 
+
+按人刷新页面 还保留；	
+
+
+勾选： 
+status = un_start；
+报名名单列表页： select * from where status = un_start；
+
+触发操作后：
+status = has_start；
+
+
+批量轮训的 key 如何定义？？
+
+
+2、编辑报名
+单期次 操作； 处理 基本同 原逻辑，不做变动；
+
+
+3、批量设置报名方式
+
+if: 所选课程都设置了报名方式
+	弹窗提示
+else if ：
+
+
+3.2、所选课程中剩余可指派人数最少的为：10
+	批量接口，取最小；
+
+
+3.3、批量设置报名方式——主动报名 ， 设置报名方式
+默认值处理保存；
+
+
+4、批量指派
+
+if： 所选课程都非指派特定的报名方式
+	弹窗提示
+else：
+	for（term ： termList）
+		处于操作中的期次（变更报名方式等） ？ 跳过 + 日志；（单期次的进度 还是和以前一样）
+
+
+
+4.2、批量指派弹窗
+
+（0.5）所选课程中剩余可指派人数最少的为：XXX
+	批量接口，取最小；
+	userLearnService.courseAuthorizationValidate（）
+
+（0.5）不显示用户已参加，批量指派操作 要对已参加用户过滤
+查看指派操作； 
+
+（*****************）单期次做的 授权数校验，多期次批量的时候 直接复用会有问题，需要统一再校验！！
+	s2_assign_stat  表记录 id（course_id） + count，已授权的课程授权数，课程维度计算，所以 该课程下的 多个期次 校验，如果人数合适 都会通过；
+	s2_assign_record  表记录 member_id + course_id
+
+
+5、批量设置报名名单（主动报名）
+
+if： 所选课程都非主动报名的报名方式
+	弹窗提示
+else 
+	for（term ： termList）
+		处于操作中的期次（变更报名方式等） ？ 跳过 + 日志；（单期次的进度 还是和以前一样）
+
+
+
+6、首页增加审核提醒
+超级管理员 + 管理员 ：所有
+其他权限：只能看到自己的课程审核提醒
+
+课程负责人、讲师负责人、讲师、助教
+
+课程负责人/项目负责人： s2_course.principal_id	，理论上 课程下的所有期次/项目下的所有子期次 都可以看到
+讲师负责人、讲师、助教： s2_term_staff
+	LECTURER(0,"讲师"),TEACH_ASSISTANT(1,"助教"),PRINCIPAL(2,"期次负责人");
+
+
+
+使用 term_member_allow，写一个 sql
+
+distinct term_id + 待审核 + providerId order by gmt_create desc 分页；
+
+(select term_id, gmt_create from s2_term_member_allow where status = 3 order by gmt_create desc group by term_id) t1
+left join
+(select id, provider_id from s2_term where provider_id = ?) t2
+on(t1.term_id = t2.id)
+left join
+(select term_id, member_id, rel_type from s2_term_staff where member_id = ? and ref_type= ? ) t3
+on(t1.term_id = t3.term_id)
+
+
+一、数据库表存储
+
+学生进行报名 操作，触发 期次插入操作：
+if（期次已存在记录）
+	更新 gmt_update 时间为最新时间；
+else 
+	直接插入记录；gmt_create = gmt_update
+
+审核操作：
+if（期次所有报名 都已审核）
+	删除该期次记录；
+
+表设计：		
+id 	gmt_create  gmt_update	 termId 	provider_id	 		
+
+问题： 分页不好做！
+
+
+二、索引表储存：
+
+id 	gmt_create  gmt_update	 termId 	provider_id 	principal_ids【可以看见该用户的 课程负责人+期次负责人+讲师+助教id】【管理员直接忽略该字段过滤】
+实时更新索引；
+
+问题：增删、更新 时机 同上；
+可以解决分页问题，索引稳定性！
+
+
+
+
+
+问题：
+批量操作的进度条 在批量页面 刷新后，还显示吗？ 有批量操作在进行，该用户就不能再 做批量操作了？
+刷新，批量进度 不再提示； 用户 批量操作可连续；
+
+
+几个批量操作之间的 互斥关系 要考虑；     批量设置报名方式  批量进度计算； 批量操作 课程失败状态维护；
+
+controller层，对 批次id 和 操作人 一致做判断，不同的操作者不能看到 别人的操作批次
+
+
+
+
+********************************************************************************** 
+
+一、指派全部员工：
+http://fes1.study.163.com/p/org/coursedesign/saveEntryMode.json
+
+enrollRange:1
+enrollType:1
+id:400000002573002
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": true
+}
+
+
+
+• 批量设置报名方式，仅对未设置报名的课程期次生效，即不提供对已设置报名方式的进行变更
+	指派全部：
+	指派特定 + 主动报名 ： 操作简单
+
+• 批量指派仅对报名方式为指派特定的生效
+• 批量设置报名名单对报名方式是主动报名的生效
+
+p/org/coursedesign/saveEntryMode.json
+	termEnrollManager.saveEntryMode(mode);
+		termEntryModeHelper.validateSaveEntryMode(modeVo, termDto);		// 校验期次的信息，抛异常
+
+		termEntryModeHelper.setEntryModeDefaultValue(modeVo);			// 塞 默认值
+
+		entryModeChangeProcessor.process(modeVo,oldModeDto);			// 各种情况，本次批量只考虑未设置 到 设置【重点考虑 指派全部】
+			isCreateForAssignAll(modeVo, oldModeDto)					// 新增-处理指派全部
+				1、saveEntryMode(modeVo);
+					termEntryModeService.saveEntryMode(modeDto);
+        			// 课程可见性
+        			updateCourseVisible(modeVo.getId());
+        		2、checkCanAssignAll(modeVo);
+        			// 分页获取所有有效用户memberIds【已激活状态】
+        			PaginationResult<Long> page = virtualProviderShareService.getMemberIdsOfInviteStaff(modeVo.getProviderId(), 1, BIG_PAGE_SIZE); 
+        																					// for循环读取所有页，最终 memberIds : 机构下的所有 已激活 员工
+        			termEnrollHelper.checkCanEnrollForAssign(modeVo.getId(),memberIds);		// 
+        				Long status = checkCanEnrollStatusForAssign(termId,memberIds);		// 课程维度上 校验可授权数,考虑用户的课程授权记录过滤
+        					Long checkStatus = userLearnService.checkCanEnroll4EnterpriseForAssign(memberIds, termId);
+        						Long returnCode = courseAuthorizationValidate(term,course,memberIds);
+        					授权数校验 不同过，抛异常；
+
+        				List<Long> termIds = lessonUnitShareService.getRequiredTermIds(termId);		// 验证学习项目期次的 子必修课程
+        				for(Long checkedTermId : termIds)
+        					status = checkCanEnrollStatusForChildTerm(checkedTermId,memberIds);
+        						Long checkStatus = userLearnService.checkChildCourseAuthorization(termId, memberIds);
+        							return courseAuthorizationValidate(term, course,memberIds);
+        							授权数校验 不同过，抛异常；
+        						Long code = userLearnService.termEnrollValidate(termId);	// 分期次类型，校验 时间 和 可见性等期次属性
+
+        		3、asyncCreateForAssignAll(modeVo, oldModeDto);			// 线程池处理
+        			if (redisHelper.isEntryModeProcessing(termId)) {
+		                LOG.info("期次" + termId + "已在处理中");
+		                return;
+		            }
+            		redisHelper.startEntryModeProcessing(termId);		// 30分钟超时
+
+		            executeIgnoreException();							// catch 所有异常
+		            	AsyncSaveEntryModeTemplate.execute();		
+                			3.1、assignAllStaff(modeVo);
+                				for (pageIndex: 1 - totalPage) {
+                					// 分页获取有效用户memberIds【已激活状态】【同上面校验】【200一页】
+                					page = virtualProviderShareService.getMemberIdsOfInviteStaff(modeVo.getProviderId(), pageIndex, BIG_PAGE_SIZE);
+
+                					termManagerHelper.assignStaffLearn(modeVo.getProviderId(), page.getList(), modeVo.getSiteId(), modeVo.getId(), TermMemberAllowConstants.assignStatus.ASSIGNED, modeDto);
+                						List<Long> assignedMemberIds = getAssignMemberIdsByTermId(termId);		// 获取所有已授权该课程的 用户，过滤
+                							List<AssignRecordDto> list = userLearnService.getAssignRecord(termId);
+
+                						for (Long memberId : memberIds)		// 一页用户
+                							userLearnService.addAssignRecord(termDto.getCourseId(), memberId);	// 该用户没有被授权，则添加 课程授权记录
+                							addLearnRecordCount++;
+                						userLearnService.addAssignStat(termDto.getCourseId(), addLearnRecordCount);	// 更新课程已授权统计count
+
+                						if (isCompositeCourseTerm(termDto.getCompositeType()))	复合期次？ 系列课程 || 微专业 || 学习项目
+                							createCompositeCourseFreeOrder(memberIds, termDto);		// 无关逻辑，忽略
+
+                						//单课批量enroll
+                						Boolean result = userLearnService.startTermLearnWithAssign(termId, memberIds, AggregationlearnConstants.PLATFORM_WEB, AggregationlearnConstants.ENROLL_TYPE_USER, siteId, providerId, singleEnrollType, assignStatus);	
+                						return result;
+
+                					redisHelper.doingEntryModeProcessing(modeVo.getId(), pageIndex, totalPage); // 记录进度
+
+                			3.2、saveEntryMode(modeVo);
+
+		            redisHelper.finishEntryModeProcessing(termId);
+        			
+
+
+//单课批量enroll,单页用户处理：memberIds
+Boolean result = userLearnService.startTermLearnWithAssign(termId, memberIds, AggregationlearnConstants.PLATFORM_WEB, AggregationlearnConstants.ENROLL_TYPE_USER, siteId, providerId, singleEnrollType, assignStatus);	
+	doTermLearnEnrollWithAssign(TermMemberAllowConstants.compositeTermId.SINGLE, termId, memberIds, platform, enrollType, siteId, providerId, AggregationlearnConstants.SINGLE_ENROLL_TYPE_YES, assignStatus);
+		List<Aggregationlearn> oldLearns = getTermLearnListRecordInner(termId, memberIds);	// 获取 单期次+学习项目 enroll记录
+		List<Long> oldMemberIds = PropertyExtractUtils2.getAllByPropertyValueWithOrder(oldLearns, "memberId");
+
+		handleAssignRecord(term,memberIds);		// 维护 AssignRecord，没有授权过该课程的用户添加记录，存在逻辑重复！！！逻辑上应该所有用户都已被授权；
+
+		for (Long memberId : memberIds)
+            if (oldMemberIds.contains(memberId)) {
+                continue;
+            }
+            Aggregationlearn aggregationlearn = buildAggregationLearn(...)		// 构造 enroll记录
+            newLearns.add(aggregationlearn);
+
+        Integer result = aggregationlearnDao.add(newLearns);		// enroll未enroll过的
+        if (result > 0) {
+            List<Long> enrolledMemberIds=PropertyExtractUtils.safeGetByPropertyValue(newLearns, "memberId");
+
+            // 消息队列 发送enroll 消息 【按照 一页员工 批量】
+            enrollProvider.publishEnroll(EnrollListener.ENROLL, termId, enrolledMemberIds,allowType, null,EnrollSourceConstants.FROM_SINGLE_COURSE_OR_PROJECT);
+        }
+
+        termAllowHelper.addTermMemberAllow(compositeTermId, termId, memberIds, allowType);		//没有记录则 add； 已有记录，则update 记录的 status；
+
+
+// enroll 消息 处理 	connection-factory="rabbitConnFactory" prefetch="2" concurrency="5" acknowledge="auto"
+EnrollEventListener
+	CompositeEnrollEventListener		// 最终是 所有类型 的 事件 listener 都处理该消息【*********】
+		if (isEnroll) {
+	        enrollEventListener.enroll(termId, memberIds, assignStatus);
+	        		SigninEnrollEventListener.enroll(Long termId, List<Long> memberIds, Integer assignStatus)
+	        			signinService.enrollAdd(termId, memberIds);
+
+	    }else {
+	        enrollEventListener.disEnroll(termId, memberIds, assignStatus, compositeTermId, eventSource);
+	        		SigninEnrollEventListener.disEnroll(Long termId, List<Long> memberIds, Integer assignStatus, Long compositeTermId, Integer eventSource)
+	        			signinService.enrollDisable(termId, memberIds);
+	    }
+
+
+
+
+1、上层来说，整个一个期次的 DB写处理 是同步的，且放在 一个course-server 节点上的；【添加指派记录 assign_record,添加enroll记录，add或者update term_member_allow记录】
+	发消息【签到等处理】是异步的，且分散到 多个服务节点处理；
+优化： 批量多期次的时候，尽量 每个节点处理 1-2 个期次，节点内部 使用原逻辑：即DB 写处理在节点内同步处理，分页发消息到 消息队列；
+
+（1）单节点course-server 发送 签到消息，接收者也是 course-server，但是此时是 所有节点 都分散去 消费这批消息【不重复消费】？
+
+方案：
+当有Consumer需要大量的运算时，RabbitMQ Server需要一定的分发机制来balance每个Consumer的load。
+RabbitMQ Server会将queue的Message分发给不同的Consumer以处理计算密集型的任务
+
+默认情况下，RabbitMQ 会顺序的分发每个Message。当每个收到ack后，会将该Message删除，然后将下一个Message分发到下一个Consumer。这种分发方式叫做round-robin。
+
+采用no-ack的方式进行确认，也就是说，每次Consumer接到数据后，而不管是否处理完成，RabbitMQ Server会立即把这个Message标记为完成，然后从queue中删除了。
+
+目前每个course-server 都包含同样的mq配置，启动都会作为 同级消费者，
+
+enterprise-web ： 20台线上
+
+
+<rabbit:direct-exchange name="myExchange" durable="true" auto-delete="false">
+
+<rabbit:queue id="Enroll-course" durable="false" auto-delete="true" exclusive="false" name="EnrollProvider-course-1.0.0${local_service_version_suffix}" />
+
+<rabbit:listener-container
+			connection-factory="rabbitConnFactory" prefetch="2" concurrency="5"
+			acknowledge="auto">
+		<rabbit:listener ref="EnrollListener"
+						 queues="EnrollProvider-course-1.0.0${local_service_version_suffix}" />
+	</rabbit:listener-container>
+
+
+prefetch=1，设置prefetch_count=1 。这样RabbitMQ就会使得每个Consumer在同一个时间点最多处理一个Message;
+
+
+
+RabbitMQ消息队列(一):Detailed Introduction 详细介绍
+
+
+
+
+
+获取进度：
+http://fes1.study.163.com/j/coursedesign/getEntryModeProcessingStatus.json
+
+id:400000002573002
+
+{"code":0,"message":"ok","result":{"retCode":0,"loaded":0,"total":1,"message":"OK"}}
+
+{"code":0,"message":"ok","result":{"retCode":0,"loaded":1,"total":1,"message":"OK"}}
+
+
+
+
+
+
+
+select term_id from 
+	(
+		(select id from s2_course where principal_id = ? ) t1
+		left join
+		(select id as term_id,  as term_id from s2_term )
+		on (t1.id = t2.course_id) 
+	) tt1
+	union
+	(
+
+	)
+
+
+
+
+如果不分页，
+先查
+
+
+
+
+
+
+memberId : list<course> ——> list<term>
+			list<term>  
+
+总的 list<term> totalTerm
+
+result
+for(term : totalTerm)
+	符合条件：result.add()
+
+	1 -20
+
+	21 - 40
+
+
+************************************************************ 2017-08-15 【迭代开始】
+
+一、牵扯分支
+search-server，course-server，enterprise-web，study-backend
+
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<project-list>search-server;course-server;enterprise-web;study-backend</project-list>
+	<branch-name>feature/batch_process_ww_20170815</branch-name>
+	<version-suffix>batch_process_ww_20170815</version-suffix>
+</root>
+
+
+
+
+
+
+
+

@@ -1,0 +1,698 @@
+一、课件列表页操作
+1、没有更改的 已发布  http://fes1.study.163.com/j/lecture/end/getList.json
+
+limit:1000
+offset:0
+pageIndex:1
+pageSize:1000
+relativeOffset:0
+termId:400000002573001
+
+{					// CatalogDto
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "catalogList": [
+            {
+                "id": 400000002688002,
+                "gmtCreate": 1502090558317,
+                "draftStatus": 1,
+                "type": 3,
+                "name": "年轻真好！红魔时期的C罗脚下生花",
+                "data": {
+                    "contentType": 1,
+                    "contentId": 1006304001,
+                    "jsonContent": null,
+                    "viewPriviledge": 10,
+                    "contentStatus": 1,
+                    "liveStatus": null,
+                    "liveStartTime": null,
+                    "liveFinishedTime": null,
+                    "clientVisible": 0,
+                    "releaseTime": null,
+                    "description": "",
+                    "startTime": null,
+                    "endTime": null,
+                    "studyType": null,
+                    "totalAuthCount": null,
+                    "restAuthCount": null,
+                    "termType": null,
+                    "courseStatus": null,
+                    "examStatus": null,
+                    "testStatus": null,
+                    "questionnaireStatus": null,
+                    "taskStatus": null,
+                    "totalProcessCount": null,
+                    "finishProcessCount": null,
+                    "onlineFlag": null,
+                    "bigPhoto": null,
+                    "examAnswerformId": null,
+                    "unsignedCount": null,
+                    "testAnswerformId": null,
+                    "questionnaireAnswerformId": null,
+                    "score": null,
+                    "courseIntroduction": null,
+                    "taskProgressStatus": null,
+                    "resourceIsRemove": false,
+                    "termLearnProgress": null,
+                    "answerBeforeEnroll": null
+                },
+                "children": [],
+                "parentId": null,
+                "parentType": null
+            },
+            {
+                "id": 400000002688003,
+                "gmtCreate": 1502096959791,
+                "draftStatus": 1,
+                "type": 3,
+                "name": "年轻真好！红魔时期的C罗脚下生花",
+                "data": {
+                    "contentType": 1,
+                    "contentId": 1006304001,
+                    "jsonContent": null,
+                    "viewPriviledge": 10,
+                    "contentStatus": 1,
+                    "liveStatus": null,
+                    "liveStartTime": null,
+                    "liveFinishedTime": null,
+                    "clientVisible": 0,
+                    "releaseTime": null,
+                    "description": "",
+                    "startTime": null,
+                    "endTime": null,
+                    "studyType": null,
+                    "totalAuthCount": null,
+                    "restAuthCount": null,
+                    "termType": null,
+                    "courseStatus": null,
+                    "examStatus": null,
+                    "testStatus": null,
+                    "questionnaireStatus": null,
+                    "taskStatus": null,
+                    "totalProcessCount": null,
+                    "finishProcessCount": null,
+                    "onlineFlag": null,
+                    "bigPhoto": null,
+                    "examAnswerformId": null,
+                    "unsignedCount": null,
+                    "testAnswerformId": null,
+                    "questionnaireAnswerformId": null,
+                    "score": null,
+                    "courseIntroduction": null,
+                    "taskProgressStatus": null,
+                    "resourceIsRemove": false,
+                    "termLearnProgress": null,
+                    "answerBeforeEnroll": null
+                },
+                "children": [],
+                "parentId": null,
+                "parentType": null
+            }
+        ],
+        "catalogType": 2,
+        "isOrderChange": 0,
+        "draftStatus": 1
+    }
+}
+
+
+2.1、添加课件
+http://fes1.study.163.com/j/lecture/create.do
+
+termId:400000002573001
+nodeType:3
+to:undefined
+
+{"code":0,"message":"ok","result":400000002694003}
+
+
+2.2、保存课件节点
+http://fes1.study.163.com/p/lecture/updateCatalog.do
+
+{						// SaveCatalogVo
+    "catalogList": [
+        {
+            "id": 400000002688002,
+            "gmtCreate": 1502090558317,
+            "draftStatus": 1,
+            "type": 3,
+            "name": "年轻真好！红魔时期的C罗脚下生花",
+            "data": {
+                "contentType": 1,
+                "contentId": 1006304001,
+                "jsonContent": null,
+                "viewPriviledge": 10,
+                "contentStatus": 1,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "clientVisible": 0,
+                "releaseTime": null,
+                "description": "",
+                "startTime": null,
+                "endTime": null,
+                "studyType": null,
+                "totalAuthCount": null,
+                "restAuthCount": null,
+                "termType": null,
+                "courseStatus": null,
+                "examStatus": null,
+                "testStatus": null,
+                "questionnaireStatus": null,
+                "taskStatus": null,
+                "totalProcessCount": null,
+                "finishProcessCount": null,
+                "onlineFlag": null,
+                "bigPhoto": null,
+                "examAnswerformId": null,
+                "unsignedCount": null,
+                "testAnswerformId": null,
+                "questionnaireAnswerformId": null,
+                "score": null,
+                "courseIntroduction": null,
+                "taskProgressStatus": null,
+                "resourceIsRemove": false,
+                "termLearnProgress": null,
+                "answerBeforeEnroll": null,
+                "contentTypeLabel": "视频", 		// 后端并没有这个字段,应该是前端需要的
+                "releaseTimeLabel": "已发布",		// 后端并没有这个字段,应该是前端需要的
+                "viewPriviledgeLabel": ""		// 后端并没有这个字段,应该是前端需要的
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null,
+            "draftStatusLabel": ""			// 后端并没有这个字段,应该是前端需要的
+        },
+        {
+            "id": 400000002688003,
+            "gmtCreate": 1502096959791,
+            "draftStatus": 1,
+            "type": 3,
+            "name": "年轻真好！红魔时期的C罗脚下生花",
+            "data": {
+                "contentType": 1,
+                "contentId": 1006304001,
+                "jsonContent": null,
+                "viewPriviledge": 10,
+                "contentStatus": 1,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "clientVisible": 0,
+                "releaseTime": null,
+                "description": "",
+                "startTime": null,
+                "endTime": null,
+                "studyType": null,
+                "totalAuthCount": null,
+                "restAuthCount": null,
+                "termType": null,
+                "courseStatus": null,
+                "examStatus": null,
+                "testStatus": null,
+                "questionnaireStatus": null,
+                "taskStatus": null,
+                "totalProcessCount": null,
+                "finishProcessCount": null,
+                "onlineFlag": null,
+                "bigPhoto": null,
+                "examAnswerformId": null,
+                "unsignedCount": null,
+                "testAnswerformId": null,
+                "questionnaireAnswerformId": null,
+                "score": null,
+                "courseIntroduction": null,
+                "taskProgressStatus": null,
+                "resourceIsRemove": false,
+                "termLearnProgress": null,
+                "answerBeforeEnroll": null,
+                "contentTypeLabel": "视频",
+                "releaseTimeLabel": "已发布",
+                "viewPriviledgeLabel": ""
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null,
+            "draftStatusLabel": ""
+        },
+        {
+            "termId": 400000002573001,
+            "nodeType": 3,
+            "to": "3-400000002688003",
+            "delta": 1,
+            "id": 400000002694003,				// 后端可匹配
+            "type": 3,						// 后端可匹配
+            "draftStatus": 0,					// 后端可匹配
+            "children": [],					// 后端可匹配
+            "data": {						// 后端可匹配
+                "clientVisible": 0,				// 后端可匹配
+                "contentTypeLabel": "",
+                "validateLabelShow": "请添加课件内容",
+                "viewPriviledgeLabel": ""
+            },
+            "name": "课件",					// 后端可匹配
+            "draftStatusLabel": ""
+        }
+    ],
+    "termId": 400000002573001,
+    "isOrderChange": 1,
+    "draftStatus": 2
+}
+
+{"code":0,"message":"ok","result":true}
+
+
+
+
+二、编辑课件内容
+
+2.1、点击跳转 课件编辑页 
+http://fes1.study.163.com/p/lecture/end/getLectureResource.json 	// 获取课件信息展示
+
+id:
+400000002694003
+nodeType:3
+preview:1
+scene-type-id:"end-3-400000002694003"
+termId:400000002573001
+
+
+{					// 只有第一步 保存那几个后端匹配字段
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "id": 400000002694003,
+        "contentId": null,
+        "contentType": null,
+        "nodeVo": {
+            "id": 400000002694003,
+            "gmtCreate": null,
+            "draftStatus": 0,
+            "type": 3,
+            "name": "课件",
+            "data": {
+                "contentType": null,
+                "contentId": null,
+                "jsonContent": null,
+                "viewPriviledge": null,
+                "contentStatus": null,
+                "draftStatus": null,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "releaseTime": null,
+                "description": "",
+                "clientVisible": 0,
+                "viewStatus": null,
+                "lastLearnTime": null,
+                "studyType": null
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null
+        },
+        "unitRichResourceVo": null,
+        "unitDocResourceVo": null,
+        "unitVideoResourceVo": null,
+        "unitDiscussResourceVo": null,
+        "unitTestResourceVo": null,
+        "unitLiveResourceVo": null,
+        "unitScormResourceVo": null,
+        "termResourceVo": null,
+        "testResourceVo": null,
+        "examResourceVo": null,
+        "questionnaireResourceVo": null
+    }
+}
+
+
+2.2、视频库选择课件
+获取视频库列表： http://fes1.study.163.com/j/coursedesign/TermManager/getAllVideoOfTermPaged.json
+
+termId:400000002573001
+pageSize:8
+pageIndex:1
+searchKey:
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "videoReopList": [
+            {
+                "videoVo": {
+                    "videoId": 1006306003,
+                    "videoImgUrl": null,
+                    "duration": 671,
+                    "flvSdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_c18c337c1ca548afb0a8a6aedf04640e_sd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=iiV742xuPhdrIdAwCWmSKJt%2B1tFpDhevDkR9xz6njPU%3D",
+                    "flvHdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_ec912f606c2c41058d98751a8984dc38_hd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=Ex1wqJwQMo0IFUBePGMnaQCctooVyIvNNO%2FVIK0BFKA%3D",
+                    "flvShdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_dd31d43119b14a8e95ceb7ba1db41a29_shd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=Xy8%2FcwWIGlOnSWGdJLIqPOXGWA2IqBy8TLMkiw0tNVo%3D",
+                    "mp4SdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c5fed6a305394615b21d0fdfd42851a9_sd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=DT6AHR2NCBBKrOkTqOx08AcXhc40bJfa5j1inkr1G1Y%3D",
+                    "mp4HdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c0e315b8662949569f2454777b539484_hd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=z2pv1%2BzWkbrak0R2Be8wRXPoPzypg5rD%2FKgFmPG4wpw%3D",
+                    "mp4ShdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_290224bde3a64c538da75fe17bcc9ef9_shd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=E4zseriBniCUYSeuqB5icZQSUZtInmchCvjWV68FO20%3D",
+                    "key": "67893b097cf3274fd7e9aa3263549571683775fd691f9d7181ef6ce7b238fe036470c4603b9ec7e4654e74fb5c98e0914d7d6ff1f0c80a735ca4dcd3a2e0d2a2e3733688cd5b54142abee176b47cef39e88c01d51083d19b7f37bb90ce91f584ff95aee726907876d470c935a98ed2969466599be4f424183703589739adf00fcb8ec4c9d97c26298fee68fc20a7d05d4870092f831ac65589dad0d872f68a6436998ed577dd2cb418c206f27a0cb550",
+                    "needKeyTimeValidate": false,
+                    "playerCollection": 3,
+                    "isEncrypt": false,
+                    "clientEncryptKeyVersion": null,
+                    "videoDecryptData": null,
+                    "mp4Caption": null,
+                    "flvCaption": null,
+                    "srtKeys": null,
+                    "status": 1,
+                    "name": "正能量！C罗最让人尊敬时刻.mp4",
+                    "origNosKey": null,
+                    "uploadTime": 1502247391348,
+                    "start": 0
+                },
+                "videoFrom": 0
+            },
+            {
+                "videoVo": {
+                    "videoId": 1006304001,
+                    "videoImgUrl": null,
+                    "duration": 796,
+                    "flvSdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F07%2F1006304001_10ebfc61720e4010b99d471b2221c740_sd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=Gx7rKaIGmgLendNjjw%2BECcFcKI%2BIafnf0Ro0EffyLrE%3D",
+                    "flvHdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F07%2F1006304001_62490eaac5bf47038311a067dd1962c9_hd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=jQ%2FRXUcB9VSBJFhdMkAaTEgE3mMRL1XslRrptB44OlY%3D",
+                    "flvShdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F07%2F1006304001_50cf5b293e2d46898b45bfe4abb9a2ff_shd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=PBL4z95m1gl2LK4ZxAOOrcGfWgtPGK1R5QMlRYc2k0w%3D",
+                    "mp4SdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F07%2F1006304001_11463860c44640eaba7f4c319fb42824_sd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=NdtaG9ODSzukCIkKJSwby7764NhDeha2pYWhLRorC9k%3D",
+                    "mp4HdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F07%2F1006304001_9acd196a7683449d9db47258717df924_hd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=tp1rCq%2BHLV6rQS8fbc2gsWOkUJr8n%2FW7ugks8ffbT9I%3D",
+                    "mp4ShdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F07%2F1006304001_7668337d4f0047509de1399fa19174bf_shd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456579&Signature=lNj%2FPDL2t8j9hyruxvbCD4yMR7Fwy1NXImhvsHK7UyY%3D",
+                    "key": "67893b097cf3274fd7e9aa3263549571683775fd691f9d7181ef6ce7b238fe038dc5d643a20d752bf73163223edaf0e41430d4904edd5dfab851f635440172afe3733688cd5b54142abee176b47cef39e88c01d51083d19b7f37bb90ce91f584ff95aee726907876d470c935a98ed2969466599be4f424183703589739adf00fcb8ec4c9d97c26298fee68fc20a7d05d4870092f831ac65589dad0d872f68a6436998ed577dd2cb418c206f27a0cb550",
+                    "needKeyTimeValidate": false,
+                    "playerCollection": 3,
+                    "isEncrypt": false,
+                    "clientEncryptKeyVersion": null,
+                    "videoDecryptData": null,
+                    "mp4Caption": null,
+                    "flvCaption": null,
+                    "srtKeys": null,
+                    "status": 1,
+                    "name": "年轻真好！红魔时期的C罗脚下生花.mp4",
+                    "origNosKey": null,
+                    "uploadTime": 1502073773783,
+                    "start": 0
+                },
+                "videoFrom": 0
+            }
+        ],
+        "pagination": {
+            "pageSize": 8,
+            "pageIndex": 1,
+            "totlePageCount": 1,
+            "totleCount": 2,
+            "offset": 0,
+            "limit": 8,
+            "sortCriterial": null
+        }
+    }
+}
+
+
+2.3、选择目标视频，点击 确定
+
+2.3.1、http://fes1.study.163.com/j/org/quiz/getAnchorList.json
+
+
+2.3.2、http://fes1.study.163.com/p/lecture/updateLectureResource.do
+
+{					// NodeUploadResourceVo
+    "richContent": null,
+    "id": 400000002694003,		// unitId
+    "termId": 400000002573001,
+    "nodeType": 3,			// 课件类型
+    "postTitle": null,
+    "postContent": null,
+    "contentId": 1006306003,
+    "contentType": 1,
+    "uploadFileVo": {
+        "name": "正能量！C罗最让人尊敬时刻.mp4"
+    },
+    "attachment": null,
+    "unitLiveResourceVo": null,
+    "viewPriviledge": null,
+    "name": null
+}
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "id": 400000002694003,
+        "contentId": 1006306003,
+        "contentType": 1,
+        "nodeVo": {
+            "id": 400000002694003,
+            "gmtCreate": 1502370279317,
+            "draftStatus": 0,
+            "type": 3,
+            "name": "课件",
+            "data": {
+                "contentType": 1,
+                "contentId": 1006306003,
+                "jsonContent": null,
+                "viewPriviledge": null,
+                "contentStatus": null,
+                "draftStatus": null,
+                "liveStatus": null,
+                "liveStartTime": null,
+                "liveFinishedTime": null,
+                "releaseTime": null,
+                "description": "",
+                "clientVisible": 0,
+                "viewStatus": null,
+                "lastLearnTime": null,
+                "studyType": null
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null
+        },
+        "unitRichResourceVo": null,
+        "unitDocResourceVo": null,
+        "unitVideoResourceVo": {
+            "videoId": 1006306003,
+            "videoImgUrl": null,
+            "duration": 671,
+            "flvSdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_c18c337c1ca548afb0a8a6aedf04640e_sd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456679&Signature=kj8XqTjmF6OOkWw1z8AEGRz0svuS4uGkJ8vvxSBKhlI%3D",
+            "flvHdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_ec912f606c2c41058d98751a8984dc38_hd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456679&Signature=m4dmPio5qRlU6yE0oaO48wyd0hj9%2BOJwV4ouWkqXYw4%3D",
+            "flvShdUrl": "http://nos.netease.com/edu-video/nos%2Fflv%2F2017%2F08%2F09%2F1006306003_dd31d43119b14a8e95ceb7ba1db41a29_shd.flv?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456679&Signature=k%2BjE%2B4LFlIJgcJRV0HTjRITSW96GRht5M8f%2BnVB9R2A%3D",
+            "mp4SdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c5fed6a305394615b21d0fdfd42851a9_sd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456679&Signature=xNLjPODmc4rJ5KtLTLaX5bM80dSn32JFYbsMJYM7Z3M%3D",
+            "mp4HdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_c0e315b8662949569f2454777b539484_hd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456679&Signature=6FPi2r4fSV%2FPEeAHdI0jG73n9pSx8HG3%2BzdXQmqyCHo%3D",
+            "mp4ShdUrl": "http://nos.netease.com/edu-video/nos%2Fmp4%2F2017%2F08%2F09%2F1006306003_290224bde3a64c538da75fe17bcc9ef9_shd.mp4?NOSAccessKeyId=7ba71f968e4340f1ab476ecb300190fa&Expires=1502456679&Signature=HjIFcIWlPhhPQiEret%2Fy65drllQbuARqgFWr521VUTk%3D",
+            "key": "67893b097cf3274fd7e9aa326354957101e0cb76fdaeebdb6171dcebfae40cffd78488f142010f2a8cefd3963b36a7a44d7d6ff1f0c80a735ca4dcd3a2e0d2a263dca9a89d9de018ed01c6f90c45d5a8e570cb013ee6bee3bd53b5f0f4fb4e5b07170b06bfbe5442a18d44011e73c7855a01f38ccf0c565cdbfe5253f27cdaa540e23b55d9d3423ee3c83cfaa6477cdbba65555b4389e0502aaf0f357cd5c654da4e9c73bda29d9db6ca663c389ed848",
+            "needKeyTimeValidate": false,
+            "playerCollection": 3,
+            "isEncrypt": false,
+            "clientEncryptKeyVersion": null,
+            "videoDecryptData": null,
+            "mp4Caption": null,
+            "flvCaption": null,
+            "name": "正能量！C罗最让人尊敬时刻.mp4",
+            "origNosKey": null,
+            "status": 1,
+            "start": 0,
+            "cluPointData": [],
+            "lastLearnTime": null
+        },
+        "unitDiscussResourceVo": null,
+        "unitTestResourceVo": null,
+        "unitLiveResourceVo": null,
+        "unitScormResourceVo": null,
+        "termResourceVo": null,
+        "testResourceVo": null,
+        "examResourceVo": null,
+        "questionnaireResourceVo": null
+    }
+}
+
+
+2.3.3、保存并返回课件
+http://fes1.study.163.com/p/lecture/updateLectureResource.do
+
+{
+    "richContent": null,
+    "id": 400000002694003,
+    "termId": 400000002573001,
+    "nodeType": 3,
+    "postTitle": null,
+    "postContent": null,
+    "contentId": null,				// 不传没关系，后端会取 草稿中已存储的 contentId
+    "contentType": 1,
+    "uploadFileVo": null,
+    "attachment": null,
+    "unitLiveResourceVo": null,
+    "viewPriviledge": 10,			// 赋值？？ 前端确定何条件赋值？？
+    "name": "正能量！C罗最让人尊敬时刻" 		// 以视频名称为准
+}
+
+
+三、编辑完视频课件内容，返回课件目录列表
+http://fes1.study.163.com/j/lecture/end/getList.json
+
+limit:1000
+offset:0
+pageIndex:1
+pageSize:1000
+relativeOffset:0
+termId:400000002573001
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "catalogList": [
+            {
+                "id": 400000002688002,
+                "gmtCreate": 1502090558317,
+                "draftStatus": 1,
+                "type": 3,
+                "name": "年轻真好！红魔时期的C罗脚下生花",
+                "data": {
+                    "contentType": 1,
+                    "contentId": 1006304001,
+                    "jsonContent": null,
+                    "viewPriviledge": 10,
+                    "contentStatus": 1,
+                    "liveStatus": null,
+                    "liveStartTime": null,
+                    "liveFinishedTime": null,
+                    "clientVisible": 0,
+                    "releaseTime": null,
+                    "description": "",
+                    "startTime": null,
+                    "endTime": null,
+                    "studyType": null,
+                    "totalAuthCount": null,
+                    "restAuthCount": null,
+                    "termType": null,
+                    "courseStatus": null,
+                    "examStatus": null,
+                    "testStatus": null,
+                    "questionnaireStatus": null,
+                    "taskStatus": null,
+                    "totalProcessCount": null,
+                    "finishProcessCount": null,
+                    "onlineFlag": null,
+                    "bigPhoto": null,
+                    "examAnswerformId": null,
+                    "unsignedCount": null,
+                    "testAnswerformId": null,
+                    "questionnaireAnswerformId": null,
+                    "score": null,
+                    "courseIntroduction": null,
+                    "taskProgressStatus": null,
+                    "resourceIsRemove": false,
+                    "termLearnProgress": null,
+                    "answerBeforeEnroll": null
+                },
+                "children": [],
+                "parentId": null,
+                "parentType": null
+            },
+            {
+                "id": 400000002688003,
+                "gmtCreate": 1502096959791,
+                "draftStatus": 1,
+                "type": 3,
+                "name": "年轻真好！红魔时期的C罗脚下生花",
+                "data": {
+                    "contentType": 1,
+                    "contentId": 1006304001,
+                    "jsonContent": null,
+                    "viewPriviledge": 10,
+                    "contentStatus": 1,
+                    "liveStatus": null,
+                    "liveStartTime": null,
+                    "liveFinishedTime": null,
+                    "clientVisible": 0,
+                    "releaseTime": null,
+                    "description": "",
+                    "startTime": null,
+                    "endTime": null,
+                    "studyType": null,
+                    "totalAuthCount": null,
+                    "restAuthCount": null,
+                    "termType": null,
+                    "courseStatus": null,
+                    "examStatus": null,
+                    "testStatus": null,
+                    "questionnaireStatus": null,
+                    "taskStatus": null,
+                    "totalProcessCount": null,
+                    "finishProcessCount": null,
+                    "onlineFlag": null,
+                    "bigPhoto": null,
+                    "examAnswerformId": null,
+                    "unsignedCount": null,
+                    "testAnswerformId": null,
+                    "questionnaireAnswerformId": null,
+                    "score": null,
+                    "courseIntroduction": null,
+                    "taskProgressStatus": null,
+                    "resourceIsRemove": false,
+                    "termLearnProgress": null,
+                    "answerBeforeEnroll": null
+                },
+                "children": [],
+                "parentId": null,
+                "parentType": null
+            },
+            {
+                "id": 400000002694003,
+                "gmtCreate": 1502374185645,
+                "draftStatus": 0,
+                "type": 3,
+                "name": "正能量！C罗最让人尊敬时刻",
+                "data": {
+                    "contentType": 1,
+                    "contentId": 1006306003,
+                    "jsonContent": null,
+                    "viewPriviledge": 10,
+                    "contentStatus": 1,
+                    "liveStatus": null,
+                    "liveStartTime": null,
+                    "liveFinishedTime": null,
+                    "clientVisible": 0,
+                    "releaseTime": null,
+                    "description": "",
+                    "startTime": null,
+                    "endTime": null,
+                    "studyType": null,
+                    "totalAuthCount": null,
+                    "restAuthCount": null,
+                    "termType": null,
+                    "courseStatus": null,
+                    "examStatus": null,
+                    "testStatus": null,
+                    "questionnaireStatus": null,
+                    "taskStatus": null,
+                    "totalProcessCount": null,
+                    "finishProcessCount": null,
+                    "onlineFlag": null,
+                    "bigPhoto": null,
+                    "examAnswerformId": null,
+                    "unsignedCount": null,
+                    "testAnswerformId": null,
+                    "questionnaireAnswerformId": null,
+                    "score": null,
+                    "courseIntroduction": null,
+                    "taskProgressStatus": null,
+                    "resourceIsRemove": false,
+                    "termLearnProgress": null,
+                    "answerBeforeEnroll": null
+                },
+                "children": [],
+                "parentId": null,
+                "parentType": null
+            }
+        ],
+        "catalogType": 2,
+        "isOrderChange": 1,
+        "draftStatus": 2
+    }
+}
+
+
+

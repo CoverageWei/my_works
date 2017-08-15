@@ -1,0 +1,415 @@
+一、创建视频课件
+以前整个操作是 分2步进行的，现在要整合成一步执行完，并最终一样的效果；
+
+catalogType：	1:1级,	2:2级,	3:3级
+isOrderChange：	1:排序,	0:不需要排序
+draftStatus： 	草稿：CREATE(0)， 与线上同步：PUBLISHED(1)， 与线上不同步：MODIFIED(2)， 已删除：DELETED(-1)
+
+
+
+1、/p/lecture/updateCatalog.do 		// 只是存储草稿，添加最基础的 node节点到草稿
+
+【注意】后端处理只关注： termId, catalogList【List<CatalogNodeVo>】, isOrderChange, draftStatus 
+
+/p/lecture/updateCatalog.do
+	catalogManager.saveCatalog(saveCatalogVo.getTermId(), saveCatalogVo.getCatalogList(), saveCatalogVo.getIsOrderChange(), saveCatalogVo.getDraftStatus())
+		List<CatalogNodeDto> catalogList = BeanConvertUtils.deepSafeConvert(catalogListVo, CatalogNodeVo.class, CatalogNodeDto.class);
+		catalogService.saveCatalog(termId, catalogList, isOrderChange, draftStatus);
+
+			TermDto termDto = getAndCheckTermDto(termId);		// 读草稿，如果草稿没有 则从 数据库 初始化 草稿再存储； 如果草稿中 不是按照树节点存储资源，则将 数据库 chapter、lesson、unit等转换成 树节点返回；
+
+			termDto.getCatalog().setCatalogList(catalogList);	// 使用新的树结构
+	        termDto.getCatalog().setIsOrderChange(isOrderChange);
+	        if (null != draftStatus) {
+	            termDto.getCatalog().setDraftStatus(draftStatus);
+	        }
+
+	        saveTermDraftDoc(termDto);		// 存储新的草稿到 mongo
+	        	TermDraftDoc termDraftDoc = BeanConvertUtils.deepSafeConvert(termDto, TermDto.class, TermDraftDoc.class);
+        		termDraftDocDao.save(termDraftDoc);
+
+
+
+所以，增加的节点内容为：
+{
+    "termId": 400000002573001,
+    "nodeType": 3,
+    "to": "3-400000002688003",
+    "delta": 1,
+    "id": 400000002694003,				// 后端可匹配，必传
+    "type": 3,							// 后端可匹配
+    "draftStatus": 0,					// 后端可匹配
+    "children": [],						// 后端可匹配
+    "data": {							// 后端可匹配
+        "clientVisible": 0,				// 后端可匹配
+        "contentTypeLabel": "",
+        "validateLabelShow": "请添加课件内容",
+        "viewPriviledgeLabel": ""
+    },
+    "name": "课件",						// 后端可匹配
+    "draftStatusLabel": ""
+}
+
+【总结】 
+（1）第一步会在草稿中 存储 新创建的节点，不过骨架有了，只有上面“后端可匹配” 字段 成功赋值，其他均为null；
+（2）无db操作，只有存 mongo
+
+
+
+
+2、视频库列表选择视频，并确定
+http://fes1.study.163.com/p/lecture/updateLectureResource.do
+
+【总结】将课件对应的资源内容 存储进 期次草稿中保存
+/p/lecture/updateLectureResource.do
+	nodeUploadResourceVo.setOwnerId(WebUser.getUserId() == null ? -1 : WebUser.getUserId());
+	NodeResourceVo nodeResourceVo = nodeResourceManager.saveContentForNode(nodeUploadResourceVo);		// 保存变更到 期次草稿
+		// 1、校验草稿中 该课件是否存在？【所以，第二步 依赖第一步将节点基本信息填充好】
+		Long unitId = nodeUploadResourceVo.getId();
+		CatalogNodeDto catalogNodeDto = getCatalogNodeDto(term_id，unit_id，unit_type);	
+			List<CatalogNodeDto> catalogList = catalogService.getSimpleCatalogDraftList(termId);
+			TreeNode<CatalogNodeDto> tree = nodeHelper.convertCatalogList2TreeNode(catalogList);
+			TreeNode treeNode = nodeHelper.findNodeByIdAndType(tree, nodeId, nodeType);
+			CatalogNodeDto catalogNodeDto = (CatalogNodeDto) treeNode.getWrapper();
+		if (catalogNodeDto == null)：课件节点不存在，抛异常：节点找不到
+
+		// 2、校验参数的 contentId ，为null 且草稿中不为null，则取 草稿中已存储的 contentId
+		Long contentId = nodeUploadResourceVo.getContentId();
+		if (contentId == null && 草稿中contentId != null && 草稿中contentId != -1} {
+			contentId = catalogNodeDto.getData().getContentId();		// 参数中为null，取草稿中已有的 contentId
+			nodeUploadResourceVo.setContentId(contentId);				// 塞到参数中去
+
+			// 校验草稿中 contentType 与参数传递的 是否一致？ 不一致抛异常：课件资源不可更改
+		}
+
+		if (LessonUnitConstants.CONTENT_ID_DELETED.equals(contentId)) {...}		// 跳过，走 else 逻辑
+		else {
+			2.1、校验contentId 对应的视频是否存在
+			contentId = this.changeResourceId(nodeUploadResourceVo); 
+				return resourceStrategy.changeResourceId(resourceVo);			// 视频类型
+					return resourceVo.getContentId();							// 本视频课件场景下，contentId 为videoId，数据正常，直接原样返回
+			boolean isResourceExist = this.checkResourceExist(contentId, nodeUploadResourceVo.getContentType());
+				return resourceStrategy.checkResourceExist(contentId);
+					return videoShareService.isVideoExist(contentId);			// 校验视频是否存在
+			视频资源不存在 抛异常：资源不存在
+
+			2.2、 目录内容存 期次草稿
+			this.updateLessonNodeContent(nodeUploadResourceVo.getTermId(), unitId, CatalogNodeTypeEnum.UNIT.getValue(),
+                    contentId, nodeUploadResourceVo.getName(), nodeUploadResourceVo.getViewPriviledge(), nodeUploadResourceVo.getContentType());
+                草稿中读取 该课件 node；catalogNodeDto			// 方式如 步骤1
+
+                catalogNodeDto.getData().setContentType(resourceType);	// 草稿中存在的 该课件node 无content_type，则set；【视频】
+                catalogNodeDto.getData().setContentId(contentId);		// 草稿中读取 课件node，set
+                catalogNodeDto.setGmtCreate(new Date().getTime());
+                catalogNodeDto.setName(name);
+                if(null != viewPriviledge) { ...} 						// 本场景下，viewPriviledge 默认为 null，此逻辑跳过
+
+                changeNodeStatus(catalogNodeDto, DraftStatusEnum.MODIFIED.getValue());	// 变更该节点的状态：DraftStatus【本场景为 新建，则保持create状态，即草稿】
+                	if (DraftStatusEnum.MODIFIED.getValue().equals(status)) {
+            			if (DraftStatusEnum.PUBLISHED.getValue().equals(catalogNodeDto.getDraftStatus())) {
+                			catalogNodeDto.setDraftStatus(DraftStatusEnum.MODIFIED.getValue());
+            			}
+        			}		
+
+                catalogService.saveCatalogDraftList(termId, catalogList, true);
+                	TermDto termDto = getAndCheckTermDto(termId);
+                	termDto.getCatalog().setCatalogList(catalogList);
+
+                	if (modify) {
+            			termDto.getCatalog().setDraftStatus(DraftStatusEnum.MODIFIED.getValue());		// 设置整个目录有变更
+        			}
+
+        			saveTermDraftDoc(termDto);		// 所有东西存 期次草稿
+        				TermDraftDoc termDraftDoc = BeanConvertUtils.deepSafeConvert(termDto, TermDto.class, TermDraftDoc.class);
+        				termDraftDocDao.save(termDraftDoc);
+        }
+        //上传附件
+        uploadFile(nodeUploadResourceVo, unitId);
+        	if (nodeUploadResourceVo.getAttachment() != null) {...}			// 本场景下针对视频，无附件，逻辑不必考虑
+		
+		setVideoNodeDetail(nodeUploadResourceVo, contentId);
+			if (null != contentId) {
+	            if (LessonUnitConstants.CONTENT_TYPE_VIDEO.equals(nodeUploadResourceVo.getContentType()) &&
+	                    !LessonUnitConstants.CONTENT_ID_DELETED.equals(contentId)) {
+	                termVideoService.updateVideoRepoOfTerm(nodeUploadResourceVo.getTermId(), contentId);
+	                	repo.setTermId(termId);
+				        repo.setVideoId(videoId);
+				        videoRepoOfTermDao.add(repo);
+	            }
+	        }
+
+    responseView.setResult(nodeResourceVo);
+
+    //打事件日志： "admin_upload_video"
+    StatisticsHelper.saveResourceStatistics(nodeResourceVo.getContentId(), nodeResourceVo.getContentType(), request);
+    	if(LessonUnitConstants.CONTENT_TYPE_VIDEO.equals(contentType)){
+            saveVideoStatistics(contentId, request);
+            	Map<String, Object> map = new WeakHashMap<String, Object>();
+            	map.put("video_id", videoId);
+            	statisticsLogInfo(StatisticEventConstant.ADMIN_UPLOAD_VIDEO, map, request);
+        }
+    // 打管理员编辑课件资源日志： "admin_edit_lesson_unit";
+    StatisticsHelper.saveLessonUnitContentStatistics(s, request);	
+    	Map<String, Object> map = new WeakHashMap<String, Object>();
+        map.put("unitUploadResourceVo", s);
+        statisticsLogInfo(StatisticEventConstant.ADMIN_EDIT_LESSON_UNIT, map, request);
+
+    return responseView;
+
+
+【总结】
+1、第二步 依赖第一步将节点基本信息填充好；
+2、 mongo 赋值
+课件节点赋值：ContentType、contentId、GmtCreate【当前时间】、name;
+期次目录修改状态为 修改： termDto.getCatalog().setDraftStatus(DraftStatusEnum.MODIFIED.getValue());
+3、打2个事件日志
+① contentType判断视频类型，用 contentId【video_id】 + HttpServletRequest 打事件日志： "admin_upload_video"；
+② 使用参数内容：NodeUploadResourceVo + request 打管理员编辑课件资源日志；
+
+
+
+3、保存并返回课件
+http://fes1.study.163.com/p/lecture/updateLectureResource.do
+
+逻辑流程同 2，但是多了赋值： viewPriviledge=10，name=视频名称；
+
+
+【总结】
+批量处理的时候，2、3步骤 可以合并一起，参数取：
+
+{								// NodeUploadResourceVo
+    "richContent": null,
+    "id": 400000002694003,
+    "termId": 400000002573001,
+    "nodeType": 3,
+    "postTitle": null,
+    "postContent": null,
+    "contentId": 1006306003,				// 必传
+    "contentType": 1,
+    "uploadFileVo": null,
+    "attachment": null,
+    "unitLiveResourceVo": null,
+    "viewPriviledge": 10,					// 必传
+    "name": "正能量！C罗最让人尊敬时刻" 	// 传 视频名称
+}
+
+然后，后端复用 /p/lecture/updateLectureResource.do 的处理逻辑，保存草稿 + 打日志事件；
+
+
+所以，最终过程是：
+
+
+1、前端选择 多个视频，传递视频数量，后台 返回 对应数量的 预取unit_id 给前端，供前端 拼装整颗目录树；
+
+2、 前端封装整棵树，对于 新增加的节点（对应所选视频的数量），参数必须包含下面 “后端可匹配” 字段（真正有用）；【p/lecture/updateCatalog.do】
+
+{						// SaveCatalogVo
+    "catalogList": [
+        {
+            "id": 400000002688002,
+            "gmtCreate": 1502090558317,
+            "draftStatus": 1,
+            "type": 3,
+            "name": "年轻真好！红魔时期的C罗脚下生花",
+            "data": {
+                ...
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null,
+            "draftStatusLabel": ""			// 后端并没有这个字段,应该是前端需要的
+        },
+        {
+            "id": 400000002688003,
+            "gmtCreate": 1502096959791,
+            "draftStatus": 1,
+            "type": 3,
+            "name": "年轻真好！红魔时期的C罗脚下生花",
+            "data": {
+                ...
+            },
+            "children": [],
+            "parentId": null,
+            "parentType": null,
+            "draftStatusLabel": ""
+        },
+        {
+            "termId": 400000002573001,
+            "nodeType": 3,
+            "to": "3-400000002688003",
+            "delta": 1,
+            "id": 400000002694003,				// 后端可匹配
+            "type": 3,							// 后端可匹配
+            "draftStatus": 0,					// 后端可匹配
+            "children": [],						// 后端可匹配
+            "data": {							// 后端可匹配
+                "clientVisible": 0,				// 后端可匹配
+                "contentTypeLabel": "",
+                "validateLabelShow": "请添加课件内容",
+                "viewPriviledgeLabel": ""
+            },
+            "name": "课件",						// 后端可匹配
+            "draftStatusLabel": ""
+        }
+    ],
+    "termId": 400000002573001,
+    "isOrderChange": 1,
+    "draftStatus": 2
+}
+
+3、接下来处理，还需要每个 视频课件 对应参数：【/p/lecture/updateLectureResource.do】
+
+{								// NodeUploadResourceVo
+    "richContent": null,
+    "id": 400000002694003,					// unitId
+    "termId": 400000002573001,
+    "nodeType": 3,
+    "postTitle": null,
+    "postContent": null,
+    "contentId": 1006306003,				// 必传
+    "contentType": 1,
+    "uploadFileVo": : {						// 是否需要传，待商量？？？
+        "name": "正能量！C罗最让人尊敬时刻.mp4"
+    },
+    "attachment": null,
+    "unitLiveResourceVo": null,
+    "viewPriviledge": 10,					// 必传，但是 是否默认传 10 或者有什么条件，待前端商量；
+    "name": "正能量！C罗最让人尊敬时刻" 	// 传 视频名称
+}
+
+考虑 前端 如何整合进来？？？？
+
+新建一个大的 参数 vo，
+
+方案一、
+vo {
+	"catalogList": [
+		{				// 已发布的课件
+			...
+		},
+		{				// 新添加课件
+			SaveCatalogVo: {
+				// p/lecture/updateCatalog.do 接口 必须的参数
+			},
+			NodeUploadResourceVo: {
+				// /p/lecture/updateLectureResource.do 接口 必须的参数
+			}
+		},
+		{				// 新添加课件
+			SaveCatalogVo: {
+				// p/lecture/updateCatalog.do 接口 必须的参数
+			},
+			NodeUploadResourceVo: {
+				// /p/lecture/updateLectureResource.do 接口 必须的参数
+			}
+		}
+		......
+	],
+	"termId": 400000002573001,
+    "isOrderChange": 1,
+    "draftStatus": 2
+}
+方案： 解析有点不方便；
+
+
+方案二、
+vo {
+	"catalogList": [
+		...					// 和p/lecture/updateCatalog.do 接口一模一样，只是 将所有视频课件都整合到目录树中
+	],
+	"termId": 400000002573001,
+    "isOrderChange": 1,
+    "draftStatus": 2,
+
+	"NodeUploadResourceVos" :[
+		...					// 按照课件顺序存放，内容同 /p/lecture/updateLectureResource.do 接口 必须的参数
+	]
+}
+
+处理： 后台接受到 这个参数vo, 解析该参数，可以将第一部分 整体保存，然后，再 for 循环处理 NodeUploadResourceVos；【选用】
+
+
+
+
+
+
+
+指派特定 才有选择员工；
+
+
+
+
+批量指派：p/org/coursedesign/assign.do
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
