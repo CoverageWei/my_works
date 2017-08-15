@@ -1,0 +1,602 @@
+站点：http://hbjtxny.study.163.com
+管理员：maodk/maodk123
+
+provider_id ： 400000000108001
+
+
+1、杨中杰		member_id： 1026728693		问题期次： 400000001002045
+
+异常原因 ：
+该期次有 一个web端可见的 scorm 课件 + 4个app端可见课件，其中 web可见scorm课件 有课件学习记录，且 scorm观看进度为 100%，理论上 课件学习记录 应该记录为 hasFinished(学完)，但是 目前 是未学完；
+导致 进度分支计算百分比 取移动端大的进度（100%），但是 课件完成状态 取  课件学习记录 的 hasFinished 字段，为 未学完；
+
+最终原因： web端学完 该scorm课件后，未成功更新该 scorm课件学习记录 的 hasFinished；
+
+
+曹洪源 
+member_id：   1026728673		问题期次： 400000000993051	、  400000000999045
+
+400000000993051 、 400000000999045 期次 异常原因 同上；
+
+
+卧龙山
+member_id：  1026725851			问题期次： 400000001204021
+
+
+
+
+
+
+select * from qyy_mid_online.term_learn_progress_stat_kv where day="2017-06-29" and category='term_learn_finish_status' and member_id = 1026728673 ;
+
+
+
+select * from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and member_id = 1026728693 and term_id=400000001002045;
+
+
+select count(*) from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and provider_id=400000000108001 and term_user_learn_progress = 100 and term_learn_finish_status = 0 ;
+
+
+
+select * from qyy_mid_online.term_learn_progress_stat_kv where day="2017-06-29" and category='term_learn_finish_status' and member_id = 1026725851 ;
+
+
+
+`term_web_unit_total_count` string COMMENT '??web???????', 
+  `term_app_unit_total_count` string COMMENT '??app???????', 
+  `term_web_unit_learn_count` string COMMENT 'web??? ???????', 
+  `term_app_unit_learn_count` string COMMENT 'app??? ???????', 
+  `term_web_unit_finished_count` string COMMENT 'web??? ???????', 
+  `term_app_unit_finished_count` string COMMENT 'app??? ???????', 
+  `user_web_learn_progress` string COMMENT '???? web????? ???????', 
+  `user_app_learn_progress` string COMMENT '???? app????? ???????', 
+  `term_user_learn_progress` string COMMENT '????????', 
+  `target_type` string COMMENT '')
+
+
+
+
+	1	3	1	NULL	NULL	NULL	100	NULL	100	   1
+
+101	101	101	101	100	100	100	100	100	1	
+
+
+CREATE EXTERNAL TABLE `qyy_mid_online.term_learn_progress_stat`(
+  `member_id` string COMMENT '??id', 
+  `term_id` string COMMENT '??ID', 
+  `aggregation_learn_id` string COMMENT 'aggregation_learn_id', 
+  `provider_id` string COMMENT '??id', 
+  `term_type` string COMMENT '???????????0 ?????3', 
+  `enroll_type` string COMMENT '?????1?? 2 ??', 
+  `online_flag` string COMMENT '?????? 1:?? 2???', 
+  `term_unit_total_count` string COMMENT '??????', 
+  `term_offline_total_duration` string COMMENT '???????', 
+  `signin_total_count` string COMMENT '???????', 
+  `enroll_time` string COMMENT '??????', 
+  `term_end_time` string COMMENT '??????', 
+  `term_learn_finish_status` string COMMENT ' ????????????1:???2:???', 
+  `enroll_date_time` string COMMENT '??????????', 
+  `score` string COMMENT '????', 
+  `first_learn_time` string COMMENT '??????', 
+  `last_learn_time` string COMMENT '??????', 
+  `signed_count` string COMMENT '????', 
+  `leave_count` string COMMENT '????', 
+  `not_signed_count` string COMMENT '????', 
+  `online_learn_total_time` string COMMENT '???????', 
+  `offline_learn_total_time` string COMMENT '???????', 
+  `term_unit_learn_count` string COMMENT '???????', 
+  `term_unit_finished_count` string COMMENT '???????', 
+  `term_unit_learn_time` string COMMENT '?????? ', 
+  `post_count` string COMMENT '???', 
+  `post_reply_count` string COMMENT '???', 
+  `post_comment_count` string COMMENT '???', 
+  `post_top_count` string COMMENT '???', 
+  `term_web_unit_total_count` string COMMENT '??web???????', 
+  `term_app_unit_total_count` string COMMENT '??app???????', 
+  `term_web_unit_learn_count` string COMMENT 'web??? ???????', 
+  `term_app_unit_learn_count` string COMMENT 'app??? ???????', 
+  `term_web_unit_finished_count` string COMMENT 'web??? ???????', 
+  `term_app_unit_finished_count` string COMMENT 'app??? ???????', 
+  `user_web_learn_progress` string COMMENT '???? web????? ???????', 
+  `user_app_learn_progress` string COMMENT '???? app????? ???????', 
+  `term_user_learn_progress` string COMMENT '????????', 
+  `target_type` string COMMENT '')
+
+
+
+
+
+
+
+
+
+数据订正：
+
+select member_id, term_id from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and provider_id=400000000108001 and term_user_learn_progress = 100 and term_learn_finish_status = 0 limit 100;
+
+member_id 	term_id 				scorm_unit_id
+
+1026725813	400000001007046			400000001839049
+
+1026726748	400000001059014			
+
+1026726771	400000001006043
+1026726777	400000001007046
+1026725833	400000001007045
+1026726708	400000000996058
+1026726708	400000001202019
+1026726771	400000001002048
+1026726785	400000001007048
+1026726785	400000001000046
+1026729517	400000000998047
+1026728673	400000000999045
+1026729520	400000000999052
+1026725851	400000001204021
+1026728673	400000000993051
+1026729499	400000000992055
+1026725838	400000001004065
+1026726777	400000001001056
+1026859977	400000001006043
+1026725813	400000001001057
+1026726767	400000001008042
+1026726785	400000000998047
+1026729520	400000001007052
+1026729459	400000001000040
+1026729503	400000000999046
+1026725813	400000001003039
+1026725813	400000001001060
+1026725861	400000000994050
+1026729467	400000001004059
+1026729502	400000000994054
+1026726708	400000001000050
+1026728652	400000000993052
+1026729467	400000001000046
+1026729499	400000000995050
+1026726771	400000001007045
+1026728693	400000001002045
+1026725835	400000001008045
+1026726765	400000000993051
+1026728721	400000001001054
+1026729467	400000000996065
+1026729499	400000001008036
+1026728652	400000001004059
+1026728665	400000001003038
+1026725810	400000000994052
+1026725827	400000000994055
+1026728652	400000001000046
+1026729459	400000001008042
+1026729517	400000000995054
+1026729499	400000000998044
+1026729499	400000001000047
+1026725810	400000000997061
+1026725828	400000001002044
+1026729499	400000000992050
+1026729499	400000000996065
+
+
+
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001059014 and member_id = 1026726748;
+
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+
+
+
+
+
+
+hive 查询:
+
+select * from qyy_mid_online.term_learn_progress_stat_kv where day="2017-06-29" and category='term_learn_finish_status' and member_id = 1026725813 and term_id=400000001007046 ;
+
+
+select * from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and member_id = 1026725813 and term_id=400000001007046 ;
+
+
+ddb 查询:
+
+select * from s2_lesson_unit where term_id=400000001007046;
+
+select * from s2_lesson_content_learn where term_id = 400000001007046 and member_id = 1026725813;
+
+select * from scorm_view_record where lesson_unit_id=400000001834258 and learner_id = 1026725813;
+
+
+数据订正语句：
+
+update s2_lesson_content_learn set has_finished = 1 where id in (400000001839049,)
+
+
+
+
+
+
+
+
+取整函数 : 
+四舍五入 : round() 
+
+
+ 向下取整函数 : 
+ floor(double a)	返回等于或者小于该double变量的最大的整数
+
+
+向上取整函数 : 
+ceil(double a)		返回等于或者大于该double变量的最小的整数
+ceiling(double a)	与ceil功能相同
+
+
+
+
+
+select term_web_unit_finished_count, term_web_unit_total_count, ceiling((term_web_unit_finished_count / term_web_unit_total_count) * 100) from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and member_id = 1026726748 and term_id=400000001059014 ;
+
+100	101	100
+
+select term_web_unit_finished_count, term_web_unit_total_count, ceiling((term_web_unit_finished_count / term_web_unit_total_count) * 100), (term_web_unit_finished_count / term_web_unit_total_count), (term_web_unit_finished_count / term_web_unit_total_count) >= 1 from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and member_id = 1026726748 and term_id=400000001059014 ;
+
+100	101	100	0.9900990099009901	false
+
+select term_web_unit_finished_count, term_web_unit_total_count, (term_web_unit_finished_count / term_web_unit_total_count) * 100, ((term_web_unit_finished_count / term_web_unit_total_count) * 100 > 99 and (term_web_unit_finished_count / term_web_unit_total_count) * 100 < 100) , (term_web_unit_finished_count / term_web_unit_total_count) >= 1 from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and member_id = 1026726748 and term_id=400000001059014 ;
+
+100	101	100	99.00990099009901	false
+
+
+<=0
+	0
+else if ( <= 99)
+	ceiling()
+else if ( <100)
+	floor(0)
+else 
+	100
+
+
+99 < .. < 100 
+((term_web_unit_finished_count / term_web_unit_total_count) * 100 > 99 and (term_web_unit_finished_count / term_web_unit_total_count) * 100 < 100)
+
+
+
+
+if(cast(tt1.term_web_unit_total_count as bigint) >= 1,
+    if(cast(tt1.term_web_unit_total_count as bigint) = 1 and cast(tt1.scorm_unit_sum as bigint) = 1,
+            ceiling(if(t6.view_progress is null, 0, t6.view_progress) * 100), 
+            if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 <= 0, 
+            	0, 
+            	if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 <= 99,
+            		ceiling((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100),
+            		if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 < 100,
+            			floor((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100),
+            			100))
+            ceiling((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100)),
+  	null)
+
+
+ceiling((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100)
+
+
+
+
+
+if(cast(tt1.term_web_unit_total_count as bigint) >= 1,
+	if(cast(tt1.term_web_unit_total_count as bigint) = 1 and cast(tt1.scorm_unit_sum as bigint) = 1,
+		ceiling(if(t6.view_progress is null, 0, t6.view_progress) * 100),
+		if(cast(tt1.term_web_unit_finished_count as bigint) >= 0,
+			if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 <= 0,
+				0,
+				if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 <= 99,
+					ceiling((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100),
+					if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 < 100,
+						floor((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100),
+						100
+					)
+				)
+			),
+			0
+		)
+	),
+	null
+)
+
+
+
+if(t4.term_unit_total_count is not null and t4.term_unit_total_count >= 1,
+	if(t2.user_web_learn_progress is null,
+  		if(t3.user_app_learn_progress is null, 0, t3.user_app_learn_progress),
+  		if(t3.user_app_learn_progress is null, 
+  			t2.user_web_learn_progress, 
+  			if(t2.user_web_learn_progress >= t3.user_app_learn_progress, t2.user_web_learn_progress, t3.user_app_learn_progress)
+  		)
+  	),
+	null
+) as term_user_learn_progress
+
+
+
+select * from qyy_mid_online.term_learn_progress_stat_kv where day="2017-06-29" and member_id =1014361903 and term_id=400000000382002;
+
+
+
+
+select term_web_unit_finished_count, term_web_unit_total_count, ceiling((term_web_unit_finished_count / term_web_unit_total_count) * 100) from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and member_id =1014361903 and term_id=400000000382002;
+NULL	4	NULL
+
+select term_web_unit_finished_count, term_web_unit_total_count, ceiling((term_web_unit_finished_count / term_web_unit_total_count) * 100)>99, if(ceiling((term_web_unit_finished_count / term_web_unit_total_count) * 100)>99, 0, 1)  from qyy_mid_online.term_learn_progress_stat where day="2017-06-29" and member_id =1014361903 and term_id=400000000382002;
+
+
+
+
+select tt1.member_id, tt1.term_id, 'user_web_learn_progress',
+              if(cast(tt1.term_web_unit_total_count as bigint) >= 1,
+                  if(cast(tt1.term_web_unit_total_count as bigint) = 1 and cast(tt1.scorm_unit_sum as bigint) = 1,
+                      ceiling(if(t6.view_progress is null, 0, t6.view_progress) * 100),
+                      if(cast(tt1.term_web_unit_finished_count as bigint) >= 0,
+                          if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 <= 0,
+                              0,
+                              if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 <= 99,
+                                  ceiling((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100),
+                                  if((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100 < 100,
+                                      floor((tt1.term_web_unit_finished_count / tt1.term_web_unit_total_count) * 100),
+                                      100
+                                  )
+                              )
+                          ),
+                          0
+                      )
+                  ),
+                  null
+              ) as user_web_learn_progress
+              from
+                  (
+                      select t1.member_id, t1.term_id,
+                        t2.term_web_unit_total_count,
+                        t3.term_web_unit_finished_count,
+                        t4.scorm_unit_sum,
+                        t5.scorm_unit_id
+                      from (
+                        select member_id, term_id, value as provider_id from qyy_mid_online.term_learn_progress_stat_kv
+                        where day= '2017-06-29' and type = 'provider_id' and category = 'common_property'
+                      ) t1
+                      left outer join (
+                        select member_id, term_id, value as term_web_unit_total_count from qyy_mid_online.term_learn_progress_stat_kv
+                        where day= '2017-06-29' and type = 'term_web_unit_total_count' and category = 'common_attribute'
+                      ) t2 on (t1.member_id = t2.member_id and t1.term_id = t2.term_id)
+                      left outer join (
+                        select member_id, term_id, value as term_web_unit_finished_count from qyy_mid_online.term_learn_progress_stat_kv
+                        where day= '2017-06-29' and type = 'term_web_unit_finished_count' and category = 'term_web_unit_finished_count'
+                      ) t3 on (t1.member_id = t3.member_id and t1.term_id = t3.term_id)
+                      left outer join (
+                        select term_id, count(id) as scorm_unit_sum from qyy_dbload_online.s2_lesson_unit
+                        where day = '2017-06-29' and content_type = 8 and (client_visible = 0 or client_visible = 1) group by term_id
+                      ) t4 on (t1.term_id = t4.term_id)
+                      left outer join (
+                        select term_id, min(id) as scorm_unit_id from qyy_dbload_online.s2_lesson_unit
+                        where day = '2017-06-29' and content_type = 8 and (client_visible = 0 or client_visible = 1) group by term_id
+                      ) t5 on (t1.term_id = t5.term_id)
+                  ) tt1
+                  left outer join (
+                      select lesson_unit_id, learner_id, view_progress from qyy_dbload_online.scorm_view_record
+                      where day = '2017-06-29'
+                  ) t6 on (tt1.member_id = t6.learner_id and tt1.scorm_unit_id = t6.lesson_unit_id)
+
+
+
+
+
+
+
+select tt1.member_id, tt1.term_id, 'user_app_learn_progress',
+              if(cast(tt1.term_app_unit_total_count as bigint) >= 1,
+                  if(cast(tt1.term_app_unit_total_count as bigint) = 1 and cast(tt1.scorm_unit_sum as bigint) = 1,
+                      ceiling(if(t6.view_progress is null, 0, t6.view_progress) * 100),
+                      if(cast(tt1.term_app_unit_finished_count as bigint) >= 0,
+                          if((tt1.term_app_unit_finished_count / tt1.term_app_unit_total_count) * 100 <= 0,
+                              0,
+                              if((tt1.term_app_unit_finished_count / tt1.term_app_unit_total_count) * 100 <= 99,
+                                  ceiling((tt1.term_app_unit_finished_count / tt1.term_app_unit_total_count) * 100),
+                                  if((tt1.term_app_unit_finished_count / tt1.term_app_unit_total_count) * 100 < 100,
+                                      floor((tt1.term_app_unit_finished_count / tt1.term_app_unit_total_count) * 100),
+                                      100
+                                  )
+                              )
+                          ),
+                          0
+                      )
+                  ),
+                  null
+              ) as user_app_learn_progress
+              from
+                  (
+                      select t1.member_id, t1.term_id,
+                        t2.term_app_unit_total_count,
+                        t3.term_app_unit_finished_count,
+                        t4.scorm_unit_sum,
+                        t5.scorm_unit_id
+                      from (
+                        select member_id, term_id, value as provider_id from qyy_mid_online.term_learn_progress_stat_kv
+                        where day= '2017-06-29' and type = 'provider_id' and category = 'common_property'
+                      ) t1
+                      left outer join (
+                        select member_id, term_id, value as term_app_unit_total_count from qyy_mid_online.term_learn_progress_stat_kv
+                        where day= '2017-06-29' and type = 'term_app_unit_total_count' and category = 'common_attribute'
+                      ) t2 on (t1.member_id = t2.member_id and t1.term_id = t2.term_id)
+                      left outer join (
+                        select member_id, term_id, value as term_app_unit_finished_count from qyy_mid_online.term_learn_progress_stat_kv
+                        where day= '2017-06-29' and type = 'term_app_unit_finished_count' and category = 'term_app_unit_finished_count'
+                      ) t3 on (t1.member_id = t3.member_id and t1.term_id = t3.term_id)
+                      left outer join (
+                        select term_id, count(id) as scorm_unit_sum from qyy_dbload_online.s2_lesson_unit
+                        where day = '2017-06-29' and content_type = 8 and (client_visible = 0 or client_visible = 2) group by term_id
+                      ) t4 on (t1.term_id = t4.term_id)
+                      left outer join (
+                        select term_id, min(id) as scorm_unit_id from qyy_dbload_online.s2_lesson_unit
+                        where day = '2017-06-29' and content_type = 8 and (client_visible = 0 or client_visible = 2) group by term_id
+                      ) t5 on (t1.term_id = t5.term_id)
+                  ) tt1
+                  left outer join (
+                      select lesson_unit_id, learner_id, view_progress from qyy_dbload_online.scorm_view_record
+                      where day = '2017-06-29'
+                  ) t6 on (tt1.member_id = t6.learner_id and tt1.scorm_unit_id = t6.lesson_unit_id)
+
+
+
+
+select t1.member_id, t1.term_id, 'term_user_learn_progress',
+              if(t4.term_unit_total_count is not null and t4.term_unit_total_count >= 1,
+                  if(t2.user_web_learn_progress is null,
+                      if(t3.user_app_learn_progress is null, 0, t3.user_app_learn_progress),
+                      if(t3.user_app_learn_progress is null,
+                          t2.user_web_learn_progress,
+                          if(t2.user_web_learn_progress >= t3.user_app_learn_progress, t2.user_web_learn_progress, t3.user_app_learn_progress)
+                      )
+                  ),
+                  null
+              ) as term_user_learn_progress
+              from
+                  (
+                    select member_id, term_id, value as provider_id from qyy_mid_online.term_learn_progress_stat_kv
+                    where day= '2017-06-29' and type = 'provider_id' and category = 'common_property'
+                  ) t1
+                  left outer join (
+                    select member_id, term_id, cast(value as bigint) as user_web_learn_progress from qyy_mid_online.term_learn_progress_stat_kv
+                    where day= '2017-06-29' and type = 'user_web_learn_progress' and category = 'user_web_learn_progress'
+                  )t2 on (t1.member_id = t2.member_id and t1.term_id = t2.term_id)
+                  left outer join (
+                    select member_id, term_id, cast(value as bigint) as user_app_learn_progress from qyy_mid_online.term_learn_progress_stat_kv
+                    where day= '2017-06-29' and type = 'user_app_learn_progress' and category = 'user_app_learn_progress'
+                  )t3 on (t1.member_id = t3.member_id and t1.term_id = t3.term_id)
+                  left outer join (
+                    select member_id, term_id, cast(value as bigint) as term_unit_total_count from qyy_mid_online.term_learn_progress_stat_kv
+                    where day= '2017-06-29' and type = 'term_unit_total_count' and category = 'common_attribute'
+                  ) t4 on (t1.member_id = t4.member_id and t1.term_id = t4.term_id)
+
+
+
+
+
+****************************************************************************** db 数据修复
+
+
+1026725813	400000001007046			400000001839049		fix
+1026726748	400000001059014			取整问题	
+
+1026726771	400000001006043			400000001800049		fix
+1026726777	400000001007046			400000001589691
+1026725833	400000001007045			400000001590895
+1026726708	400000000996058			400000001604797
+1026726708	400000001202019			400000001594899
+1026726771	400000001002048			400000001795043
+1026726785	400000001007048			400000001805171
+1026726785	400000001000046			400000001372073
+1026729517	400000000998047			400000001598848
+1026728673	400000000999045			400000001776277
+1026729520	400000000999052			400000001775948
+1026725851	400000001204021			400000001788198
+1026728673	400000000993051			400000001786264
+1026729499	400000000992055			400000001530972
+1026725838	400000001004065			400000001552197
+1026726777	400000001001056			400000001592648
+1026859977	400000001006043			400000001807196
+1026725813	400000001001057			400000001838056
+1026726767	400000001008042			400000001492324
+1026726785	400000000998047			400000001798168
+1026729520	400000001007052			400000001532916
+1026729459	400000001000040			400000001588926
+1026729503	400000000999046			400000001776120
+1026725813	400000001003039			400000001824054
+1026725813	400000001001060			400000001779390
+1026725861	400000000994050			400000001600839
+1026729467	400000001004059			400000001527851
+1026729502	400000000994054			400000001780167
+1026726708	400000001000050			400000001597875
+1026728652	400000000993052			400000001491199
+1026729467	400000001000046			400000001524852
+1026729499	400000000995050			400000001489307
+1026726771	400000001007045			400000001805057
+1026728693	400000001002045			400000001348201
+1026725835	400000001008045			400000001827047
+1026726765	400000000993051			400000001780383
+1026728721	400000001001054			400000001588832
+1026729467	400000000996065			400000001522868
+1026729499	400000001008036			400000001492216
+1026728652	400000001004059			400000001495209
+1026728665	400000001003038			400000001784315
+1026725810	400000000994052			400000001799063
+1026725827	400000000994055			400000001566155
+1026728652	400000001000046			400000001488242
+1026729459	400000001008042			400000001591892
+1026729517	400000000995054			400000001590928
+1026729499	400000000998044			400000001485348
+1026729499	400000001000047			400000001482199
+1026725810	400000000997061			400000001784341
+1026725828	400000001002044			400000001567126
+1026729499	400000000992050			400000001321020
+1026729499	400000000996065			400000001362118
+
+
+
+
+
+select * from s2_lesson_content_learn where member_id =1026729499 and term_id=400000000998044;
+select * from s2_lesson_content_learn where member_id =1026729499 and term_id=400000001000047;
+select * from s2_lesson_content_learn where member_id =1026725810 and term_id=400000000997061;
+select * from s2_lesson_content_learn where member_id =1026725828 and term_id=400000001002044;
+select * from s2_lesson_content_learn where member_id =1026729499 and term_id=400000000992050;
+select * from s2_lesson_content_learn where member_id =1026729499 and term_id=400000000996065;
+
+
+
+
+
+
+
+
+
+
+
+
+数据订正语句：
+
+update s2_lesson_content_learn set has_finished = 1 where id in (400000001589691,400000001590895,400000001604797,400000001594899,400000001795043,400000001805171,400000001372073,400000001598848,
+400000001776277,400000001775948,400000001788198,400000001786264,400000001530972,400000001552197,400000001592648,400000001807196,400000001838056,400000001492324,400000001798168,400000001532916,
+400000001588926,400000001776120,400000001824054,400000001779390,400000001600839,400000001527851,400000001780167,400000001597875,400000001491199,400000001524852,400000001489307,400000001805057,
+400000001348201,400000001827047,400000001780383,400000001588832,400000001522868400000001492216,400000001495209,400000001784315,400000001799063,400000001566155,400000001488242,400000001591892,
+400000001590928,400000001485348,400000001482199,400000001784341,400000001567126,400000001321020,400000001362118);
+
+
+
+
+
+
+
+1026725866	400000000992048		400000001822163
+1026725866	400000001005050		400000001830148
+1026725866	400000001006041		400000001408086
+1026725817	400000000995051		400000001782357
+1026725866	400000001006044		400000001350117
+1026725866	400000001002049		400000001826153
+1026725866	400000000992054		400000001561281
+1026725866	400000001008044		400000001567266
+1026725866	400000000999047		400000001416075
+1026725817	400000001005043		400000001786326
+
+
+update s2_lesson_content_learn set has_finished = 1 where id in (400000001822163,400000001830148,400000001408086,400000001782357,400000001350117,400000001826153,400000001561281,400000001567266,
+400000001416075,400000001786326);
+
+
+
+
+
+
+
+

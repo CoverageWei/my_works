@@ -1,0 +1,1170 @@
+一、db_load 层
+
+1.1、新增 ddb 表：
+
+s2_project_member_graduation_status 【关于 学习项目的 状态结果表，是否该表 待定】
+
+1.2、ddb 表变更：
+
+s2_lesson_unit【表】: 增加 study_type ： 学习类型 0：必修 1：选修
+
+
+
+二、middle 层
+
+1、project_learn_progress_stat_kv
+
+2、project_learn_progress_stat
+member_id，project_id，provider_id，aggregation_learn_id，enroll_type ,enroll_time ，enroll_date_time，project_end_time，project_learn_finish_status，score，first_learn_time，last_learn_time，online_learn_total_time，offline_learn_total_time，day
+
+
+select unit_id from s2_lesson_unit group by term_id 
+on (term_id = target_id)
+
+
+3、userProjectLearnDuration.job 【依赖已有job： UserTermLearnDuration 】
+计算 单个学习项目 的 1d 、td 的 all_learn 时长；
+
+3.1、 1d + all_learn：每天的增量时长
+实现方案： 学习项目期次的 1d + 学习项目下所有子任务课程 的 1d
+	select member_id，term_id，duration
+	from ${mid}.user_term_learn_duration
+	where type='1d' and tag='all_learn' and day='$etlDay' and term_id=学习项目期次id
+	union all
+	sum(学习项目 所有子任务课程的 1d + all_learn 线上时长)
+
+3.2、td + all_learn： 每天计算出的 全量时长
+
+	sum（所有学习项目期次的 td + all_learn 线上时长） 
+	union all
+	sum（所有学习项目 子课程（去重）的 td + all_learn 线上时长）
+
+
+4、单个子任务的 进度状态 ProjectTaskLearnFinishStatus.job【依赖 TermLearnFinishStatus.job】
+
+学习项目任务状态表：${mid}.project_task_learn_status
+
+member_id，project_id，task_id, task_type，finished_status
+
+实现方案：
+	分四种情况：子课程、习题、考试、问卷
+	子课程：BI 已经实现 课程结束状态逻辑，直接取 一期中间表 的 finish_status 字段判断即可；
+	习题：用户 有效提交一次即完成； 查 s2_test_answerform 表记录即可；【submit_status = 2 and effect_status = 1】
+	考试：用户 有效提交即可； 查 s2_exam_answerform 表记录即可；【effect_status = 1】
+	问卷：用户提交一次即可；查 s2_questionnaire_answerform   表记录即可：【有记录即可】
+
+
+qyy_mid_test.user_project_task_rel {
+	member_id
+}
+
+
+
+5、ProjectLastLearnTime.job
+实现方案： max(当天日志的最大时间戳 ， 过去一周的最大 lastLearnTime)
+
+select member_id, term_id, 'last_learn_time', max(last_time)
+	select user_id as member_id, biz_dat['term_id'] as term_id, max(cast(biz_dat['end_time'] as bigint)) as last_time
+        from ${mid}.user_behavior where day = '$etlDay'
+          ...
+    union all
+    select  member_id,term_id,max(cast(value as bigint)) as last_time 
+    	from ${mid}.project_learn_progress_stat_kv where day>= '${etlDay.lastWeek}'
+          and day<='${etlDay.yesterday}' and category = 'last_learn_time' and type = 'last_learn_time' group by member_id,term_id
+
+
+
+三、output 层
+
+
+1、S2UserProjectSelectRecordStatDate.job【新增】
+维度：天为单位，增量
+output表： s2_user_project_select_record_stat_date
+
+指标：
+CREATE TABLE `s2_user_project_select_record_stat_date_master` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`date` bigint(20) NOT NULL COMMENT '日期,毫秒数',
+`member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+`provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+
+`assigned_project_count` INT DEFAULT NULL COMMENT '指派项目数',
+`assigned_project_finished_count` INT DEFAULT NULL COMMENT '指派项目完成数',
+`enroll_project_count` INT DEFAULT NULL COMMENT '自选项目数',
+`enroll_project_finished_count` INT DEFAULT NULL COMMENT '自选项目完成数',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户学习项目参加记录统计表,按天统计';
+
+大致实现：
+		select
+			enroll_date_time as date_tag,
+            member_id as member_id,
+            provider_id as provider_id,
+            sum(if(enroll_type= '1',1,0)) as assigned_project_count,
+            sum(if(enroll_type= '1' and project_learn_finish_status = 1,1,0)) as assigned_project_finished_count,
+            sum(if(enroll_type= '2',1,0)) as enroll_project_count,
+            sum(if(enroll_type= '2' and project_learn_finish_status = 1,1,0)) as enroll_project_finished_count
+        from ${mid}.project_learn_progress_stat 
+        where...
+
+
+2、 S2UserProjectLearnTimeStatDate.job【新增】【或者可考虑 写在 已有job 中：S2UserLearnTimeStatDate.job】
+维度：天为单位，增量
+output表： s2_user_project_learn_time_stat_date
+
+指标：
+CREATE TABLE `s2_user_project_learn_time_stat_date_master` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`date` bigint(20) NOT NULL COMMENT '日期,毫秒数',
+`member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+`provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+`online_learn_duration` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户学习项目学习时长统计表,按天统计';
+
+
+大致实现：
+	online_learn_duration = ${mid}.user_project_learn_duration.duration where type = '1d' and tag = 'all_learn';
+
+
+
+3、S2ProjectLearnProgressStat
+维度：user + 项目，全量
+output表： s2_project_learn_progress_stat
+
+# 用户期次学习进度统计表（用户、期次维度）
+CREATE TABLE `s2_project_learn_progress_stat_master` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`aggregation_learn_id` bigint(20) NOT NULL COMMENT 'aggregation_learn表主键id',
+`member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+`provider_id` bigint(20) DEFAULT '-1' COMMENT '机构id',
+`project_id` bigint(20) DEFAULT NULL COMMENT '学习项目对应的期次id',
+`term_type` smallint(2) DEFAULT NULL COMMENT '期次类型，学习项目都是学期制班次 3',
+`term_choose_type` smallint(2) DEFAULT NULL COMMENT '选课类型，即期次报名方式，1指派 2 自选，取自s2_term_entry_mode 表的 enroll_type',
+`enroll_time` bigint(20) DEFAULT NULL COMMENT '项目参加时间',
+`online_learn_duration` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+`offline_learn_duration` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数）',
+`project_required_task_finished_count` smallint(6) DEFAULT NULL COMMENT '项目 必修任务完成数',
+`project_elective_task_finished_count` smallint(6) DEFAULT NULL COMMENT '项目 选修任务完成数',
+`project_task_finished_count` smallint(6) DEFAULT NULL COMMENT '项目子任务总完成数',
+`project_task_total_count` smallint(6) DEFAULT NULL COMMENT '项目子任务总数',
+`score` decimal(10,2) DEFAULT NULL COMMENT '学期成绩，来自s2_term_score_summary.total_normalized_score_plus_bonus',
+`last_learn_time` bigint(20) DEFAULT NULL COMMENT '最近学习时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`),
+KEY `idx_memberid_providerid` (`member_id`,`provider_id`),
+KEY `idx_providerid_aggregationlearnid` (`provider_id`,`aggregation_learn_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户期次学习进度统计表';
+
+
+
+
+
+项目学习统计：
+1、个人总览（p0）：
+通过 1、2 可实现 列表查询，按照多天聚合；
+2、个人明细（p0）：
+
+
+
+****************************************************************************** 20170620
+
+CREATE EXTERNAL TABLE `qyy_mid_test.user_project_task_rel`(
+  `provider_id` string COMMENT '机构ID',
+  `member_id` string COMMENT '用户ID',
+  `project_id` string COMMENT '学习项目自身对应 termId',
+  `target_type` string COMMENT '学习项目 子任务类型，0（学习项目自身对应期次），9（课程）、10（考试）、11（习题）、12（问卷）',
+  `target_id` string COMMENT '学习项目 子任务对应 资源id')
+PARTITIONED BY (
+  `day` string)
+ROW FORMAT SERDE 
+  'org.openx.data.jsonserde.JsonSerDe' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/middle/user_project_task_rel';
+
+
+
+CREATE EXTERNAL TABLE `qyy_mid_test.user_project_rel`(
+`provider_id` string COMMENT '机构ID',
+`member_id` string COMMENT '用户ID',
+`project_id` string COMMENT '学习项目自身对应 termId')
+ROW FORMAT SERDE 
+'org.openx.data.jsonserde.JsonSerDe' 
+STORED AS INPUTFORMAT 
+'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+'hdfs://hz-cluster3/user/study/qyy/test/middle/user_project_rel';
+
+
+alter table qyy_dbload_test.s2_lesson_unit add columns(
+`study_type` string COMMENT '学习类型 0：必修 1：选修'
+);
+
+
+
+
+
+insert overwrite table ${mid}.term_learn_progress_stat_kv  partition(day='$etlDay',category='common_attribute')
+  	select member_id, term_id, mp['type'] as type, mp['value'] as value
+  	from (
+      	select member_id, term_id, mp 
+      	from (
+          	select member_id, term_id,
+                array(
+                    map('type', 'term_unit_total_count', 'value', cast(t7.cnt as string)),
+                    map('type', 'term_web_unit_total_count', 'value', cast(t7.term_web_unit_total_count as string)),
+                    map('type', 'term_app_unit_total_count', 'value', cast(t7.term_app_unit_total_count as string)),
+                    map('type', 'term_offline_total_duration', 'value', cast(t7.offline_time as string)),
+                    map('type', 'signin_total_count', 'value', cast(t7.signin_count as string)),
+                    map('type', 'term_end_time', 'value', cast(t7.term_end_time as string)),
+                    map('type', 'target_type', 'value', cast(t7.target_type as string)),
+                ) as arr
+          	from (
+              	select t1.member_id as member_id, t1.target_id as term_id,
+                    t2.sum as cnt,
+                    t3.web_sum as term_web_unit_total_count,
+                    t4.app_sum as term_app_unit_total_count,
+                    cast(t5.duration * 3600 * 1000 as bigint) as offline_time, t5.end_time as term_end_time,
+                    t6.count_signin as signin_count, t1.target_type as target_type 
+              	from
+              	( select member_id,target_id,target_type from ${db_load}.s2_aggregation_learn where day = '$etlDay' )t1
+              	left outer join
+              	( select term_id,count(id) as sum from ${db_load}.s2_lesson_unit where day = '$etlDay' group by term_id )t2
+             	on (t1.target_id = t2.term_id)
+              	left outer join
+              	( select term_id,count(id) as web_sum from ${db_load}.s2_lesson_unit
+                where day = '$etlDay' and (client_visible = 0 or client_visible = 1) group by term_id ) t3
+              	on (t1.target_id = t3.term_id)
+              	left outer join
+              	( select term_id,count(id) as app_sum from ${db_load}.s2_lesson_unit
+                where day = '$etlDay' and (client_visible = 0 or client_visible = 2) group by term_id) t4
+              	on (t1.target_id = t4.term_id)
+              	left outer join
+              	( 	
+              		select s1.id as term, if(s3.duration is null, s2.duration,s3.duration) as duration, s2.end_time as end_time 
+              		from
+                  		( select id from ${db_load}.s2_term where online_flag = 2 and day = '$etlDay' ) s1
+                  		left outer join
+                  		( select id, end_time, expect_lesson_duration as duration from ${db_load}.s2_term_schedule where day = '$etlDay' ) s2
+                  		on (s1.id = s2.id)
+                  		left outer join
+                  		( select id,actual_lesson_duration as duration from ${db_load}.s2_term_finish where day = '$etlDay' ) s3
+                  		on (s1.id = s3.id)
+              	) t5 on (t1.target_id = t5.term)
+              	left outer join
+              	( select term_id, count(id) as count_signin from ${db_load}.s2_term_signin where day = '$etlDay' group by term_id ) t6
+              	on (t1.target_id = t6.term_id)
+          	) t7
+      	) t8 lateral view explode(arr) arr as mp
+  	) t9
+  	where mp['value'] is not null
+
+
+
+
+
+
+CREATE EXTERNAL TABLE `qyy_mid_test.user_project_learn_duration`(
+  `member_id` string COMMENT '用户id', 
+  `project_id` string COMMENT '学习项目 对应的 期次id', 
+  `duration` string COMMENT '学习时长ms')
+PARTITIONED BY ( 
+  `day` string COMMENT '日期', 
+  `type` string COMMENT '1d or td')
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/middle/user_project_learn_duration';
+
+
+
+
+
+
+CREATE TABLE `s2_user_project_learn_stat_master` (
+`id`  bigint(20) NOT NULL DEFAULT '0', 
+`aggregation_learn_id`  bigint(20) NOT NULL,
+`member_id` bigint(20) NOT NULL,
+`project_id` bigint(20) NOT NULL COMMENT '学习项目自身对应的 期次 id',
+`provider_id` bigint(20) DEFAULT '-1' COMMENT '虚拟机构id',
+`enroll_time` bigint(20) DEFAULT NULL COMMENT '课程参加时间',
+`term_choose_type` smallint(2) DEFAULT NULL COMMENT '选课类型，即期次报名方式，1指派 2 自选，取自s2_term_entry_mode 表的 enroll_type',
+`required_task_total_count`  smallint(6) DEFAULT NULL COMMENT '必修任务总数',
+`elective_task_total_count`  smallint(6) DEFAULT NULL COMMENT '选修任务总数',
+`task_total_count`  smallint(6) DEFAULT NULL COMMENT '学习项目 任务总数',
+`required_task_finished_count`  smallint(6) DEFAULT NULL COMMENT '完成必修任务数',
+`elective_task_finished_count`  smallint(6) DEFAULT NULL COMMENT '完成选修任务数',
+`task_finished_total_count`  smallint(6) DEFAULT NULL COMMENT '已完成任务总数',
+`online_learn_duration` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+`offline_learn_duration` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数）',
+`score` decimal(10,2) DEFAULT NULL COMMENT '学期成绩，来自s2_term_score_summary.total_normalized_score_plus_bonus',
+`last_learn_time` bigint(20) DEFAULT NULL COMMENT '最近学习时间',
+`learn_status` smallint(11) DEFAULT NULL COMMENT '学习状态，0：未开始学习、1：正在学习、2：学习完成、3：未结业、4：已结业',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户学习项目 学习进度统计表';
+
+
+
+
+CREATE EXTERNAL TABLE `qyy_output_test.s2_user_project_learn_stat`(
+  `aggregation_learn_id` string COMMENT 'aggregation_learn表主键id', 
+  `member_id` string COMMENT '用户id', 
+  `project_id` string COMMENT '学习项目自身对应的 期次 id',
+  `provider_id` string COMMENT '机构id', 
+  `enroll_time` string COMMENT '课程参加时间',
+  `term_choose_type` string COMMENT '选课类型，即期次报名方式，1指派 2 自选，取自s2_term_entry_mode 表的 enroll_type',  
+  `required_task_total_count` string COMMENT '必修任务总数', 
+  `elective_task_total_count` string COMMENT '选修任务总数', 
+  `task_total_count` string COMMENT '学习项目 任务总数', 
+  `required_task_finished_count` string COMMENT '完成必修任务数', 
+  `elective_task_finished_count` string COMMENT '完成选修任务数', 
+  `task_finished_total_count` string COMMENT '已完成任务总数', 
+  `online_learn_duration` string COMMENT '线上学习总时长（毫秒数）', 
+  `offline_learn_duration` string COMMENT '线下学习总时长（毫秒数）', 
+  `score` string COMMENT '学期成绩，来自s2_term_score_summary.total_normalized_score_plus_bonus',  
+  `last_learn_time` string COMMENT '最近学习时间',
+  `learn_status` string COMMENT '学习状态，0：未开始学习、1：正在学习、2：学习完成、3：未结业、4：已结业')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/s2_user_project_learn_stat';
+
+
+
+
+
+// 用户平台学习总览
+CREATE EXTERNAL TABLE `qyy_output_test.s2_user_platform_learn_overview`(
+  `member_id` string COMMENT '用户id', 
+  `provider_id` string COMMENT '机构id', 
+  `assigned_term_count` string COMMENT '指派课数', 
+  `assigned_term_finished_count` string COMMENT '指派完课数', 
+  `enroll_term_count` string COMMENT '自选课数', 
+  `enroll_term_finished_count` string COMMENT '自选完课数', 
+  `learn_term_total_count` string COMMENT '用户学习总课程数，为 指派课数 + 自选课数', 
+  `learn_term_finished_total_count` string COMMENT '用户学习总完课数，为 指派完课数 + 自选完课数', 
+  `assigned_project_count` string COMMENT '指派项目数', 
+  `assigned_project_finished_count` string COMMENT '指派项目完成数', 
+  `enroll_project_count` string COMMENT '自选项目数', 
+  `enroll_project_finished_count` string COMMENT '自选项目完成数',
+  `learn_project_total_count` string COMMENT '用户学习总项目数，为 指派项目数 + 自选项目数', 
+  `learn_project_finished_total_count` string COMMENT '用户学习项目 总完成数，为 指派项目完成数 + 自选项目完成数',
+  `online_learn_total_duration` string COMMENT '线上学习总时长（毫秒数），项目学习时间 + 非项目内课程 线上学习时间累加和', 
+  `offline_learn_total_duration` string COMMENT '线下学习总时长（毫秒数），项目学习时间 + 非项目内课程 线下学习时间累加和')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/s2_user_platform_learn_overview';
+
+
+
+
+CREATE TABLE `s2_user_platform_learn_overview_master` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+  `assigned_term_count` int(11) DEFAULT NULL COMMENT '指派课数',
+  `assigned_term_finished_count` int(11) DEFAULT NULL COMMENT '指派完课数',
+  `enroll_term_count` int(11) DEFAULT NULL COMMENT '自选课数',
+  `enroll_term_finished_count` int(11) DEFAULT NULL COMMENT '自选完课数',
+  `learn_term_total_count` int(11) DEFAULT NULL COMMENT '用户学习总课程数，为 指派课数 + 自选课数',
+  `learn_term_finished_total_count` int(11) DEFAULT NULL COMMENT '用户学习总完课数，为 指派完课数 + 自选完课数',
+  `assigned_project_count` int(11) DEFAULT NULL COMMENT '指派项目数',
+  `assigned_project_finished_count` int(11) DEFAULT NULL COMMENT '指派项目完成数',
+  `enroll_project_count` int(11) DEFAULT NULL COMMENT '自选项目数',
+  `enroll_project_finished_count` int(11) DEFAULT NULL COMMENT '自选项目完成数',
+  `learn_project_total_count` int(11) DEFAULT NULL COMMENT '用户学习总项目数，为 指派项目数 + 自选项目数',
+  `learn_project_finished_total_count` int(11) DEFAULT NULL COMMENT '用户学习项目 总完成数，为 指派项目完成数 + 自选项目完成数',
+  `online_learn_total_duration` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数），项目学习时间 + 非项目内课程 线上学习时间累加和',
+  `offline_learn_total_duration` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数），项目学习时间 + 非项目内课程 线下学习时间累加和',
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_providerid_memberid` (`provider_id`,`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户平台学习总览 数据,所有时间统计';
+
+
+
+
+
+
+
+
+
+
+
+select member_id, provider_id, cast((assigned_count + enroll_count) as bigint) , cast((assigned_finished_count + enroll_finished_count) as bigint) from qyy_output_test.s2_user_learn_record_stat_total where day="2017-06-08" limit 10;
+
+
+
+insert overwrite table ${output}.user_platform_learn_overview partition(day='$etlDay')
+        select member_id as member_id,
+              provider_id as provider_id,
+              assigned_term_count,
+              assigned_term_finished_count,
+              enroll_term_count,
+              enroll_term_finished_count,
+              learn_term_total_count,
+              learn_term_finished_total_count,
+              assigned_project_count,
+              assigned_project_finished_count,
+              enroll_project_count,
+              enroll_project_finished_count,
+              learn_project_total_count,
+              learn_project_finished_total_count,
+              online_learn_total_duration,
+              offline_learn_total_duration
+        from (
+            (
+                select t1.member_id, t1.provider_id,
+                      t2.assigned_count as assigned_term_count, t2.assigned_finished_count as assigned_term_finished_count,
+                      t2.enroll_count as enroll_term_count, t2.enroll_finished_count as enroll_term_finished_count,
+                      cast((t2.assigned_count + t2.enroll_count) as bigint) as learn_term_total_count,
+                      cast((t2.assigned_finished_count + t2.enroll_finished_count) as bigint) as learn_term_finished_total_count,
+                      t3.assigned_count as assigned_project_count, t3.assigned_finished_count as assigned_project_finished_count,
+                      t3.enroll_count as enroll_project_count, t3.enroll_finished_count as enroll_project_finished_count,
+                      cast((t3.assigned_count + t3.enroll_count) as bigint) as learn_project_total_count,
+                      cast((t3.assigned_finished_count + t3.enroll_finished_count) as bigint) as learn_project_finished_total_count,
+                      t4.online_learn_total_duration as online_learn_total_duration,
+                      t4.offline_learn_total_duration as offline_learn_total_duration
+                from
+                    ( select member_id, provider_id from qyy_dbload_test.s2_aggregation_learn where day = '2017-06-26' group by member_id, provider_id) t1
+                    left outer join
+                    ( select member_id, provider_id, assigned_count, assigned_finished_count, enroll_count, enroll_finished_count
+                      from qyy_output_test.s2_user_learn_record_stat_total where day = '2017-06-26' ) t2
+                    on (t1.member_id = t2.member_id and t1.provider_id = t2.provider_id)
+                    left outer join
+                    ( select member_id, provider_id, assigned_count, assigned_finished_count, enroll_count, enroll_finished_count
+                      from qyy_output_test.s2_user_project_stat_total where day = '2017-06-26' ) t3
+                    on (t1.member_id = t3.member_id and t1.provider_id = t3.provider_id)
+                    left outer join
+                    ( select member_id, provider_id,
+                            sum(cast(online_learn_total_time as bigint)) as online_learn_total_duration,
+                            sum(cast(offline_learn_total_time as bigint)) as offline_learn_total_duration
+                      from qyy_mid_test.term_learn_progress_stat
+                      where day = '2017-06-26' and provider_id is not null
+                      group by member_id, provider_id
+                    ) t4
+                    on (t1.member_id = t4.member_id and t1.provider_id = t4.provider_id)
+            ) tt1
+
+
+
+
+
+
+
+
+
+INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id_num) VALUES(seq,1,1,1027937248,'-1','H222233');
+
+
+
+订单号： 59018544126
+快递 运单号：506836901
+
+
+订单号: 59292116370
+快递单号: 506836902
+
+
+
+
+
+select t1.member_id, t1.project_id, 'offline_learn_total_time', sum(cast(t3.offline_learn_total_time as bigint))
+              from
+                  ( select member_id, project_id, target_id from qyy_mid_test.user_project_task_rel where day = '2017-06-28' and target_type = 9 and project_id is not null ) t1
+                  join
+                  ( select id, online_flag from qyy_dbload_test.s2_term where day = '2017-06-28' and term_type = 3 and online_flag = 2) t2
+                  on (t1.target_id = t2.id)
+                  left outer join
+                  ( select member_id, term_id, value as offline_learn_total_time from qyy_mid_test.term_learn_progress_stat_kv
+                    where day='2017-06-28' and category='offline_learn_total_time' and type="offline_learn_total_time" ) t3
+                  on (t1.member_id = t3.member_id and t1.target_id = t3.term_id)
+              group by member_id, project_id
+
+
+
+
+
+
+CREATE TABLE `s2_term_setting` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`key` varchar(128) comment 'key',
+`value` text COMMENT '扩展json ',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='期次通用设置表' /* BF=id, POLICY=s2_single, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+CREATE TABLE s2_term_setting (
+id bigint(20) NOT NULL,
+gmt_create bigint(20) not null,
+db_update_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+key varchar(128) comment 'key',
+value text COMMENT '扩展json ',
+PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='期次通用设置表' /* BF=id, POLICY=s2_single, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+CREATE TABLE `s2_term_setting` (
+`id` bigint(20) NOT NULL, 
+`gmt_create` bigint(20) NOT NULL,
+`last_update_time` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+`key` varchar(128) COMMENT '目标id',
+`value` text COMMENT '扩展json ',
+PRIMARY KEY (`id`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='课程评分排行记录' /* BF=id, POLICY= s2_single, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+
+CREATE EXTERNAL TABLE `qyy_mid_test.user_project_learn_stat`(
+`member_id` string COMMENT '用户id', 
+`project_id` string COMMENT '项目ID', 
+`aggregation_learn_id` string COMMENT 'aggregation_learn_id', 
+`provider_id` string COMMENT '机构id', 
+`enroll_type` string COMMENT '选课类型，1指派 2 自选', 
+`enroll_time` string COMMENT '参加时间', 
+`enroll_date_time` string COMMENT '参加日期', 
+`start_time` string COMMENT '项目开始时间', 
+`end_time` string COMMENT '项目结束时间', 
+`task_total_count` string COMMENT '总任务数', 
+`required_task_count` string COMMENT '必修项目任务总数', 
+`elective_task_count` string COMMENT '选修项目任务总数',
+`task_finished_total_count` string COMMENT '已完成任务总数',
+`required_task_finished_count` string COMMENT '已完成必修任务数', 
+`elective_task_finished_count` string COMMENT '已完成选修任务数', 
+`online_learn_total_time` string COMMENT '线上学习时长', 
+`offline_learn_total_time` string COMMENT '线下学习时长', 
+`last_learn_time` string COMMENT '最近学习时间', 
+`score` string COMMENT '成绩', 
+`learn_status` string COMMENT '项目学习状态,0:未开始, 1:正在学习, 2:已完成' 
+)
+PARTITIONED BY ( 
+`day` string COMMENT '统计日期')
+ROW FORMAT SERDE 
+'org.openx.data.jsonserde.JsonSerDe' 
+STORED AS INPUTFORMAT 
+'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+'hdfs://hz-cluster3/user/study/qyy/test/middle/user_project_learn_stat';
+
+%20AND%20targetType:2
+
+
+
+
+
+
+
+member_id=1014652123 and target_id=400000002335001
+
+
+
+
+select t1.provider_id, t1.member_id, t1.project_id, 0 as target_type, t2.id as target_id
+                from
+                    ( select provider_id, member_id, project_id from qyy_mid_test.user_project_rel where project_id is not null) t1
+                    join
+                    ( select id from ${db_load}.s2_term where day = '$etlDay') t2
+                    on (t1.project_id = t2.id)
+
+            		union
+
+                select t3.provider_id, t5.member_id, t3.project_id as project_id,
+                      t4.content_type as target_type, t5.target_id as target_id
+            		from
+                    ( select provider_id, member_id, project_id from ${mid}.user_project_rel where project_id is not null) t3
+          			    join
+          			    ( select term_id, content_id, content_type from ${db_load}.s2_lesson_unit where day = '$etlDay' and content_type = 9) t4
+          			    on (t3.project_id = t4.term_id)
+          			    join
+          			    ( select id, member_id, target_id, provider_id from ${db_load}.s2_aggregation_learn where day = '$etlDay' and target_type = 1 ) t5
+          			    on (t4.content_id = t5.target_id)
+
+
+select t3.provider_id, t5.member_id, t3.project_id as project_id,
+                      t4.content_type as target_type, t5.target_id as target_id
+            		from
+                    ( select provider_id, member_id, project_id from qyy_mid_test.user_project_rel where project_id is not null) t3
+          			    join
+          			    ( select term_id, content_id, content_type from qyy_dbload_test.s2_lesson_unit where day = '2017-06-29' and content_type = 9) t4
+          			    on (t3.project_id = t4.term_id)
+          			    join
+          			    ( select id, member_id, target_id, provider_id from qyy_dbload_test.s2_aggregation_learn where day = '2017-06-29' and target_type = 1 ) t5
+          			    on (t4.content_id = t5.target_id)
+
+
+
+1015307907	400000002236001
+
+
+select t1.provider_id, t1.member_id, t1.project_id, 0 as target_type, t2.id as target_id
+                from
+                    ( select provider_id, member_id, project_id from qyy_mid_test.user_project_rel where project_id is not null) t1
+                    join
+                    ( select id from qyy_dbload_test.s2_term where day = '2017-06-29') t2
+                    on (t1.project_id = t2.id)
+
+
+
+					select d1.provider_id, d1.member_id, d1.project_id as project_id,
+                      d1.content_type as target_type, t5.target_id as target_id
+            		from
+                    ( select t3.provider_id, t3.member_id, t3.project_id as project_id,
+                            t4.content_type, t4.content_id
+                      from
+                          ( select provider_id, member_id, project_id from qyy_mid_test.user_project_rel where project_id is not null) t3
+                          join
+                          ( select term_id, content_id, content_type from qyy_dbload_test.s2_lesson_unit where day = '2017-06-29' and content_type = 9) t4
+                          on (t3.project_id = t4.term_id)
+                    ) d1
+      			    join
+      			    ( select id, member_id, target_id, provider_id from qyy_dbload_test.s2_aggregation_learn where day = '2017-06-29' and target_type = 1 ) t5
+      			    on (d1.content_id = t5.target_id)
+
+
+
+
+
+
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/target/edu-bi-store-1.0-snapshot-uberjar.jar learnStatistics test 2017-06-29
+
+
+
+
+************************************************ 20170705 冒烟
+
+
+S2UserLearnTotalDurationStat:	平台学习总时长记录表【机构维度】
+
+insert overwrite table ${output}.s2_user_learn_total_duration_stat partition(day = '$etlDay')
+select if(provider_id1 is null, provider_id2, provider_id1) as provider_id, 
+		online_learn_duration,
+		cast(offline_learn_duration*3600*1000 as bigint ) 
+from (
+	select tt1.provider_id as provider_id1, tt2.provider_id as provider_id2, online_learn_duration, offline_learn_duration 
+	from (
+		 select provider_id, sum(cast(t1.duration as bigint) ) as online_learn_duration 
+		 from 
+			 (
+			   select member_id,term_id,duration from ${mid}.user_term_learn_duration where day= '$etlDay' and type = 'td' and tag='all_learn'
+			 ) t1 
+			 join 
+			 (
+			   select id,provider_id from ${db_load}.s2_term where day = '$etlDay'
+			 ) t2 on (t1.term_id = t2.id)
+		 group by t2.provider_id
+	) tt1 
+	full outer join 
+	(
+		 select provider_id, sum(cast(if(t3.duration is null,t2.duration,t3.duration) as bigint ) ) as offline_learn_duration 
+		 from 
+			 (
+			   select id,provider_id from ${db_load}.s2_term where online_flag = 2 and day = '$etlDay'
+			 ) t1 
+			 join 
+			 (
+			   select id,expect_lesson_duration as duration from ${db_load}.s2_term_schedule where day = '$etlDay'
+			 ) t2 
+			 on (t1.id = t2.id)
+			 left outer join (
+			   select id,actual_lesson_duration as duration from ${db_load}.s2_term_finish where day = '$etlDay'
+			 ) t3 on (t1.id = t3.id)
+		 group by t1.provider_id
+	) tt2 
+	on (tt1.provider_id = tt2.provider_id)
+) ttt
+
+
+
+
+http://wjncorp12.study.163.com
+hzweiwei2015@163.com
+
+hzwwedu@163.com
+
+
+索引更新：
+http://wjncorp12.study.163.com/j/end/statistics/createIndex.json?providerIds=400000001139001
+
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000001139001%20AND%20name:ww-管理员开开
+
+%20AND%20
+
+
+10.172.131.37
+http://10.171.160.191/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003
+
+%20AND%20targetType:2
+
+400000000207001	1497856384019	2017-06-19 15:13:04	400000002325029	1017803002	50.00	-1.00	-1.00	-1.00	50.00	1497856384203	null	50.00	null	null
+
+
+
+http://fes1test.study.163.com/j/end/statistics/createIndex.json?providerIds=400000000003003
+
+
+
+
+
+7735049	 400000002437001	21962079	2017-07-05	1d	all_learn
+7735049	 400000002437002	9960311	2017-07-05	1d	all_learn
+7735049	 400000002437004	3480296	2017-07-05	1d	all_learn
+7735049	 400000002437002	8640202	2017-07-05	1d	unit_learn
+
+7735049	400000002437001	21962079	2017-07-05	td	all_learn
+7735049	400000002437002	9960311	2017-07-05	td	all_learn
+7735049	400000002437004	3480296	2017-07-05	td	all_learn
+7735049	400000002437002	8640202	2017-07-05	td	unit_learn
+
+
+
+7735049	400000002437001	35402686	2017-07-05	1d
+7735049	400000002437001	35402686	2017-07-05	td
+
+
+联调时调用这个重算进度：
+http://wjncorp12.study.163.com/j/project/calculateProjectMemberProgress.do
+
+
+
+
+select tt1.provider_id, tt1.online_learn_duration 
+from(
+	select provider_id, sum(cast(t1.duration as bigint)) as online_learn_duration from
+	(
+	   select member_id,term_id,duration from qyy_mid_test.user_term_learn_duration where day= '2017-07-06' and type = 'td' and tag='all_learn'
+	 ) t1 join (
+	   select id,provider_id from qyy_dbload_test.s2_term where day = '2017-07-06'
+	 ) t2 on (t1.term_id = t2.id)
+	 group by t2.provider_id
+) tt1
+where provider_id = 400000001139001;
+
+
+
+
+******************************************************************************************************** 20170707 运营平台健康度监控 脚本
+
+站点范围：线上所有站点
+
+web+app用户数 ： 单天内去重；时间范围内 简单 单天数据累加；
+	select provider_id, stat_date, online_count from s2_online_user_stat_date_total where day = '$etlDay' and provider_id > 0;
+
+web用户数： 时间范围 内累加每天人数 不去重； 
+	select provider_id, stat_date, online_count from s2_online_user_stat_date where day = '$etlDay' and provider_id > 0;
+
+app用户数：时间范围 内累加每天人数 不去重；
+	select provider_id, stat_date, online_count from s2_online_user_stat_date_mob where day = '$etlDay' and provider_id > 0;
+
+web学习时长： 线上
+
+select provider_id, unix_timestamp( '$etlDay','yyyy-MM-dd')*1000 as date, sum(cast((end_time - start_time) as bigint)) as web_online_total_duration
+from (
+	select biz_dat['provider_id'] as provider_id, biz_dat['start_time'] as start_time, biz_dat['end_time'] as end_time 
+		from from ${mid}.user_behavior 
+		where day = '$etlDay' and device_type = 'web' and active_name in ('lesson_unit_learn_record', 'user_learn_record')
+			and biz_dat['provider_id'] is not null and user_id is not null
+) t1
+
+
+app学习时长： 线上
+
+select provider_id, unix_timestamp( '$etlDay','yyyy-MM-dd')*1000 as date, sum(cast((end_time - start_time) as bigint)) as app_online_total_duration
+from (
+	select biz_dat['provider_id'] as provider_id, biz_dat['start_time'] as start_time, biz_dat['end_time'] as end_time 
+		from from ${mid}.user_behavior 
+		where day = '$etlDay' and device_type != 'web' and active_name in ('lesson_unit_learn_record', 'lesson_unit_learn_end', 'user_learn_record', 'user_learn_end')
+			and biz_dat['provider_id'] is not null and user_id is not null and biz_dat['start_time'] != 0
+) t1
+
+
+新创建用户数：时间范围内 创建 的 用户数（包含 已激活 + 未激活）；
+	select provider_id, count(id) as user_add_count from s2_provider_staff_invite where gmt_create >= start_Time &&　gmt_create　<= endTime group by provider_id;
+
+已创建用户总数： 截止到 endTime 内已创建的 总的用户数（包含 已激活 + 未激活）；
+	select provider_id, count(id) as user_add_total_count from s2_provider_staff_invite where gmt_create　<= endTime group by provider_id;
+
+新激活用户数：时间范围内 激活的用户数；
+	select provider_id, count(id) as user_active_count from s2_provider_team where gmt_create >= start_Time &&　gmt_create　<= endTime group by provider_id;
+
+已激活用户总数： 截止到 endTime 内已激活的用户数；
+	select provider_id, count(id) as user_active_total_count from s2_provider_team where gmt_create　<= endTime group by provider_id;
+
+
+
+
+
+
+// 用于 运营 对于平台健康度 进行监控 
+CREATE EXTERNAL TABLE `qyy_output_test.platform_health_stat_date`(
+  `provider_id` string COMMENT '机构id',
+  `date_tag` string COMMENT '日期，毫秒数', 
+  `online_user_web_count` string COMMENT '当天 web 在线用户数', 
+  `online_user_app_count` string COMMENT '当天 app 在线用户数', 
+  `online_user_total_count` string COMMENT '当天 web+app 在线用户数, 去重', 
+  `web_online_total_duration` string COMMENT '当天 web 线上学习时长',
+  `app_online_total_duration` string COMMENT '当天 app 线上学习时长',
+  `user_add_count` string COMMENT '当天新创建用户数',
+  `user_active_count` string COMMENT '当天新激活用户数',
+  `user_add_total_count` string COMMENT '截止到当天 已创建用户总数',
+  `user_active_total_count` string COMMENT '截止到当天 已激活用户总数')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/platform_health_stat_date';
+
+
+
+
+
+
+
+CREATE EXTERNAL TABLE `qyy_output_test.platform_health_stat_date`(
+  `provider_id` string COMMENT '机构id',
+  `date_tag` string COMMENT '日期，毫秒数', 
+  `online_user_web_count` string COMMENT '当天 web 在线用户数', 
+  `online_user_app_count` string COMMENT '当天 app 在线用户数', 
+  `online_user_total_count` string COMMENT '当天 web+app 在线用户数, 去重', 
+  `web_online_total_duration` string COMMENT '当天 web 线上学习时长',
+  `app_online_total_duration` string COMMENT '当天 app 线上学习时长',
+  `user_add_count` string COMMENT '当天新创建用户数',
+  `user_active_count` string COMMENT '当天新激活用户数',
+  `user_add_total_count` string COMMENT '截止到当天 已创建用户总数',
+  `user_active_total_count` string COMMENT '截止到当天 已激活用户总数')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/platform_health_stat_date';
+
+
+
+CREATE EXTERNAL TABLE `qyy_output_online.platform_health_stat_date`(
+  `provider_id` string COMMENT '机构id',
+  `date_tag` string COMMENT '日期，毫秒数', 
+  `online_user_web_count` string COMMENT '当天 web 在线用户数', 
+  `online_user_app_count` string COMMENT '当天 app 在线用户数', 
+  `online_user_total_count` string COMMENT '当天 web+app 在线用户数, 去重', 
+  `web_online_total_duration` string COMMENT '当天 web 线上学习时长',
+  `app_online_total_duration` string COMMENT '当天 app 线上学习时长',
+  `user_add_count` string COMMENT '当天新创建用户数',
+  `user_active_count` string COMMENT '当天新激活用户数',
+  `user_add_total_count` string COMMENT '截止到当天 已创建用户总数',
+  `user_active_total_count` string COMMENT '截止到当天 已激活用户总数')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/online/output/platform_health_stat_date';
+
+
+
+
+select * from qyy_output_online.platform_health_stat_date where day = "2017-07-07" limit 10;
+ 
+select * from qyy_output_test.platform_health_stat_date where day >= "2017-06-28" and day <= "2017-07-06";
+
+
+单日数据：
+
+select provider_id, provider_name, online_user_web_count, online_user_app_count, online_user_total_count, web_online_total_duration, app_online_total_duration, user_add_count, user_active_count, user_add_total_count, user_active_total_count
+from 
+	( select provider_id, online_user_web_count, online_user_app_count, online_user_total_count, web_online_total_duration, app_online_total_duration, user_add_count, user_active_count, user_add_total_count, user_active_total_count 
+	from qyy_output_online.platform_health_stat_date where day="2017-07-07" ) t1
+	left outer join 
+	( select id, provider_name from qyy_dbload_online.s2_virtual_provider where day="2017-07-07" ) t2
+	on (t1.provider_id = t2.id)
+
+
+范围查询：
+
+select t1.provider_id, t3.provider_name, t1.online_user_web_count, t1.online_user_app_count, t1.online_user_total_count,
+		t1.web_online_total_duration, t1.app_online_total_duration,
+		t1.user_add_count, t1.user_active_count,
+		t2.user_add_total_count, t2.user_active_total_count
+from 
+	(select provider_id, sum(online_user_web_count) as online_user_web_count, sum(online_user_app_count) as online_user_app_count, sum(online_user_total_count) as online_user_total_count, 
+			sum(web_online_total_duration) as web_online_total_duration, sum(app_online_total_duration) as app_online_total_duration, 
+			sum(user_add_count) as user_add_count, sum(user_active_count) as user_active_count
+	from
+	qyy_output_online.platform_health_stat_date where day >= "2017-07-07" and day <= "2017-07-08"
+	group by provider_id ) t1
+	left outer join 
+	( select provider_id, user_add_total_count, user_active_total_count from qyy_output_online.platform_health_stat_date where day = "2017-07-08" ) t2
+	on (t1.provider_id = t2.provider_id)
+	left outer join 
+	( select id, provider_name from qyy_dbload_online.s2_virtual_provider where day="2017-07-08" ) t3
+	on (t1.provider_id = t3.id)
+
+
+
+
+
+insert overwrite table ${output}.platform_health_stat_date partition(day = '$etlDay')
+select t1.provider_id, unix_timestamp( '$etlDay','yyyy-MM-dd')*1000 as date_tag,
+	t2.online_user_web_count, t2.online_user_app_count, t4.online_user_total_count,
+	t5.web_online_total_duration, t6.app_online_total_duration, 
+	t7.user_add_count, t8.user_active_count, t9.user_add_total_count, t10.user_active_total_count
+from 
+	( select id as provider_id from ${db_load}.s2_virtual_provider where day = '$etlDay' ) t1
+	left outer join 
+	( select provider_id, online_count as online_user_web_count from ${output}.s2_online_user_stat_date where day = '$etlDay' ) t2
+	on (t1.provider_id = t2.provider_id)
+	left outer join 
+	( select provider_id, online_count as online_user_app_count from ${output}.s2_online_user_stat_date_mob where day = '$etlDay' ) t3
+	on (t1.provider_id = t3.provider_id)
+	left outer join 
+	( select provider_id, online_count as online_user_total_count from ${output}.s2_online_user_stat_date_total where day = '$etlDay' ) t4
+	on (t1.provider_id = t4.provider_id)
+	left outer join 
+	( 
+		select provider_id, sum(cast((end_time - start_time) as bigint)) as web_online_total_duration
+		from (
+			select biz_dat['provider_id'] as provider_id, biz_dat['start_time'] as start_time, biz_dat['end_time'] as end_time 
+				from ${mid}.user_behavior 
+				where day = '$etlDay' and device_type = 'web' and active_name in ('lesson_unit_learn_record', 'user_learn_record')
+					and biz_dat['provider_id'] is not null and user_id is not null
+		) d1
+		group by provider_id
+	) t5
+	on (t1.provider_id = t5.provider_id)
+	left outer join 
+	( 
+		select provider_id, unix_timestamp( '$etlDay','yyyy-MM-dd')*1000 as date, sum(cast((end_time - start_time) as bigint)) as app_online_total_duration
+		from (
+			select biz_dat['provider_id'] as provider_id, biz_dat['start_time'] as start_time, biz_dat['end_time'] as end_time 
+				from ${mid}.user_behavior 
+				where day = '$etlDay' and device_type != 'web' and active_name in ('lesson_unit_learn_record', 'lesson_unit_learn_end', 'user_learn_record', 'user_learn_end')
+					and biz_dat['provider_id'] is not null and user_id is not null and biz_dat['start_time'] != 0
+		) d2
+		group by provider_id
+	) t6
+	on (t1.provider_id = t6.provider_id)
+	left outer join 
+	( select provider_id, count(id) as user_add_count from ${db_load}.s2_provider_staff_invite 
+		where gmt_create >= unix_timestamp( '$etlDay','yyyy-MM-dd')*1000 and gmt_create <= unix_timestamp( '${etlDay.nextDay}','yyyy-MM-dd')*1000 
+		group by provider_id 
+	) t7
+	on (t1.provider_id = t7.provider_id)
+	left outer join 
+	( select provider_id, count(id) as user_active_count from ${db_load}.s2_provider_team 
+		where gmt_create >= unix_timestamp( '$etlDay','yyyy-MM-dd')*1000 and gmt_create <= unix_timestamp( '${etlDay.nextDay}','yyyy-MM-dd')*1000 
+		group by provider_id 
+	) t8
+	on (t1.provider_id = t8.provider_id)
+	left outer join 
+	( select provider_id, count(id) as user_add_total_count from ${db_load}.s2_provider_staff_invite 
+		where gmt_create <= unix_timestamp( '${etlDay.nextDay}','yyyy-MM-dd')*1000 
+		group by provider_id 
+	) t9
+	on (t1.provider_id = t9.provider_id)
+	left outer join 
+	( select provider_id, count(id) as user_active_total_count from ${db_load}.s2_provider_team 
+		where gmt_create <= unix_timestamp( '${etlDay.nextDay}','yyyy-MM-dd')*1000 
+		group by provider_id 
+	) t10
+	on (t1.provider_id = t10.provider_id)
+
+
+
+CREATE TABLE `s2_virtual_provider` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT '0',
+`gmt_modified` bigint(20) DEFAULT '0',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`provider_name` varchar(100) DEFAULT NULL COMMENT '机构名称',
+`simple_intro` varchar(64) DEFAULT NULL COMMENT '一句话简介',
+`logo_url` varchar(128) DEFAULT NULL COMMENT 'logo url地址',
+`description` varchar(256) DEFAULT NULL COMMENT '虚拟机构简介',
+`belong_type` smallint(6) DEFAULT NULL COMMENT '0属于个人，1属于机构',
+`apply_member_id` bigint(20) DEFAULT NULL COMMENT '所属人id,谁申请入住审核的',
+`site_id` bigint(20) DEFAULT NULL COMMENT '归属站点',
+`data_sync_way` smallint(6) DEFAULT NULL COMMENT '数据同步方式，0自己管理，1拉方式，2推方式',
+`external_id` bigint(20) DEFAULT NULL COMMENT '外部id, 业务方自己维护，k12机构中，-1表示普通机构，非负数为学校，并且存储为学校id',
+`epay_account` varchar(64) DEFAULT '' COMMENT '网易宝帐号',
+`contact_email` varchar(64) DEFAULT '' COMMENT '联系人邮箱地址',
+`contact_name` varchar(64) DEFAULT NULL COMMENT '联系人名称',
+`contact_phone_number` varchar(32) DEFAULT '' COMMENT '联系人手机号码',
+`fee_rate` decimal(7,6) DEFAULT NULL COMMENT '平台卖家分成比例',
+`provider_type` smallint(6) DEFAULT '0' COMMENT '0 私有化管理(企业客户),1 内容提供（CP机构）',
+`main_category_id` bigint(20) DEFAULT NULL COMMENT '机构主营类目id',
+`protocol_confirm` smallint(6) DEFAULT '0' COMMENT '协议是否确认,1:已确认,0:未确认',
+`protocol_confirm_time` bigint(20) DEFAULT '0' COMMENT '协议确认时间',
+)
+
+
+
+
+CREATE EXTERNAL TABLE `qyy_dbload_test.s2_virtual_provider`(
+  `id` string COMMENT '机构id', 
+  `gmt_create` string COMMENT '', 
+  `gmt_modified` string COMMENT '',
+  `provider_name` string COMMENT '机构名称', 
+  `logo_url` string COMMENT 'logo url地址', 
+  `belong_type` string COMMENT '0属于个人，1属于机构', 
+  `apply_member_id` string COMMENT '所属人id,谁申请入住审核的', 
+  `site_id` string COMMENT '归属站点', 
+  `data_sync_way` string COMMENT '数据同步方式，0自己管理，1拉方式，2推方式', 
+  `external_id` string COMMENT '外部id, 业务方自己维护，k12机构中，-1表示普通机构，非负数为学校，并且存储为学校id', 
+  `epay_account` string COMMENT '网易宝帐号', 
+  `contact_email` string COMMENT '联系人邮箱地址', 
+  `contact_name` string COMMENT '联系人名称',
+  `contact_phone_number` string COMMENT '联系人手机号码',
+  `fee_rate` string COMMENT '平台卖家分成比例',
+  `provider_type` string COMMENT '0 私有化管理(企业客户),1 内容提供（CP机构）',
+  `main_category_id` string COMMENT '机构主营类目id',
+  `protocol_confirm` string COMMENT '协议是否确认,1:已确认,0:未确认',
+  `protocol_confirm_time` string COMMENT '协议确认时间')
+PARTITIONED BY ( 
+  `day` string)
+ROW FORMAT SERDE 
+  'org.openx.data.jsonserde.JsonSerDe' 
+STORED AS INPUTFORMAT 
+  'com.hadoop.mapred.DeprecatedLzoTextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/db_load/s2_virtual_provider';
+
+
+CREATE EXTERNAL TABLE `qyy_dbload_online.s2_virtual_provider`(
+  `id` string COMMENT '机构id', 
+  `gmt_create` string COMMENT '', 
+  `gmt_modified` string COMMENT '',
+  `provider_name` string COMMENT '机构名称', 
+  `logo_url` string COMMENT 'logo url地址', 
+  `belong_type` string COMMENT '0属于个人，1属于机构', 
+  `apply_member_id` string COMMENT '所属人id,谁申请入住审核的', 
+  `site_id` string COMMENT '归属站点', 
+  `data_sync_way` string COMMENT '数据同步方式，0自己管理，1拉方式，2推方式', 
+  `external_id` string COMMENT '外部id, 业务方自己维护，k12机构中，-1表示普通机构，非负数为学校，并且存储为学校id', 
+  `epay_account` string COMMENT '网易宝帐号', 
+  `contact_email` string COMMENT '联系人邮箱地址', 
+  `contact_name` string COMMENT '联系人名称',
+  `contact_phone_number` string COMMENT '联系人手机号码',
+  `fee_rate` string COMMENT '平台卖家分成比例',
+  `provider_type` string COMMENT '0 私有化管理(企业客户),1 内容提供（CP机构）',
+  `main_category_id` string COMMENT '机构主营类目id',
+  `protocol_confirm` string COMMENT '协议是否确认,1:已确认,0:未确认',
+  `protocol_confirm_time` string COMMENT '协议确认时间')
+PARTITIONED BY ( 
+  `day` string)
+ROW FORMAT SERDE 
+  'org.openx.data.jsonserde.JsonSerDe' 
+STORED AS INPUTFORMAT 
+  'com.hadoop.mapred.DeprecatedLzoTextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/online/db_load/s2_virtual_provider';
+
+
+
+platform_health_stat_date
+
+
+
+
+企业后台 - 员工管理 
+1、新创建员工：
+	s2_provider_staff_invite 插入一条记录， status = 0；（未激活） gmt_create = gmt_modified = 添加时间；
+
+	p/staff/listByFilter.json
+	未激活前（查看邀请码），s2_provider_team 表 无记录；
+
+2、用户登录：
+
+URS账号：  邮箱 + 邮箱密码 登录，跳转到 输入激活码页面，输入 激活码，激活账号进入企业首页；
+自定义账号： 后台创建用户后 会有 账号 + 密码， 直接登录即可；	
+	
+	s2_provider_team 新增 记录，gmt_create 为 账号激活时间，也即首次登录时间；
+	s2_provider_staff_invite 对应记录 update， gmt_modified 为 激活时间， status = 1；
+
+
+
+*************************************************************************************************************
+
+http://fes1test.study.163.com/j/end/statistics/createIndex.json?providerIds=400000000003003
+
+
+
+
+
+
+定时任务更新用户学习项目进度：
+/j/project/calculateProjectMemberProgress.do
+
+http://fes1.study.163.com/j/project/calculateProjectMemberProgress.do
+
+
+INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id_num) VALUES(seq,1,1,5709519,'-1','H2222');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

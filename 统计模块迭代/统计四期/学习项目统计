@@ -1,0 +1,348 @@
+
+后台管理中心- 创建学习项目
+http://fes1.study.163.com/j/project/createProject.do
+	projectManager.createProject(providerId, siteId, projectName);
+		courseEditDto.setName(projectName);
+		courseEditDto.setCopyrightType(CourseConstants.COPYRIGHT_TYPE_SELF);
+        courseEditDto.setCompositeType(CourseConstants.COMPOSITE_TYPE_PROJECT);		// 组合课程类型
+        Long courseId = courseService.saveCourseDto(courseEditDto, courseService.getId());		// 数据库创建 课程 记录	
+        		newCourse.setStatus(CourseConstants.PUBLISH_STATUS_DRAFT);		//草稿状态
+        		Boolean res = courseDao.add(newCourse) > 0;
+
+        termEditDto.setTermType(TermConstants.SCHEDULE_TERM_TYPE);
+        termEditDto.setOnlineFlag(TermConstants.onlineFlag.ONLINE);
+        termEditDto.setCompositeType(CourseConstants.COMPOSITE_TYPE_PROJECT);
+        Long termId = termService.addTerm(termEditDto);							// 数据库 创建 期次 记录
+        		term.setPublishStatus(TermPublishStatusEnum.DRAFT.getValue());	// 草稿状态
+        		boolean res = termDao.add(term) > 0;
+
+
+course_id ：400000002372009
+term_id ： 400000002240009
+
+
+	public static final Integer         COMPOSITE_TYPE_SINGLE_COURSE         = 0;
+    public static final Integer         COMPOSITE_TYPE_MICRO_SPECIAL         = 5;
+    public static final Integer         COMPOSITE_TYPE_SERIES_COURSES        = 10;
+    public static final Integer         COMPOSITE_TYPE_PROJECT               = 15;
+
+
+
+创建项目目录
+http://fes1.study.163.com/j/project/create.do 		// 先返回一个id回来： chapterId 或 unitId
+
+Phase： catalogService.getChapterId();		PHASE("阶段", 11),
+task：	catalogService.getUnitId();			TASK("任务", 13);
+
+
+更新 项目目录名称内容
+http://fes1.study.163.com/j/project/update.do
+{id: 400000001940003, gmtCreate: null, draftStatus: 0, type: 11, name: "阶段1",…}
+
+创建项目-任务
+http://fes1.s任务tudy.163.com/p/project/updateCatalog.do
+任务1： 400000002338001
+
+保存学习资源
+http://fes1.study.163.com/p/project/updateProjectResource.do
+	contentId:400000001308002
+	contentType:9
+	id:400000002338001
+	name:"任务1"
+	nodeType:13
+	studyType:1
+	termId:400000002240009
+
+课程类型： ww0930冒烟-学期制
+
+
+添加子任务： 习题
+http://fes1.study.163.com/p/project/updateProjectResource.do
+	contentId:400000002196002
+	contentType:11
+	id:400000002338003
+	name:"任务2-习题考试"
+	nodeType:13
+	studyType:1
+	termId:400000002240009
+draftStatus:0
+gmtCreate:null
+id:400000002338003
+name:"任务2-习题考试"
+parentId:400000001940003
+parentType:11
+type:13
+
+
+
+发布学习项目
+http://fes1.study.163.com/j/org/project/publishProject.do
+	termId:400000002240009
+
+
+
+termId： 400000002240009
+
+
+总结：
+
+s2_term: 存储 学习项目 对应的 期次；【composite_type 区分一般期次】
+
+chapterId：存储 阶段；
+
+s2_lesson_unit：课件方式存储 任务；【term_id 标识 学习项目 对应期次id】
+	content_type 区分不同的任务： 9（课程）、10（考试）、11（习题）、12（问卷）
+	content_id 关联任务 单元： term_id， exam_id(s2_exam),  test_id(s2_test),  questionnaire_id(s2_questionnaire)
+	study_type ： 选修、必修
+
+UnitContentTypeEnum		lesson_unit_contants
+	CONTENT_TYPE_SCORM("scorm", 8),
+    CONTENT_TYPE_TERM("term", 9),
+    CONTENT_TYPE_EXAM("exam", 10),
+    CONTENT_TYPE_TEST("test", 11),
+    CONTENT_TYPE_QUESTIONNAIRE("questionnaire", 12);
+
+
+	public static class StudyType {
+        public static final Integer REQUIRED_COURSE = 0;		// 必修
+        public static final Integer  ELECTIVE_COURSE = 1;		// 选修
+    }
+
+s2_term_entry_mode： 存储学习项目 报名方式；
+
+s2_term_member_allow: 存储用户报名记录；
+	学习项目期次：conpositeTermId = -1；
+	学习项目子任务期次：conpositeTermId = 学习项目期次；
+
+s2_aggregation_learn:
+学习项目期次：
+	TARGET_TYPE_PROJECT_TERM = 2;
+	single_enroll_type_YES = 1;
+子任务期次：
+	TARGET_TYPE_TERM = 1;
+	single_enroll_type_NO = 0;
+
+
+
+
+
+http://fes1.study.163.com/j/coursedesign/checkCanEnrollStatus.json
+
+http://fes1.study.163.com/j/project/front/enroll.do
+参加学习项目：
+	会 enroll 该学习项目（term）； 已经enroll 过的 子任务课程 不会重复 enroll；
+
+TARGET_TYPE_TERM = 1;
+TARGET_TYPE_PROJECT_TERM = 2;
+
+
+
+二、学习项目参加逻辑：
+
+指派（assign）：
+	termMemberAllowService.addTermMemberAllow(termId, memberId, TermMemberAllowConstants.assignStatus.ASSIGNED);		// 学习项目期次 添加报名记录
+	List<Long> termIds = lessonUnitShareService.getRequiredTermIds(termId);			// 获取学习项目下的 必修的 子课程
+    if(CollectionUtils.isNotEmpty(termIds)) {
+        for (Long currentTermId : termIds) {
+            termMemberAllowService.addTermMemberAllow(currentTermId, memberId, TermMemberAllowConstants.assignStatus.ASSIGNED);		// 必修子课程 添加报名记录
+        }
+    }
+    assign(termId,memberId,termEntryModeDto.getEnrollType(),termDto.getSiteId(),TermMemberAllowConstants.assignStatus.ASSIGNED,termDto.getProviderId());	// 添加enroll记录
+报名（enroll）：
+	termMemberAllowService.addTermMemberAllow(termId,memberId,TermMemberAllowConstants.assignStatus.AUDIT);		// 学习项目期次 添加报名记录
+	List<Long> termIds = lessonUnitShareService.getRequiredTermIds(termId);
+    if(CollectionUtils.isNotEmpty(termIds)) {
+        for (Long currentTermId : termIds) {
+            termMemberAllowService.addTermMemberAllow(currentTermId, memberId, TermMemberAllowConstants.assignStatus.SUBMIT);		// 必修子课程 添加报名记录
+        }
+    }
+    assign(termId,memberId,termEntryModeDto.getEnrollType(),termDto.getSiteId(),TermMemberAllowConstants.assignStatus.AUDIT,termDto.getProviderId());		// 添加enroll记录
+
+
+
+学习项目 添加enroll记录：
+assign(termId,memberId,termEntryModeDto.getEnrollType(),termDto.getSiteId(),TermMemberAllowConstants.assignStatus.AUDIT,termDto.getProviderId());
+	1、enroll 学习项目期次，enroll 方式是 单期次enroll；
+	List<Long> termIds = lessonUnitShareService.getRequiredTermIds(termId);		//获取学习项目下的 必修的 子课程
+    List<Long> existTermIds = aggregationlearnService.filterExistTermIds(memberId,termIds);		
+    termIds.removeAll(existTermIds);		// 过滤掉已经 enroll 的 子课程，不会重复enroll；
+    ......
+    for (Long currentTermId : termIds) {
+    	// enroll 子课程, enroll 方式是 非单期次enroll
+    	
+    	assignRecordDao.add(add);		// memberId + courseId ，指派记录
+
+    	assignStatDao.add(stat);		// 指派人数统计
+    }
+
+
+
+
+************************************************************************** 性能优化接口修改 20170607
+
+ftl）课程详情页：/courses/{termId}
+（ftl）课程学习页：/courses/{termId}/learning
+（ftl）课件播放页：/courses/{termId}/lecture-{unitId}
+
+/j/lecture/front/getList.json
+
+
+分支feature/nature_yhh_201700605
+
+
+@Resource(name = "sharedMemcachedClient")
+    private MemcachedClient memcachedClient;
+
+
+@AssignedCache(namespace = "_CACHE_TERM_CARD_", shareCacheSpace = true, expiration = 90)
+    public TermCardVo getTermCardVoWithCache(@ValueAsCacheKey Long termId){
+        return this.getTermCardVo(termId,false);
+    }
+
+
+
+TreeNode getCatalogList(Long termId, Long memberId)
+	TreeNode tree = getBaseCatalogList(termId,false);	// 总结：接口已加缓存
+		TreeNode getCatalogList(Long termId)			// web端
+			TreeNode getCatalogList(Long termId,Boolean isMobile)	// 已加缓存
+				List<ITreeNode> getAllCatalogNodeByTermId(Long termId,Boolean isMobile)
+
+
+
+	fillLiveInfo(tree);
+		List<TreeNode> liveUnits = getLiveContentIds(tree, liveContentIds);		// 顾虑所有节点（unit），获取所有 直播课件的 contentId 到 liveContentIds
+		List<LiveContentDto> liveContentDtos = liveContentService.getLiveContentByIds(liveContentIds, true);
+
+	fillLearningProcessInfo(termId, memberId, tree);
+	fillQuizInfo(termId, tree);
+
+
+
+LOG.info("##### read from db...key= " + forumDispalyOncourseKey);
+
+LOG.info("##### set to memcached...key= " + forumDispalyOncourseKey);
+
+
+
+
+
+********************************************************************************************************* 20170613
+
+一、学习统计概况(P0)：
+1.1、线上学习总时长为：项目学习时间+非项目内课程学习时间累加和；
+Q： 项目学习时间 怎么统计？
+
+1.2、自选和指派人次 计算时，包括学习项目的子课程；
+Q：现有逻辑是以 enroll 表为基础的，学习项目 中的子课程 会被作为 普通课程 被enroll吗？ 学习项目本身 也会有一条 enroll记录？ 二者需要剔除吗？
+
+二、课程学习统计（P0):
+2.1、组织（部门、岗位、标签）：指派选课人次、指派完课人次、自选课人次、自选完课人次依旧用课程粒度，但包括学习项目的子课程
+2.2、个人：
+	课程个人学习情况总览，指派课数，指派完课数，自选课数，自选完课数依旧用课程粒度，包括项目的子课程
+	课程个人学习情况明细，依旧用课程粒度，包括项目的子课程
+
+三、项目学习统计（新增页面）
+3.1、个人总览（p0）
+维度： 按天， 个人维度，所有学习项目数据 总计
+
+统计指标：
+	员工姓名、编号、部门、岗位、标签、状态【已有老字段】
+	指派项目数、指派项目结业数、（指派项目结业率）、自选项目数、自选项目结业数、（自选项目结业率）、线上学习时长（小时）
+
+
+Q：
+1、 学习项目 类似 学期制期次，有2中报名方式： 指派 + 自选；
+2、 项目结业 规则是什么？
+3、 学习项目 学习时长： 学员在平台上的项目学习页停留时长，包括看课件，参与讨论，参加考试的时间等；	现有日志是否兼容？
+
+3.2、个人明细(P0)
+统计指标：
+	员工姓名、编号、部门、岗位、标签、状态【已有老字段】
+	项目名称、参加方式、必修任务完成数、选修任务完成数、线上学习时长（小时）、线下学习时长（小时）、完成进度、成绩、学习状态、参加时间、最近线上学习时间
+
+Q：
+1、完成进度：百分比； 学习状态：状态定义，参加学习状态汇编【交互稿】；
+
+
+4、个人档案(P0)
+4.1、总览指标：
+选课数、完课数、参加项目数、结业项目数；
+线上／线下学习总时长为：项目学习时间+非项目内课程学习时间累加和；
+
+4.2、
+搜索： 参加方式选项包括：全部、指派、自选； ———> RDS 表中添加 参加方式 + enroll时间 字段；
+统计指标：
+项目名称、参加方式、必修任务完成数、选修任务完成数、线上学习时长（小时）、线下学习时长（小时）、完成进度、成绩、学习状态、参加时间、最近线上学习时间
+
+
+
+
+
+
+
+
+
+单个任务的完成情况：
+
+
+
+
+
+
+进入学习项目 学习页：
+期次id 是 学习项目期次id；
+	子任务-考试：	考试是建在 学习项目期次下的，所以日志的 termId 是 学习项目期次id；
+	子任务-习题：	同上；
+	子任务-问卷：	同上；
+	子任务-课程：	独立的期次id，点击学习 进入 子课程期次学习页，日志中 term_id 是 子课程期次id；
+
+
+
+
+
+
+
+
+
+
+
+学习项目 规则设置： j/project/graduation/updateRules.do
+参数：
+id:400000002339001
+rule:{"ruleStructure":1,"minScore":null,"requiredNum":-1,"electiveNum":"1"}
+
+
+CREATE TABLE `s2_project_graduation_standard` (
+`id` bigint(20) NOT NULL,
+`rule` varchar(255) DEFAULT NULL COMMENT '结业规则，{"ruleStructure": "0成绩达标，1学习进度达标，2成绩或学习进度达标，3成绩和学习进度达标","minScore": 80.22,"requiredNum": 5, "electiveNum": 2}',
+`description` varchar(8192) DEFAULT NULL COMMENT '结业说明',
+`gmt_create` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='2.0 结业标准表' /* BF=id, POLICY=s2_p1, STARTID=1001, ASSIGNIDTYPE=USB */;
+
+
+
+http://fes1.study.163.com/j/end/statistics/createIndex.json?providerIds=[400000000003003]
+
+
+
+
+
+
+
+
+
+
+
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003
+
+
+
+
+
+
+
+
+

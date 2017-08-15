@@ -1,0 +1,592 @@
+
+******************************************************************* 2017-04-06
+
+一、环境搭建
+
+hive搭建
+
+	需要搭建一个hive客户端。
+
+	申请一个mysql库，然后申请白名单
+	在机器上搭建一个hive 客户端，使用hive客户端初始化，mysql。
+	建表
+
+
+
+二、代码阅读
+
+2.1   线下时长统计表
+	s2_term_offline_learn_total_time.job	【线下时长】
+		结果表： online.s2_term_learn_progress_stat_kv
+		目标写入分区： partition(day='$etlDay',category='offline_learn_total_time')
+		来源数据分区： 
+				from online.s2_term_learn_progress_stat_kv
+				t1：	day= '$etlDay' and type = 'term_offline_total_duration' and category = 'common_attribute'
+				t2：	day= '$etlDay' and type = 'online_flag' and category = 'common_property' and value ='2'
+				t3：	day= '$etlDay' and type = 'signin_total_count' and category = 'common_attribute'
+				t4：	day= '$etlDay' and type = 'signed_count' and category = 'signed_count'
+				t5:		day= '$etlDay' and type = 'term_end_time' and category = 'common_attribute'
+			join条件： on (t1.member_id = t4.member_id and t1.term_id = t4.term_id)
+
+	简化：
+		insert overwrite table
+	    online.s2_term_learn_progress_stat_kv partition(day='$etlDay',category='offline_learn_total_time')
+		select t1.member_id, t1.term_id,'offline_learn_total_time',if（...）as offline_learn_total_time
+			from
+				t1 (select member_id, term_id, value as term_offline_total_duration ...)
+				join t2 on (t1.member_id = t5.member_id and t1.term_id = t5.term_id)
+				left  outer  join t3 ...
+				left outer join t4  ...
+				left outer join t5  ...
+			where term_offline_total_duration > 0
+
+	问题1： select ...,'offline_learn_total_time',if（...）as offline_learn_total_time  写法？？  
+	问题2： 查看 s2_term_learn_progress_stat_kv 的建表语句？？
+			s2_term_learn_progress_stat_kv 表就只有 3列： member_id，term_id，value；
+			但是 查询条件有： day= ， type = ， category = ， value =
+			type 是什么概念 ？
+			s2_term_learn_progress_stat_kv 有 4列： member_id，term_id，type， value；【参见 s2_term_common_attribute.job】
+
+
+
+2.2    期次结束状态
+	s2_term_learn_finish_status.job
+		结果表： online.s2_term_learn_progress_stat_kv
+		目标写入分区： partition(day='$etlDay',category='term_learn_finish_status')
+		来源数据分区：
+				from online.s2_term_learn_progress_stat_kv
+				t1：	day= '$etlDay' and type = 'online_flag' and category = 'common_property'
+				t2:		day= '$etlDay' and type = 'term_end_time' and category = 'common_attribute'
+				t3:		day= '$etlDay' and type = 'term_unit_total_count' and category = 'common_attribute'
+				t4:		day= '$etlDay' and type = 'term_unit_finished_count' and category = 'term_unit_finished_count'
+
+
+	简化：
+		insert overwrite table
+	    online.s2_term_learn_progress_stat_kv partition(day='$etlDay',category='term_learn_finish_status')
+		select t1.member_id, t1.term_id,'term_learn_finish_status', if(...) as term_end_status
+			from
+				t1
+				left outer join t2
+				left outer join t3
+				left outer join t4
+
+
+
+2.3    课件观看时长
+	s2_term_user_term_learn_duration.job
+
+		insert overwrite table online.s2_user_term_learn_duration partition(day='$etlDay',type='1d',tag='unit_learn')
+		select uid, term_id, sum(cast((end_time  - start_time) as bigint)) from (
+		select biz_dat['termId'] as term_id,
+		user_id as uid,
+		biz_dat['startTime'] as start_time,
+		biz_dat['endTime'] as end_time
+		from ${tds}.user_behavior where day = '$etlDay' and platform = 's2' and active_name = 'lesson_unit_learn_record'
+		and biz_dat['termId'] is not null and user_id is not null
+		) t1 where end_time > start_time group by term_id,uid
+
+	问题：
+		查看 user_behavior 表结构；
+		user_behavior 表应该是 日志解析后 的用户行为表；
+
+		from ${tds}.user_behavior where day = '$etlDay' and platform = 's2' and active_name = 'lesson_unit_learn_record'
+		 ${tds} 怎么理解？
+
+
+
+2.4   课程通用指标 common_attribute
+s2_term_common_attribute.job
+
+问题：
+	mp['type'] as type 用法解释？？？？
+	array(map('type', 'term_unit_total_count', 'value', cast(t5.cnt as string)),
+		...） as arr  用法解释？？？？
+
+
+
+2.5   用户首次学习时间
+s2_term_first_learn_time
+
+Hive >
+      s"""
+        insert overwrite table
+        online.s2_term_learn_progress_stat_kv partition(day='$etlDay',category='first_learn_time')
+        select member_id, term_id, 'first_learn_time', min(first_time) from (
+          select user_id as member_id, biz_dat['termId'] as term_id, min(cast(time_tag as bigint)) as first_time
+          from ${tds}.user_behavior where day = '$etlDay' and platform = 's2' and user_id is not null and biz_dat['termId'] is not null
+          and active_name in ('lesson_unit_learn_record' ,'user_learn_record')
+          group by user_id, biz_dat['termId']
+
+          union all
+
+          select  member_id,term_id,min(cast(value as bigint)) first_time from online.s2_term_learn_progress_stat_kv where day>= '${etlDay.lastWeek}'
+          and day<='${etlDay.yesterday}' and category = 'first_learn_time' and type = 'first_learn_time' group by member_id,term_id
+        ) t1 group by member_id, term_id
+      """
+总结： 那 $etlDay 的日志解析出来的时间 和 已有表的 过去一周的 时间 作比较，取最小值；
+
+问题：
+	user_behavior 应该是 解析日志后的 行为表，查看表结构！！！
+	where day>= '${etlDay.lastWeek}' and day<='${etlDay.yesterday}' 如何解释？？？？为什么这样比较？？？
+
+
+线上学习总时长
+s2_term_online_learn_total_time.job
+Hive >
+      s"""
+        insert overwrite table
+        online.s2_term_learn_progress_stat_kv partition(day='$etlDay',category='online_learn_total_time')
+        select member_id, term_id, 'online_learn_total_time',cast(duration as bigint) from online.s2_user_term_learn_duration
+        where day= '$etlDay' and type = 'td' and tag='all_learn'
+      """
+
+
+
+三、答疑
+
+3.1   s2_department 、s2_position 等通过 spark job 实现？  为什么？	
+
+增量计算使用 spark？！！！
+	// load 某天的 增量数据
+	select id, name, parent_id, provider_id from ${dr}.s2_department where day='$day'
+
+	DataTree.treePath(department, 0, 2).map(
+      r => Department(r._1.getString(0),
+        r._1.getString(1),
+        r._1.getString(2),
+        if (r._2.length > 1) r._2(r._2.length - 2).getString(1) else "",
+        r._2.map(_.getString(0)),
+        r._2.map(_.getString(1)),
+        r._1.getString(3))
+    ).toDS.write.mode("overwrite").format("parquet").save(s"/user/da_edu/hive/warehouse/online/s2_department")
+    // 将ddb 表中的 特定列 load 出来 存储到 Hive 中
+
+
+
+3.2   s2_termkv_column.job
+	通过 hadoop mr 实现，来源是？ 目的？
+
+
+
+******************************************************************* 2017-04-10
+# 期次情况明细总表（期次维度）
+CREATE TABLE `s2_term_learn_stat_total_master` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`provider_id` bigint(20) DEFAULT '-1' COMMENT '机构id',
+`term_id` bigint(20) DEFAULT NULL COMMENT '期次id',
+`term_type` smallint(2) DEFAULT NULL COMMENT '期次类型，随到随学班次0 学期制班次3',
+`online_flag` smallint(2) DEFAULT NULL COMMENT '是否线下培训 1:线上 2：线下',
+`term_unit_total_count` smallint(6) DEFAULT NULL COMMENT '学期总课件数',
+`enroll_count` int(11) DEFAULT NULL COMMENT '选课人数,包括主动参加和被指派参加',
+`enroll_finished_count` int(11) DEFAULT NULL COMMENT '完课人数,参加并完成课程的总人数',
+`term_average_score` decimal(10,2) DEFAULT NULL COMMENT '课程平均成绩，对所有选了该期次的用户的期次成绩求平均值，s2_term_score_summary.total_normalized_score_plus_bonus',
+`total_signed_count` smallint(6) DEFAULT NULL COMMENT '出勤人次，即签到次数',
+`total_leave_count` smallint(6) DEFAULT NULL COMMENT '请假人次',
+`total_not_signed_count` smallint(6) DEFAULT NULL COMMENT '缺勤人次',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='期次情况明细总表';
+
+
+
+create table if not exists test_ww (
+name string comment 'name',
+age strign comment 'age')
+comment '..表'
+location 'user/study/warehouse/qyy_dbload_test.db/test_ww';
+
+
+
+/datastream/study/test/statlog/qyy/%{date}
+
+
+******************************************************************* 2017-04-20
+
+deleteAllAgregationContentIndexs
+	requestDoc.setDataValue("id", doc.getString("id"), FieldType.STRING);
+	requestDoc.setDataValue("product_id", doc.getLong("product_id"), FieldType.LONG);
+	requestDoc.setOp(IndexOperation.DELETE);
+
+
+    @Override
+    public void deleteAgregationContentIndexes(Long productId, int type) {
+
+        String uiq = productId + "-" + type;
+        Map<String, String> agregationContentMap = new HashMap<String, String>();
+        agregationContentMap.put("id", uiq);
+        agregationContentMap.put("product_id", String.valueOf(productId));
+        EduSearchHelper.indexList(Arrays.asList(agregationContentMap), MicroSpecCourseAlbumService.SCHEMA, new EduIndexHandler<Map<String, String>>() {
+            @Override
+            public VerIndexRequest handler(Map<String, String> map) {
+            	String id = map.get("id");
+            	Long productId = Long.valueOf(map.get("product_id"));
+                VerIndexRequest req = new VerIndexRequest();
+                req.setDataValue("id", id, FieldType.STRING);
+                req.setDataValue("product_id", productId, FieldType.LONG);
+                req.setOp(IndexOperation.DELETE);
+                return req;
+            }
+        });
+
+    }
+
+
+
+    CenterCourseSearchDto
+    	private String             id;                                                        // 课程id
+
+    protected void removeCourseIndexInBatch(List<CenterCourseSearchDto> courseList) {
+        if (CollectionUtils.isEmpty(courseList)) {
+            return;
+        }
+
+        List<VerIndexRequest> requestDocList = new ArrayList<VerIndexRequest>(courseList.size());
+        for (CenterCourseSearchDto course : courseList) {
+            VerIndexRequest indexDocRequest = new VerIndexRequest();
+            indexDocRequest.setDataValue("id", course.getId(), FieldType.STRING);
+            indexDocRequest.setOp(IndexOperation.DELETE);
+            requestDocList.add(indexDocRequest);
+        }
+
+        makeCourseIndex(requestDocList);
+    }
+
+
+
+
+
+
+基本表是： s2_term 	publish_status=2[已发布]
+
+
+provider_id as provider_id,							${mid}.s2_term_learn_progress_stat.provider_id
+term_id as term_id,									${dbload}.s2_term.term_id
+term_type as term_type,								${mid}.s2_term_learn_progress_stat.term_type
+online_flag as online_flag,							${mid}.s2_term_learn_progress_stat.online_flag
+term_unit_total_count as term_unit_total_count,		${mid}.s2_term_learn_progress_stat.term_unit_total_count
+enroll_count as enroll_count,
+enroll_finished_count as enroll_finished_count,
+term_average_score as term_average_score,			${mid}.s2_term_learn_progress_stat 	  avg(score)
+total_signed_count as total_signed_count,			${mid}.s2_term_learn_progress_stat    sum(signed_count)
+total_leave_count as total_leave_count,				${mid}.s2_term_learn_progress_stat    sum(leave_count)
+total_not_signed_count as total_not_signed_count	${mid}.s2_term_learn_progress_stat    sum(not_signed_count)
+
+
+
+
+
+附赠课程搜索：
+copyType:1
+bonusType:1
+
+选购课程：
+copyType:1
+bonusType:0
+
+
+自建课程：
+copyType:0
+
+
+
+1、创建课程（填写课程名称） - enterprise-web	【************】
+/p/org/course/createCourse.do
+	courseDesignManager.saveCourseEditVo(WebUser.getUserId(), courseEditVo);
+				courseSearchIndexJmsProvider.index(courseId);
+
+课程状态： status:  0， first_publish_time:  \N
+
+2、编辑课程，修改课程名
+/p/org/course/createCourse.do 【************】
+	courseDesignManager.saveCourseEditVo(WebUser.getUserId(), courseEditVo);
+				courseSearchIndexJmsProvider.index(courseId);			【coursedesign-manager-impl】
+
+课程状态： status:  0， first_publish_time:  \N
+
+3、删除课程	【************】
+j/enterprise/course/delete.do
+	courseDesignManager.deleteCourse(getUserId(), courseId);
+		courseSearchIndexJmsProvider.deleteById(courseId);			【coursedesign-manager-impl】
+
+4、创建期次，保存草稿【随到随学】
+p/org/term/saveTermIntroOD.json	【保存草稿，修改 mongo，不修改数据库 termName】
+	
+期次状态： status:  0， first_publish_time:  \N
+课程状态： status:  0， first_publish_time:  \N
+
+
+【学期制】
+p/org/term/saveTermIntroS.json
+	courseDesignManager.saveTermScheduleDetail
+
+期次状态： status:  0， first_publish_time:  \N
+
+
+5、期次发布 【************】
+j/org/term/publishTerm.do
+	doPbulishCourse(TermDto term)
+	
+期次状态： status:  2， first_publish_time:  1493027652444
+课程状态： status:  2， first_publish_time:  1493027652460
+
+
+6、发布后的期次，在 期次介绍页 修改期次名称，点击“发布”，修改 数据库 期次名称；【************】
+/p/org/term/saveTermIntroOD.json
+		courseDesignManager.saveTermOnDemandDetail()
+			termDraftService.publishTermInfo(termId)		更新数据库期次名称
+				termDao.updateSelectiveById(updateTerm);
+
+/p/org/term/saveTermIntroS.json
+		courseDesignManager.saveTermScheduleDetail()
+			termDraftService.publishTermInfo(termId);
+				termDao.updateSelectiveById(updateTerm);
+
+
+courseDesignManager.savePrice()
+	courseSearchIndexJmsProvider.index(courseDto.getId());
+
+
+
+
+
+<rabbit:template id="courseTermRelIndexAmqpTemplate"
+					 routing-key="com.netease.edu.coursedesign.biz.manager.jms.CourseTermRelIndexJmsProvider-key-1.0.0${local_service_version_suffix}"
+					 connection-factory="rabbitConnFactory" exchange="myExchange"
+					 message-converter="jsonMessageConverter" />
+
+<rabbit:binding queue="CourseTermRelIndexJmsProvider-course"
+							key="com.netease.edu.coursedesign.biz.manager.jms.CourseTermRelIndexJmsProvider-key-1.0.0${local_service_version_suffix}" />
+
+<rabbit:queue id="CourseTermRelIndexJmsProvider-course"
+				  durable="false" auto-delete="true" exclusive="false"
+				  name="CourseTermRelIndexJmsProvider-course-1.0.0${local_service_version_suffix}" />
+
+
+
+<rabbit:listener ref="courseTermRelIndexJmsListener"
+						 queues="CourseTermRelIndexJmsProvider-course-1.0.0${local_service_version_suffix}" />
+
+
+
+
+
+*******************************************************************20170428
+
+索引创建：
+查询：
+
+课程明细统计： CourseTermRel
+http://10.165.125.15/sd/service/query?index=edu_course_term_rel_v2&stype=1&offset=0&length=88&ps=false&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000001115001
+
+
+期次明细索引： MemberTermRel
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=departmentIds:78005%20AND%20termEnrollType:2
+
+员工信息索引：
+
+http://10.165.125.15/sd/service/query?index=edu_provider_staff_v2&stype=1&offset=0&length=20&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=name:YH%20AND%20providerId:400000000021001
+
+
+
+alter table s2_term_learn_stat_total_master modify column `total_signed_count` int(11) DEFAULT NULL COMMENT '出勤人次，即签到次数';
+alter table s2_term_learn_stat_total_master modify column `total_leave_count` int(11) DEFAULT NULL COMMENT '请假人次';
+alter table s2_term_learn_stat_total_master modify column `total_not_signed_count` int(11) DEFAULT NULL COMMENT '缺勤人次';
+
+alter table s2_term_learn_stat_total_slave modify column `total_signed_count` int(11) DEFAULT NULL COMMENT '出勤人次，即签到次数';
+alter table s2_term_learn_stat_total_slave modify column `total_leave_count` int(11) DEFAULT NULL COMMENT '请假人次';
+alter table s2_term_learn_stat_total_slave modify column `total_not_signed_count` int(11) DEFAULT NULL COMMENT '缺勤人次';
+
+alter table s2_term_learn_stat_total_master modify column `term_unit_total_count` int(11) DEFAULT NULL COMMENT '学期总课件数';
+alter table s2_term_learn_stat_total_slave modify column `term_unit_total_count` int(11) DEFAULT NULL COMMENT '学期总课件数';
+
+
+
+#!/bin/bash
+if [ $# -lt 1 ]; then
+    echo "please input the correct param: /home/appops/edu-bi-store/copy_jar.sh run_env"
+    exit
+fi
+
+sourceJarPath = "/home/appops/edu-bi-store/target/edu-bi-store-1.0-snapshot-uberjar.jar"
+targetJarPath = "/home/appops/edu-bi-store/run_jar/test/"
+
+if [ $1 == "test" ];then
+	targetJarPath = "/home/appops/edu-bi-store/run_jar/test/"
+else 
+	targetJarPath = "/home/appops/edu-bi-store/run_jar/online/"
+fi
+
+cp sourceJarPath targetJarPath
+
+
+
+
+【注意】赋值语句等号两边不能有空格，中间有空格时，shell是把变量当一个命令执行的
+copy_jar.sh: 7: copy_jar.sh: sourceJarPath: not found
+copy_jar.sh: 8: copy_jar.sh: targetJarPath: not found
+copy_jar.sh: 10: [: online: unexpected operator
+copy_jar.sh: 13: copy_jar.sh: targetJarPath: not found
+cp: cannot stat `sourceJarPath': No such file or directory
+
+
+
+
+server {
+    server_name log.study.163.com;
+        listen 80;
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/cert/study.163.com.crt;
+    ssl_certificate_key /etc/nginx/cert/study.163.com.key;
+    access_log /home/study/nginx-logs/study.log main;
+
+    location / {
+        proxy_pass http://statlog-web;
+    }
+}
+
+
+
+2017-05-04 10:38:55,891 INFO  [com.netease.edu.provider.service.impl.ProviderTeamServiceImpl] enter add team member:[{"gmtCreate":1472647564664,"gmtModified":1472647564664,"id":1097003,"idNum":"1234","memberId":7735049,"providerId":400000000003003,"roleIds":[3010,3011,3014]}]
+
+
+
+2017-05-04 16:49:33,240 INFO  [com.netease.edu.courseSearch.biz.manager.impl.CourseTermRelDocumentSearchManagerImpl] ##### End to index all courseTermRel...[totalPage = 5, totalProviderCount = 674, successTotalTermCount = 7170, totalCostTime = 7568]
+
+
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000001139001%20AND%20termId:400000002103003
+
+
+
+
+
+*************************************************************************** 20170510
+
+原始日志迁移：
+
+【尝试命令，权限以及 命令不对】
+hadoop distcp hdfs://hz-cluster1/datastream/study/online/statlog/ykt hdfs://hz-cluster3/datastream/study/online/statlog/qyy_log_copy 
+
+
+工单地址：https://op.hz.netease.com/main/#!/order/detail/109472		【金川】
+
+你好，ykt 猛犸日志数据 需要做一个迁移，从滨江集群指定目录 全部迁移到 联通集群，麻烦处理一下：
+
+源数据地址：
+滨江集群	/datastream/study/online/statlog/ykt/{date}
+目前路径下数据天数范围： [2016-06-28，2017-03-26]
+
+
+目标迁移集群：
+联通集群（联通1）    /datastream/study/online/statlog/qyy/{date}
+目前路径下数据天数范围： [2017-03-12，至今]
+
+
+目标迁移数据范围： [2016-06-28，2017-03-11] ，滨江集群 按照原天数文件夹 迁移到 联通1集群；
+
+预计迁移结果：联通1集群路径下 /datastream/study/online/statlog/qyy/ 日志数据天数范围：[2016-06-28，至今]
+
+
+
+
+*************************************************************************** 20170511
+output 表数据迁移：
+
+方案1：
+LOAD DATA INPATH 'hdfs://hz-cluster3/user/study/ykt/online/s2_output/s2_provider_backend_stat/s2_term_learn_progress_stat/day=2017-05-10'
+OVERWRITE INTO TABLE qyy_output_online.s2_term_learn_progress_stat
+PARTITION (day = '2017-05-10');
+
+【注意】 这种在同集群内，数据是 移动，而不是复制在两个地方，所以要注意！！！
+
+
+
+方案2：将数据文件 拷贝到 对应外部表 目录下，再 执行上面语句；
+
+1、先复制数据到 目标外部表路径下：
+hadoop fs -cp /user/study/ykt/online/s2_output/s2_provider_backend_stat/s2_term_learn_progress_stat/day=2017-05-10 /user/study/qyy/online/output/s2_term_learn_progress_stat
+
+2、load数据到表：
+LOAD DATA INPATH 'hdfs://hz-cluster3/user/study/qyy/online/output/s2_term_learn_progress_stat/day=2017-05-10'
+OVERWRITE INTO TABLE qyy_output_online.s2_term_learn_progress_stat
+PARTITION (day = '2017-05-10');
+
+【执行结果失败】
+Loading data to table qyy_output_online.s2_term_learn_progress_stat partition (day=2017-05-10)
+Failed with exception Unable to move source hdfs://hz-cluster3/user/study/qyy/online/output/s2_term_learn_progress_stat/day=2017-05-10/000000_0 to destination hdfs://hz-cluster3/user/study/qyy/online/output/s2_term_learn_progress_stat/day=2017-05-10/000000_0
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.MoveTask
+【原因】原地址路径 和 目标地址路径一样，导致失败；
+
+【方案修正】
+1、数据拷贝到临时文件路径 data_copy 下：
+hadoop fs -cp /user/study/ykt/online/s2_output/s2_provider_backend_stat/s2_term_learn_progress_stat/day=2017-05-10 /user/study/qyy/online/output/s2_term_learn_progress_stat/data_copy
+
+2、从临时路径下载入数据：
+LOAD DATA INPATH 'hdfs://hz-cluster3/user/study/qyy/online/output/s2_term_learn_progress_stat/data_copy/day=2017-05-10'
+OVERWRITE INTO TABLE qyy_output_online.s2_term_learn_progress_stat
+PARTITION (day = '2017-05-10');
+
+【执行成功】
+Loading data to table qyy_output_online.s2_term_learn_progress_stat partition (day=2017-05-10)
+Partition qyy_output_online.s2_term_learn_progress_stat{day=2017-05-10} stats: [numFiles=1, numRows=0, totalSize=42373850, rawDataSize=0]
+OK
+Time taken: 0.797 seconds
+
+3、数据检查：
+select count(*) from qyy_output_online.s2_term_learn_progress_stat where day='2017-05-10';
+
+Total MapReduce CPU Time Spent: 4 seconds 960 msec
+OK
+332541
+Time taken: 46.978 seconds, Fetched: 1 row(s)
+
+
+
+全量脚本参数： etl_date（2017-05-10）
+
+for()
+	hadoop fs -cp /user/study/ykt/online/s2_output/s2_provider_backend_stat/${表名}/day=${etl_date} /user/study/qyy/online/output/data_copy/${表名}
+
+LOAD DATA INPATH 'hdfs://hz-cluster3/user/study/qyy/online/output/s2_term_learn_progress_stat/data_copy/day=2017-05-10'
+OVERWRITE INTO TABLE qyy_output_online.s2_term_learn_progress_stat
+PARTITION (day = '2017-05-10');
+	
+
+增量脚本参数： start_etl_date  end_etl_date
+
+
+
+
+数据全量拷贝：
+
+hadoop fs -cp /user/study/ykt/online/s2_output/s2_provider_backend_stat /user/study/qyy/online/output/data_copy
+
+
+hadoop fs -cp /user/study/ykt/online/s2_output/s2_provider_backend_stat/s2_term_learn_progress_stat/day=2017-05-10 /user/study/qyy/online/output/data_copy/s2_term_learn_progress_stat
+
+
+
+
+
+
+
+
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/pre/edu-bi-store-1.0-snapshot-uberjar.jar learnStatistics online
+
+
+
+课件增加 端可见性、端可支持性，运营录入可见性 http接口		8		yhh
+对应端的目录列表中不展示对应课件							5		yhh
+web端可见的已学过、最新发布、上次学到的课件调整				5		yhh
+BI job统计变更												16		ww
+进度计算、进度条展示 + 课程卡片调整							6		ww
+现有scorm课程数据订正脚本									12		yhh
+
+
+
+
+
+
+
+
+

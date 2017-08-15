@@ -1,0 +1,181 @@
+数据迁移：
+
+
+中间表：
+1、user_behavior
+hadoop job解析日志
+
+/ds/.../qyy/2017-05-03	——>  /mid_path/user_behavior/day=2017-05-03
+
+日志解析 每一天解析 一天的日志，并将数据 写到当天的 分区下；【解析的内容格式 一样， 内部有 time_tag 来表示 该条内容是 哪一天的日志数据】
+
+
+
+2、user_term_learn_duration	【课件观看时长 + 总学习时长， 1d 或者 td】
+
+① day='$etlDay',type='1d',tag='unit_learn'		一天内 用户+期次 维度的 总课件学习时长；【1d】
+
+② day='$etlDay',type='td',tag='unit_learn'		所有天内 该用户+期次 维度的 总课件学习时长 = 昨天的 td  +  今天的1d【①】 
+
+③ day='$etlDay',type='1d',tag='all_learn'		一天内 总学习时长 = 1天内 的总课件学习时长 + 1天内 的总学习页观看时长； 
+
+④ day='$etlDay',type='td',tag='all_learn'		所有天内 总学习时长 = 昨天的 td + 今天的 总学习时长【③】
+
+
+
+
+【20160911 - 20170504】 ——> /datastream/study/online/statlog/qyy/2017-05-04	【相当于以往所有的日志 都在 0504 这一天】
+20170504 - 20170511	： 8天的日志
+
+一、user_behavior	【日志解析】
+
+user_behavior 会有 8个分区： 
+day=2017-05-04	包含0504 之前所有的 日志解析后数据；
+......
+day=2017-05-11
+
+【总结】对于数据读取 没影响
+
+
+二、user_term_learn_duration	【用户课件学习时长、总学习时长】
+
+day=2017-05-04
+	1d
+		unit_learn	是0504之前所有日志的 总课件学习时长
+		all_learn	是0504之前所有日志的 总学习时长
+	td
+		unit_learn  是0504之前所有日志的 课件学习时长
+		all_learn	是0504之前所有日志的 总学习时长
+......
+day=2017-05-11
+	1d	
+		当天的数据
+		当天之前的 所有数据
+	td
+
+【总结】没影响，日志数据聚合后，对于该中间表数据；
+
+
+三、term_learn_progress_stat_kv
+
+day=2017-05-03
+	category="first_learn_time"
+	category='last_learn_time'
+...
+day=2017-05-11
+	category="..."
+
+
+3.1、FirstLearnTime	： category="first_learn_time"
+
+min(cast(time_tag as bigint)) as first_time from ${mid}.user_behavior where day = '$etlDay' and active_name in ('lesson_unit_learn_record' ,'user_learn_record')
+union all
+min(cast(value as bigint)) first_time ${mid}.term_learn_progress_stat_kv where day>= '${etlDay.lastWeek}' and day<='${etlDay.yesterday}' and category = 'first_learn_time' and type = 'first_learn_time'
+	
+计算规则：	min（今天日志中的 最小时间tag【日志内容tag】， 今天往前推一周 - 昨天 计算出的最小时间tag）
+
+【总结】无影响，日志数据聚合后，0504 当天计算的是 0504前日志的最小学习时间，之后每一天解析当天日志，和 之前的最小时间比较；
+
+
+3.2、LastLearnTime	：	category='last_learn_time'
+
+max(cast(time_tag as bigint)) as last_time from ${mid}.user_behavior where day = '$etlDay' and active_name in ('lesson_unit_learn_record' ,'user_learn_record')
+union all
+max(cast(value as bigint)) as last_time from ${mid}.term_learn_progress_stat_kv where day>= '${etlDay.lastWeek}'and day<='${etlDay.yesterday}' and category = 'last_learn_time'
+
+计算规则：max（今天日志中的 最大时间tag【日志内容tag】， 今天往前推一周 - 昨天 计算出的最大时间tag）
+
+【总结】无影响
+
+
+
+
+
+一、s2_online_learner_stat_date		【在线学习人数按天统计表】
+
+S2OnlineLearnerStatDate
+
+provider_id 	stat_date 	online_count
+
+计算规则：
+select provider_id, unix_timestamp( '$etlDay','yyyy-MM-dd')*1000, count(distinct uid)
+	select user_id as uid, biz_dat['provider_id'] as provider_id from ${mid}.user_behavior 
+	where from_unixtime(cast(time_tag / 1000 as bigint),'yyyy-MM-dd') = '$etlDay' 
+		and active_name in ('lesson_unit_learn_record' ,'user_learn_record')
+
+这个必须每天一个流 跑一次，因为 job内容中 写入output表的 stat_date字段 使用的是 传入的 天，而不是日志中的 time_tag；
+
+【迁移方案】 output表数据迁移；
+
+
+二、s2_online_learner_stat_hour		【在线学习人数按小时统计表】
+
+S2OnlineLearnerStatHour
+
+provider_id		stat_date 	stat_hour 	online_count		
+
+计算规则：
+select provider_id, unix_timestamp('$etlDay','yyyy-MM-dd')*1000, hour, count(distinct uid)
+	select user_id as uid, biz_dat['provider_id'] as provider_id,from_unixtime(cast(time_tag / 1000 as bigint),'HH') as hour
+          from ${mid}.user_behavior  
+        where from_unixtime(cast(time_tag / 1000 as bigint),'yyyy-MM-dd') = '$etlDay' and active_name in ('lesson_unit_learn_record' ,'user_learn_record')
+
+这个必须每天一个流 跑一次，因为 job内容中 写入output表的 stat_date字段 使用的是 传入的 天，hour字段使用 time_tag 保证 单天内数据小时正确；
+
+【迁移方案】 output表数据迁移；
+
+
+三、s2_online_user_stat_date		【在线使用人数按天统计表】【二期新增】
+S2OnlineUserStatDate
+
+provider_id 	date 	online_count
+
+计算规则：
+select provider_id, unix_timestamp( '$etlDay','yyyy-MM-dd')*1000, count(distinct uid)
+	select user_id as uid, biz_dat['provider_id'] as provider_id from ${mid}.user_behavior
+          where from_unixtime(cast(time_tag / 1000 as bigint),'yyyy-MM-dd') = '$etlDay' and active_name = 'pageview'
+
+这个必须每天一个流 跑一次，job内容中 写入output表的 date字段 使用的是 传入的 天；
+
+【方案】新增表不处理， 待确定：已有日志中的 pageView 日志需要解析吗？
+
+
+四、s2_online_user_stat_hour		【在线使用人数按小时统计表】【二期新增】
+S2OnlineUserStatHour
+
+provider_id 	date 	hour 	online_count
+
+计算规则：
+select provider_id, unix_timestamp('$etlDay','yyyy-MM-dd')*1000, hour, count(distinct uid) from (
+    select user_id as uid, biz_dat['provider_id'] as provider_id,from_unixtime(cast(time_tag / 1000 as bigint),'HH') as hour
+        from ${mid}.user_behavior 
+        where from_unixtime(cast(time_tag / 1000 as bigint),'yyyy-MM-dd') = '$etlDay' and active_name = 'pageview'
+
+这个必须每天一个流 跑一次，job内容中 写入output表的 date字段 使用的是 传入的 天；
+
+【方案】新增表不处理， 待确定：已有日志中的 pageView 日志需要解析吗？
+
+
+****************************************************** middle
+
+term_learn_progress_stat
+
+
+
+****************************************************** output
+
+一、s2_department_learn_term_date		【部门课程学习表（按天统计）】
+S2DepartmentLearnTermDate
+
+
+
+
+
+
+
+
+
+
+
+
+

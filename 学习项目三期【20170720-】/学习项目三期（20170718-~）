@@ -1,0 +1,265 @@
+交互稿：
+http://223.252.202.49/%E7%BD%91%E6%98%93%E4%BA%91%E8%AF%BE%E5%A0%82/%E4%BC%81%E4%B8%9A%E7%89%88%28to%20B%29/2.%E4%BA%A4%E4%BA%92%E7%A8%BF/%E5%AD%A6%E4%B9%A0%E9%A1%B9%E7%9B%AE%E7%BB%9F%E8%AE%A1%E4%BA%8C%E6%9C%9F/#g=1&p=自选、指派课数的计算规则
+
+
+
+
+
+************************************** 20170718 （WBS 粗估）
+
+
+1、自选、指派课数的计算规则		1.5d
+
+中间表 - 
+	用户期次 enroll_type 计算逻辑变更；【CommonProperty job中 enroll_type 字段】
+	数据修正： 本来就是 每天全量计算，所以无需额外考虑数据修正；
+
+牵扯页面：
+1）学习统计概况的选课／完课人次图
+2）课程－组织学习情况表
+3）课程－个人总览表、个人明细表、个人档案表
+
+user + target_id + terget_type + 单课enroll + 项目enroll + enroll_type
+
+
+2、项目学习统计					（6.5d + 0.5d） 7d
+2.1 组织（新增tab 页面）（3.5d + 1.5d + 1.5d = 6.5d）		
+统计字段： 
+	部门 总人数、参与人数、
+	指派人次、指派结业人次、指派结业率、自选人次、自选结业人次、自选结业率、
+	线上学习总时长（小时）、人均线上学习时长（小时）
+总人数： 已有；
+
+维护：
+	user + project + 结业状态(学习状态)
+
+BI部分时间分配：
+	部门、岗位、标签维度 + 总人数、参与人数、参与项目数 	 1d
+	其他字段维护计算逻辑 			0.5d	
+	kv表统计 结业状态逻辑：				1d
+产出：
+部门（date） + 岗位（date） + 标签（date）  3张output表； 	1d
+BI总计： 3.5d
+
+业务接口查询： 1.5d 	
+数据Excel 导出： 3张表 * 1d			1.5d
+
+总计： 6.5d
+
+2.2 个人总览（一期已上线）  （0.5d）
+
+（1）用“指派项目结业数&结业率、自选项目结业数&结业率”，替代“指派项目完成数&完成率、自选项目完成数&完成率”	【仅文案变更，后端无工作量】
+	依赖中间表字段 user + project + learnStatus  结业状态的 维护；
+
+统计指标做相应修改 + 导出文案修改 ： 		0.5d 
+
+
+
+3、项目资源统计（新增tab页）					4d
+3.1、 搜索框
+学习项目名称／负责人   		复用 course_term_rel 索引（termName + principalName）
+
+3.2、列表
+
+项目评分（courseMark）升降序：	**设计阶段 考察 该字段创建索引 与 单期次是否相同；
+
+统计字段：					1d
+	项目名称、负责人、发布时间、项目评分 
+	任务数（中间表已有）、参加人数（count 项目enroll记录）、未开始学习人数、正在学习人数、结业人数、未结业人数、结业率、平均成绩（计算） 【hive字段】
+
+注意点：
+无搜索 走数据库 db 查询：
+	按排序条件查对应学习项目（s2_term + composite_type=15） + 对应项目 无统计数据 情况 + 保持排序 + 获取项目基本信息；
+有搜索 走 ndir；
+项目评分排序 走 ndir；
+
+
+时间分配： 
+	BI 部分（1.5d）  +  业务列表接口（1.5d） + 导出excel（1d）  = 4d
+
+
+
+4、项目档案（新增tab页）  			（0.5d + 0.5d + 2d + 5d + 3d = 11d）
+项目维度
+（1）上层 查询字段：	 (0.5d)
+	项目名称、类目、负责人、发布时间、结业标准、项目开始天数、项目评分、（实时查db）	0.5d
+	任务数、参加人数、结业率、平均成绩	（hive统计数据，3.2项目资源统计 已计算）
+
+（2）中间 学习状态比例 	(0.5d)
+	依赖 中间表字段 user + project + learnStatus， 
+	output表维护：特定学习项目下，各个状态的 总人数： unstartCount、learningCount、ungraduateCount、graduateCount		0.5d
+
+（3）中间 任务完成率	 (2d)
+	任务维度的 统计分析；
+		维护 学习项目的 子任务 顺序、类型（选修、必修）		0.5d
+		中间表维度：	memberId	projectId 	taskId	finishedStatus			0.5d
+		结果表： 	projectId	taskId	finishedCount	learnTotalCount（项目参加总人数）		rate（实时相除计算）		0.5d
+		业务查询接口： 接口 + mapper ： 	0.5d
+
+（4）下层列表- 组织 		(5d)
+	维度：部门 － 岗位 － 分组标签
+	统计字段： 部门、总人数、 	（已统计，简单计算）
+				参加人数、结业人数、结业率、线上学习时长（小时）、人均线上学习时长（小时）
+	
+	output表： projectId、groupId、totalStaff、learnStaffCount、graduateStaffCount、onlineTotalLearnDuration 
+	BI 部分 ：部门date（0.5d）+ 岗位date（0.5d）+标签date（1d） + 业务列表接口查询* 3 (1.5d) + excel导出（1.5d）：
+
+（5）下层列表- 个人 		（3d）
+	统计维度： user + project 维度
+	统计字段：
+		员工姓名、编号、部门、岗位、标签、状态、参加方式、参加时间（用户基本信息 + 项目enroll基础信息）
+		任务完成数（已有）、线上学习时长（小时）（已有）、线下学习时长（小时）（已有）、完成进度、成绩、学习状态、最近线上学习时间
+
+	BI部分（1d） + 业务查询（1d）+ excel导出（1d）
+
+
+5、个人档案（个人学习档案（分 “课程” + “项目”））  		(0.5d + 2d + 1d) 3.5d	
+个人维度
+（1）上层 查询字段： （0.5d）
+	用户头像（增加） +  编号 + 部门 + 岗位
+	参加课程数 + 参加项目数 + 线上学习时长 + 线下学习时长 	（已做）
+
+（2）中间部分 		（2d）
+（2.1）中间饼图-课程
+	参加课程比例：
+		依赖中间表统计字段： user + termId + enroll_type + 从单课enroll 	（已做）	
+		数据结果： user + assignCount	+ enrollCount + learnTotalCount 	（已做）（见表 s2_user_platform_learn_overview）	
+		业务查询接口： 0.5d
+	学习状态比例：
+		依赖中间表统计字段： user + termId + learnStatus（新增加状态字段） 	【一期中间kv表： term_learn_progress_stat】		1d
+		数据结果：user + unstartCount、learningCount、ungraduateCount、graduateCount										0.5d【term维度】
+		业务查询接口： 0.5d
+
+（2.2）中间饼图-项目
+	参加项目比例：
+		依赖中间表统计字段： user + projectId + enroll_type 	（已做）
+		数据结果： user + assigned_project_count + enroll_project_count + learn_project_total_count		（同课程一次查询，见表 s2_user_platform_learn_overview）
+	学习状态比例：
+		依赖中间表统计字段： user + project + learnStatus（新增加状态字段） 	【一期中间kv表： user_project_learn_stat】		【前面已做】
+		数据结果：user + unstartCount、learningCount、ungraduateCount、graduateCount										0.5d【project维度】
+		业务查询接口：  【和课程一次查询， 数据放一张表中，类似表 s2_user_platform_learn_overview】
+	
+	BI部分（1d） + 业务查询接口（0.5d * 2）1d
+	参加课程比例 ： s2_user_platform_learn_overview
+	学习状态比例： user + unstartCount、learningCount、ungraduateCount、graduateCount（term维度） + （项目维度）
+
+（3）列表	（0.5d + 0.5d）1d
+（3.1）课程
+		增加 “所属项目”			显示 该课程所属项目 && 员工enroll了该项目；		0.5d
+		excel 导出： 0.5d
+
+（3.2）项目
+	无变更
+
+
+6、学习项目编辑后台统计报表（项目编辑后台，新增tab） 		(2.5d + 3.5d) 6d
+
+6.1、学习情况统计 			（2d + 1.5d）3.5d
+统计维度： 学习项目+user
+	搜索：
+		学习状态 不能作为 搜索条件；（本就是 BI 计算，创建索引的 时候不合适）（和策划确认）
+		除此之外，复用 member_term_rel 索引；
+
+	列表：（2d）
+		字段 完全同 项目学习统计（明细）；【BI 部分无】
+		业务接口查询： 	1d
+		excel导出： 	1d
+
+	任务明细：（点击员工姓名）（新增页面）		（1d + 0.5d） 1.5d
+		简单查询：姓名 、项目名称、
+		搜索： 任务名称 （一般也就1-2页，完全无必要，建议翻页，取消搜索）
+		列表：
+			任务名称 + 任务类型 + 任务类型 + 是否必修 + 任务进度 + 学习状态
+			依赖中间表数据： user + project + taskId + learnProgress + learnStatus		【上面已计算】
+			业务接口： projectId ——> 任务列表， 再查 用户任务完成结果表 取进度 + 状态；		1d
+			excel 导出： 0.5d
+
+6.2、任务完成情况统计 	（1d + 1.5d） 2.5d
+统计维度： 子任务 + user
+	搜索： 任务名称 （一般也就1-2页，完全无必要，建议翻页，取消搜索）
+	列表：  （1d）
+		字段： 任务名称 + 任务类型 + 是否必修 + 完成人数 + 完成率
+		依赖 中间表维度 用户+子任务完成状态：	memberId	projectId 	taskId 	learnProgress  finishedStatus 【上面已计算】
+		依赖 4-（3） 结果表： 	projectId	taskId	finishedCount	learnTotalCount（项目参加总人数）		rate（实时相除计算）
+		
+		业务接口 查询： 0.5d
+		excel导出： 0.5d
+	
+	完成明细	（1.5d）
+		搜索： 员工姓名/编号+ 部门+岗位+标签 	复用 员工索引
+		列表：
+			字段： 姓名 + 编号 + 部门 + 岗位 + 标签 + 完成时间		【完成时间 待确认， 其他字段 取员工基本信息】
+			业务查询接口 ：1d
+			excel 导出： 0.5d
+
+
+7、平台学习情况概览曲线图导出 （1.5d + 1d）2.5d
+	（1）平台学习情况概览 
+		平台使用人数”和“线上学习人数”（分 日+小时）	0.5d + 0.5d * 2 = 1.5d
+	（2）学习统计概况
+		“线上学习人数”和“选课完课人次” 	（分 日+小时）	0.5d * 2 = 1d
+
+
+8、课程学习统计－个人明细		0.5d
+	搜索变更： MemberTermRelDocument 增加 courseName ；
+	修改索引查询接口： 0.5d
+
+9、课程资源统计		（0.5d + 0.5d） 1d
+	字段变更： 参加人数、未开始学习人数、正在学习人数、结业人数、未结业人数、结业率
+	变更业务接口 ： 0.5d （依赖中间表 单课状态计算字段）
+	excel导出： 0.5d
+
+
+
+
+
+中间表字段维护：
+
+1、user + target_id + terget_type + 单课enroll + 项目enroll + enroll_type						1d
+2、user + term + learnStatus （结业状态(学习状态)）												1d
+3、user + project + learnStatus （结业状态(学习状态)）											1d
+3、中间结果字段： unstartCount、learningCount、ungraduateCount、graduateCount					0.5d
+4、中间表维护 学习项目的 子任务 顺序 + 实时接口查db【待确定】									0.5d
+
+5、中间表维度 用户+子任务完成状态：	memberId	projectId 	taskId 	learnProgress  finishedStatus				0.5d
+
+6、output 表维护 子任务维度统计： projectId		taskId	finishedCount	learnTotalCount 		0.5d
+7、output 表维护 特定学习项目下各状态的总人数： unstartCount、learningCount、ungraduateCount、graduateCount		0.5d
+8、（部门+岗位+标签）* 3
+	output表： projectId、groupId、totalStaff、learnStaffCount、graduateStaffCount、onlineTotalLearnDuration	2d
+
+
+
+
+策划、交互待确认：
+1、学习情况统计（6.1）
+	学习状态 不能作为 搜索条件；（本就是 BI 计算，创建索引的 时候不合适）（和策划确认）
+2、任务明细（6.1 + 6.2）
+	搜索： 任务名称 （一般也就1-2页，完全无必要，建议翻页，取消搜索）
+
+
+
+
+
+增量表数据导入：
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/target/edu-bi-store-1.0-snapshot-uberjar.jar learnStatisticsMobFix online 2017-07-12
+
+
+
+
+
+
+
+
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/target/edu-bi-store-1.0-snapshot-uberjar.jar learnStatistics test 2017-07-23
+
+
+
+
+
+
+
+
+
+
+

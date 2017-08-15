@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+<!-- Hive Configuration can either be stored in this file or in the hadoop configuration files  -->
+<!-- that are implied by Hadoop setup variables.                                                -->
+<!-- Aside from Hadoop setup variables - this file is provided as a convenience so that Hive    -->
+<!-- users do not have to edit hadoop configuration files (that may be managed as a centralized -->
+<!-- resource).                                                                                 -->
+        <property>
+                <name>hive.exec.scratchdir</name>
+                <value>/user/study/tmp</value>
+                <description>Scratch space for Hive jobs</description>
+        </property>
+        <property>
+                <name>hive.metastore.warehouse.dir</name>
+                <value>/user/study/warehouse</value>
+                <description>location of default database for the warehouse</description>
+        </property>
+        <property>
+                <name>hive.input.format</name>
+                <value>org.apache.hadoop.hive.ql.io.CombineHiveInputFormat</value>
+                <description>The default input format. Set this to HiveInputFormat if you encounter problems with CombineHiveIn    putFormat.</description>
+        </property>
+        <property>
+                <name>hive.hadoop.supports.splittable.combineinputformat</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>mapred.max.split.size</name>
+                <value>256000000</value>
+        </property>
+        <property>
+                <name>mapred.min.split.size</name>
+                <value>128000000</value>
+        </property>
+        <property>
+                <name>mapred.min.split.size.per.node</name>
+                <value>128000000</value>
+        </property>
+        <property>
+                <name>mapred.min.split.size.per.rack</name>
+                <value>128000000</value>
+        </property>
+        <property>
+                <name>hive.exec.reducers.max</name>
+                <value>300</value>
+        </property>
+        <property>
+                <name>hive.optimize.bucketmapjoin</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.auto.convert.join</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.auto.convert.sortmerge.join</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.auto.convert.sortmerge.join</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.enforce.bucketing</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.enforce.sorting</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hive.hwi.listen.host</name>
+                <value>0.0.0.0</value>
+                <description>This is the host address the Hive Web Interface will listen on</description>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionURL</name>
+                <value>jdbc:mysql://10.122.138.93:3306/study_hive</value>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionDriverName</name>
+                <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionUserName</name>
+                <value>hive</value>
+        </property>
+        <property>
+                <name>javax.jdo.option.ConnectionPassword</name>
+                <value>uQjWbttEn</value>
+        </property>
+<!--    <property>
+                <name>datanucleus.autoCreateSchema</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>datanucleus.autoCreateTables</name>
+                <value>false</value>
+        </property>
+        <property>
+                <name>datanucleus.fixedDatastore</name>
+                <value>true</value>
+        </property> -->
+        <property>
+                <name>hive.security.authorization.enabled</name>
+                <value>false</value>
+        <description>enable or disable the hive client authorization</description>
+        </property>
+        <property>
+                <name>hive.metastore.client.socket.timeout</name>
+                <value>60</value>
+        <description>socket timeout for metastore</description>
+        </property>
+        <property>
+                <name>hive.querylog.location</name>
+                <value>/home/appops/tools/hive/log/${user.name}</value>
+        <description>
+        Location of Hive run time structured log file
+        </description>
+        </property>
+        <property>
+        <name>hive.aux.jars.path</name>
+                <value>/user/study/qyy/lib/json-serde-1.3.6-jar-with-dependencies.jar</value>
+        </property>
+        <property>
+                <name>fs.hdfs.impl.disable.cache</name>
+                <value>true</value>
+        </property>
+
+        <property>
+                <name>mapred.job.queue.name</name>
+                <value>mooc_queue</value>
+        </property>
+        <property>
+                 <name>hive.insert.into.multilevel.dirs</name>
+                 <value>true</value>
+        </property>
+</configuration>

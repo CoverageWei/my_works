@@ -1,0 +1,48 @@
+Hive >
+      s"""
+          insert overwrite table online.s2_term_learn_progress_stat_kv  partition(day='$etlDay',category='common_attribute')
+          select member_id, term_id, mp['type'] as type, mp['value'] as value
+          from (
+              select member_id, term_id, mp from (
+                select member_id, term_id,
+                      array(map('type', 'term_unit_total_count', 'value', cast(t5.cnt as string)),
+                          map('type', 'term_offline_total_duration', 'value', cast(t5.offline_time as string)),
+                          map('type', 'signin_total_count', 'value', cast(t5.signin_count as string)),
+                          map('type', 'term_end_time', 'value', cast(t5.term_end_time as string))
+                      ) as arr
+                from
+                  (
+                    select t1.member_id as member_id, t1.target_id as term_id , t2.sum as cnt, cast(t3.duration * 3600 * 1000 as bigint) as offline_time, t3.end_time as term_end_time, t4.count_signin as signin_count 
+                    from
+                        ( select member_id,target_id from ${dr}.s2_aggregation_learn where target_type=1 and day = '$etlDay' )t1
+                        left outer join
+                        ( select term_id,count(id) as sum from ${dr}.s2_lesson_unit where day = '$etlDay' group by term_id )t2
+                        on (t1.target_id = t2.term_id)
+                        left outer join
+                        ( select s1.id as term, if(s3.duration is null, s2.duration,s3.duration) as duration, s2.end_time as end_time 
+                              from
+                                ( select id from ${dr}.s2_term where online_flag = 2 and day = '$etlDay' ) s1
+                                left outer join
+                                ( select id, end_time, expect_lesson_duration as duration from ${dr}.s2_term_schedule where day = '$etlDay' ) s2
+                                on (s1.id = s2.id)
+                                left outer join
+                                ( select id,actual_lesson_duration as duration from ${dr}.s2_term_finish where day = '$etlDay' ) s3
+                                on (s1.id = s3.id)
+                        ) t3 on (t1.target_id = t3.term)
+                       left outer join
+                       ( select term_id, count(id) as count_signin from ${dr}.s2_term_signin where day = '$etlDay' group by term_id ) t4
+                       on (t1.target_id = t4.term_id)
+                  ) t5
+              ) t6 lateral view explode(arr) arr as mp
+          ) t7
+          where mp['value'] is not null
+
+       """
+
+代码解析：
+  分别查对应的 ddb 表，将 term_unit_total_count， term_offline_total_duration， signin_total_count， term_end_time 作为 type， 
+        对应的 value 为 总课件数， 线下学习总时长【取表中的 预计时长 和 实际时长】， 签到总数， 期次结束时间；
+  最后 写入 s2_term_learn_progress_stat_kv 表【中间表】存储：
+        member_id, term_id, mp['type'] as type, mp['value']
+        其中，mp['type'] 为 上面的四种type， value 为对应的 值；
+

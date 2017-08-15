@@ -1,0 +1,1014 @@
+统计迭代
+
+
+二、统计分析：
+
+1、学习过程统计
+1.1 后台管理中心页	【机构所有课程数据 综合】
+
+	（1）增加“课程统计”和“登录情况统计”两个tab ： 0.5d
+
+	（2）概况：
+		平台学习情况概览：
+			自选课人次：
+			自选课完课人次：
+			指派课人次：
+			指派课完课人次： 指派表
+
+			线上学习总人次:
+				时间选择超过1d， 按天为单位
+				时间选择为1d： 小时为单位 【0 - 23 个数据点】
+
+
+			【问题1】自定义时间段 支持：
+				自定义时间段 还是以天为单位的，而 已过去的时间内 数据不会再变更，可以考虑 每天算出统计的数据 存表【还是每小时？？？】；
+				自定义时间段 通过 累加所选时间段内的每一天数据来实现；
+
+
+		线上学习总时长：
+		线下学习总时长：
+
+
+		学习情况概览：
+
+
+
+
+问题：
+1、现在猛犸平台上的 Hive 数据库表只有 测试和 线上环境，没有预发环境，这样的话我们 在预发环境就没办法测试预发数据，因为 使用线上表会 覆盖 线上数据；
+
+
+
+表设计：
+1、用户进度表【s2_term_learn_record_slave】【已有表】：
+id	gmt_create	gmt_modified	db_update_time	learner_id	term_id	 learned_count	learned_time    provider_id	  term_unit_count	score	last_learned_time	online_flag
+
+数据来源是： s2_aggregation_learn为基础【target_type=1 期次类型enroll】
+		
+		是否完课: 	learned_count >= term_unit_count
+
+
+方案设计：
+
+1、学习过程统计-概况：
+
+s2_term_learn_record_slave添加字段：	完课状态（根据已学unit计算）+    选课类型 + gmt_operate	(s2_term_member_allow 表) 	————————————> 选课人次基本数据表
+
+② 根据基本表聚合：
+hour(0,1,...)  + 指派人次 + 自选课人次 + provider_id + 指派完课数 + 自选完课数 ——————————>	机构 + 小时 为维度聚合，不区分member 【满足 概况】
+
+聚合数量级分析：
+	单日： O(24)
+	自定义时间段： 	O(24*n)	n为天数
+
+
+2、学习过程统计-组织学习情况：
+
+根据基本表聚合：
+day(20170101,...) + memberId + 指派人次 + 自选课人次 + provider_id	+ 指派完课数 + 自选完课数 ——————————>  个人 + 天 为维度聚合，统计个人一天的总情况	【组织情况】
+
+
+聚合数量级分析：
+
+部门/岗位/标签 ——————> list<memberId> ：m + 时间段（季度） ——————>  memberId in (...) day >= startDay and day <= endDay
+
+	量级： O(3*30*m), m 为 筛选的member数
+
+
+
+
+
+
+
+
+一、学习过程统计
+1、概况
+平台学习情况概览：
+
+	线上/线下 学习总课时：
+
+	自选课人次 + 指派课人次 ： 
+		s2_term_member_allow [ status in (1,3) and gmt_operate >= start and gmt_operate <= end ]【1：指派， 3：自选课】
+		天 为维度统计数据；
+		方案：	load 表到 hive，然后 根据每天 来 count ——> date + XXX 人次；
+		
+		【表字段】：日期（天）	memberId	自选课/指派【选课类型】    	status【是否结课】	
+		【意义】 每一天 所有用户的选课记录表
+	
+	线上学习总人次：
+
+		小时为维度统计；
+		方案：	load 表到 hive，然后 根据每个小时 来 count ——> 0:XXX, 1:XXX,...；
+
+
+2、组织学习情况：
+
+	搜索筛选：	
+		1、部门+岗位+标签：确定人群范围；	
+		2：时间段: 按季度，（只影响指派/自选课人次，不影响时长等字段）；
+	
+
+	指派选课人次	自选课人次 ——>  最终以 季度 聚合展示： 按天为维度？月？
+	【表设计】：
+
+
+	线上/线下 学习总时长：  （所有人群范围内的 个人总时长 加起来） ——> 线上/线下学习时长 以 个人 为维度统计； 
+	【表字段】
+		memberId 	线上学习时长  	线下学习时长
+
+
+3、个人学习情况：
+
+
+
+一、用户期次学习进度统计表（期次维度）（时间维度：平台创建日起至昨天的时间段）
+
+member_id 		provider_id 	term_id		term_type	online_flag		enroll_time		signed_count	leave_count		not_Signed_count	online_learn_total_time		offline_learn_total_time	term_unit_learn_count	term_unit_finished_count		term_unit_total_count	term_unit_learn_time		score		learn_status	first_learn_time	last_learn_time		post_count		post_reply_count	post_comment_count	post_top_count
+
+
+用户id 		机构id		期次id		期次类型 	是否线下培训	课程参加时间	出勤次数，即签到次数	请假次数	缺勤次数	线上学习总时长（小时）		线下学习总时长（小时）		学期课件学习数		学期课件完成数		学期总课件数		课件观看时间	学期成绩 		学习状态 		首次学习时间	最近学习时间		发帖数		回帖数		评论数		被顶数
+
+
+CREATE TABLE `s2_term_learn_progress_stat` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `gmt_create` bigint(20) DEFAULT NULL,
+  `gmt_modified` bigint(20) DEFAULT NULL,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `provider_id` bigint(20) DEFAULT '-1' COMMENT '机构id',
+  `term_id` bigint(20) DEFAULT NULL COMMENT '期次id',
+  `term_type` smallint(2) DEFAULT NULL COMMENT '期次类型，随到随学班次0 学期制班次3',
+  `online_flag` smallint(2) DEFAULT NULL COMMENT '是否线下培训 1:线上 2：线下',
+  `enroll_time` bigint(20) DEFAULT NULL COMMENT '课程参加时间',
+  `signed_count` smallint(6) DEFAULT NULL COMMENT '出勤次数，即签到次数',
+  `leave_count` smallint(6) DEFAULT NULL COMMENT '请假次数',
+  `not_Signed_count` smallint(6) DEFAULT NULL COMMENT '缺勤次数',
+  `online_learn_total_time` smallint(6) DEFAULT NULL COMMENT '线上学习总时长（小时）',
+  `offline_learn_total_time` smallint(6) DEFAULT NULL COMMENT '线下学习总时长（小时）',
+  `term_unit_learn_count` smallint(6) DEFAULT NULL COMMENT '学期课件学习数',
+  `term_unit_finished_count` smallint(6) DEFAULT NULL COMMENT '学期课件完成数',
+  `term_unit_total_count` smallint(6) DEFAULT NULL COMMENT '学期总课件数',
+  `term_unit_learn_time` smallint(6) DEFAULT NULL COMMENT '课件观看时间',
+  `score` decimal(10,2) DEFAULT NULL COMMENT '学期成绩，来自s2_term_score_summary.total_normalized_score_plus_bonus',
+  `learn_status` smallint(2) DEFAULT NULL COMMENT '学习状态，0:未开始学习, 1:正在学习, 3:签到异常, 4:学习完成',
+  `first_learn_time` bigint(20) DEFAULT NULL COMMENT '首次学习时间',
+  `last_learn_time` bigint(20) DEFAULT NULL COMMENT '最近学习时间',
+  `post_count` smallint(6) DEFAULT NULL COMMENT '发帖数',
+  `post_reply_count` smallint(6) DEFAULT NULL COMMENT '回帖数',
+  `post_comment_count` smallint(6) DEFAULT NULL COMMENT '评论数',
+  `post_top_count` smallint(6) DEFAULT NULL COMMENT '被顶数',
+  PRIMARY KEY (`id`),
+  KEY `idx_termid` (`term_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='用户期次学习进度统计表';
+
+
+字段计算规则：
+
+signed_count + leave_count + not_Signed_count ：  	
+	1、【表】s2_term_signin （期次签到定义表） 中查出 当前时间点 已经结束的签到轮次； 
+	2、【表】s2_term_member_signin （用户签到表） 中统计出 步骤1 得到的 所有签到轮次 用户的签到状态，再汇总出目标数据： 出勤／请假／缺勤（次）；
+
+learn_status：
+	区分： 随到随学 和 学期制（线上/线下）
+	
+	线上：（包括 随到随学：）
+		未开始学习:	online_learn_total_time == null
+		正在学习:	online_learn_total_time != null &&  >0
+		学习完成:	term_unit_finished_count >= total
+
+	线下：
+		【表】s2_term ——> 【表】s2_term_schedule : 
+		if(now < start_time）	//未开课
+			if(online_learn_total_time > 0) 	// 有线上学习记录
+				learn_status = 1；		// 正在学习
+			else
+				learn_status = 0；		// 未开始学习
+		else if(now < end_time)			// 在有效开课时间内
+			if(not_Signed_count != null && not_Signed_count > 0) 		// 存在未签到情况
+				learn_status = 3；		// 签到异常
+			else 
+				learn_status = 1；		// 正在学习
+		else							// 期次已结束
+			if(not_Signed_count != null && not_Signed_count > 0) 		// 存在未签到情况
+				learn_status = 3；		// 签到异常
+			else 
+				learn_status = 4；		// 学习完成
+
+
+
+pc 段：  视频 完成 + 直播 + pdf + 富文本（进入算完成） +  scorm （是否已做？）  
+
+
+课程讨论区发帖数： 
+	根据期次id，关联s2_forum_ref表ref_id字段，且ref_type为0，s2_forum_ref表forum_id字段关联s2_forum_board表forum_id字段，查询s2_forum_board表type为2的id，关联s2_post表board_id字段，然后根据poster_id汇总发帖数量
+回帖数：
+	根据期次id，关联s2_forum_ref表ref_id字段，且ref_type为0，s2_forum_ref表forum_id字段关联s2_forum_board表forum_id字段，查询s2_forum_board表type为2的id，关联s2_post表board_id字段，s2_post表id字段再关联s2_reply表post_id字段，根据post_id,replyer_id汇总回帖数量，需要去重，相同的post_id,replyer_id计为1
+评论数：
+	根据期次id，关联s2_forum_ref表ref_id字段，且ref_type为0，s2_forum_ref表forum_id字段关联s2_forum_board表forum_id字段，查询s2_forum_board表type为2的id，关联s2_post表board_id字段，s2_post表id字段再关联s2_reply表post_id字段，s2_reply表根据replyer_id汇总用户评论数量
+被顶数：
+	根据期次id，关联s2_forum_ref表ref_id字段，且ref_type为0，s2_forum_ref表forum_id字段关联s2_forum_board表forum_id字段，查询s2_forum_board表type为2的id，关联s2_post表board_id字段，s2_post表id字段再关联s2_post_footprint表target_id，并且s2_post_footprint表target_type为1，根据s2_post表的poster_id汇总s2_post_footprint表aggree为1的总数
+
+
+
+
+
+二、用户学习记录统计表（用户维度）（时间维度：平台创建日起至昨天的时间段）（日 为维度也要统计 - 学习）
+
+member_id	assigned_count	assigned_finished_count			enroll_count		enroll_finished_count		online_learn_total_time			offline_learn_total_time
+
+用户id		指派课数  	指派完课数						自选课数 			自选完课数					线上学习总时长（小时） 			线下学习总时长（小时）
+
+
+CREATE TABLE `s2_user_learn_record_stat` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `gmt_create` bigint(20) DEFAULT NULL,
+  `gmt_modified` bigint(20) DEFAULT NULL,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+  `assigned_count` smallint(6) DEFAULT NULL COMMENT '指派课数',
+  `assigned_finished_count` smallint(6) DEFAULT NULL COMMENT '指派完课数',
+  `enroll_count` smallint(6) DEFAULT NULL COMMENT '自选课数',
+  `enroll_finished_count` smallint(6) DEFAULT NULL COMMENT '自选完课数',
+  `online_learn_total_time` smallint(6) DEFAULT NULL COMMENT '线上学习总时长（小时）',
+  `offline_learn_total_time` smallint(6) DEFAULT NULL COMMENT '线下学习总时长（小时）',
+  PRIMARY KEY (`id`),
+  KEY `idx_member_id` (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='用户学习记录统计表';
+
+
+
+
+
+统计维度：
+
+某用户 在某日 某个期次 的 数据；
+
+某用户 在某日 所有期次 的数据；【个人学习情况】
+
+某用户 在所有日 某个期次 的数据；【个人学习档案】
+
+
+
+
+待完成：
+
+1、stat-web ：
+	增加 一个product类型（目前有 ykt，mooc），底层还是使用 一个 logger；
+	服务 扩容（扩容后 猛犸日志推送对应也要添加）+ 压测；【考虑中： 5分钟发一次统计日志，是否需要扩容？】
+
+
+2、考虑到表数据量会比较大，目标统计数据 库表 放在 ddb， 分布式数据库表存储；【考虑是否使用双表 master/slave 切换方式】
+	需要和 xj 确认一下；
+	edu-statistic-server 也就不需要搭 mybatis；
+
+
+3、hdfs ——> db load失败处理？【待讨论】
+	可以参照mooc，每天跑 2次load， 表可以使用一个表（不使用 双表）；
+
+	是否使用 双表 master/slave 切换方式??【待讨论】
+		感觉不使用 master/slave 问题也不大：（以下两点 双表切换方式 好像也都避免不了）
+		① load 失败的时候，猛犸平台 调度执行 会失败，配置了 告警的话也会有 告警邮件，可以手动干预；
+		② sqoop 导入的时候，使用 update 模式 并且 允许 insert， 这样 load中途失败的时候，不会少记录，影响只是 读取的是 最后一次成功的数据，即旧数据；
+
+
+4、目前线上学习时长日志 是5分钟 发一次统计请求， endtime-starttime=300s；
+	理论延迟会有5分钟误差，需策划确认 是否可接受；
+
+
+
+
+企业云这次在做统计需求，其中数据统计维度有日级甚至 小时级，还有用户维度，所以考虑到表数据量会比较大，需要分布式表，需要了解一下：
+
+之前已有的 数据统计（现有的 mooc 以及云课堂）由于数据量不大，都是放在 BI 提供的这个数据库中：
+测试
+url： 10.171.160.174
+端口： 3306
+schema： study
+username： study_test
+password： kwwHn4JzfIoL
+
+线上
+url：10.172.131.24
+端口：3306
+schema：study
+username：statread
+password：qgflhxpso
+
+
+考虑到这次迭代统计的 表数据量会比较大，需要分布式表，需要了解一下：
+1、统计数据 能否放在 DDB？
+2、通过 sqoop 将 HDFS数据导入 DDB 是否有什么限制？
+3、是否需要新增个实例？S2的？
+
+
+
+course-server，
+
+
+
+个人学习档案（明细数据）：  日级， 机构数 * 机构下所有用户数 * 日（单位，每日产生一条记录）
+
+个人学习档案（总览数据）：  用户级， 机构数 * 机构下所有用户数 （每个用户一条记录，每日做更新）
+
+线上学习总人次： 机构 + 小时级， 
+	机构数 * 小时（每小时 一条记录） 
+	机构数 * 日 （每天一条记录）
+
+
+
+
+
+平台学习总时长记录表 【s2_provider_user_learn_toatl_time_stat】
+维度：机构
+数据量级： 机构数 * 1 
+sql操作 ： update 记录
+
+
+在线学习人数按天统计表【online_learner_stat_date】
+维度：机构，日
+数据量级： 机构数 * 日（每天一条记录）
+sql操作 ： insert 记录
+
+
+在线学习人数按小时统计表【online_learner_stat_hour】
+维度：机构，小时
+数据量级：机构数 * 小时 （每小时一条记录）
+sql操作 ： insert 记录
+
+
+用户期次学习进度统计表（期次维度）【s2_term_learn_progress_stat_date】
+维度：用户，期次，日
+数据量级： 机构数 * 机构下总用户数 * 用户所有参加期次 * 日 * 1 
+sql操作 ： insert 记录
+
+
+用户学习记录统计表（用户维度）【s2_user_learn_record_stat_aggregate】
+维度：机构，用户，
+数据量级：机构数 * 机构下总用户数 * 1
+sql操作 ： update 记录
+
+
+部门学习时间表【department_learn_date】
+维度：
+数据量级： 机构数 * 部门节点数 * 1
+sql操作 ： update 记录
+
+
+
+
+
+1、去掉 gmt_create；
+2、date 使用 bigint(20)；【毫秒数】
+3、AUTO_INCREMENT=1
+4、部分用户维度 和 时间维度的字段分开
+
+
+# 平台学习总时长记录表【机构维度】
+CREATE TABLE `s2_provider_user_learn_toatl_time_stat(
+ `id` bigint(20) NOT NULL AUTO_INCREMENT,
+ `provider_id ` bigint(20) NOT NULL COMMENT `机构ID`,
+ `online_learn_total_time` bigint(20) DEFAULT NULL COMMENT `线上学习总时长（毫秒数）`,
+ `offline_learn_total_time` bigint(20) DEFAULT NULL COMMENT `线下学习总时长（毫秒数）`,
+ `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='平台学习总时长记录表';
+ 
+ 
+# 在线学习人数按天统计表
+CREATE TABLE `online_learner_stat_date` (
+ `id` bigint(20) NOT NULL AUTO_INCREMENT,
+ `provider_id ` bigint(20) NOT NULL COMMENT `机构ID`,
+ `date` bigint(20) NOT NULL COMMENT `日期,毫秒数`,
+ `online_count` int NOT NULL COMMENT `在线人数`,
+ `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='在线学习人数按天统计表';
+ 
+# 在线学习人数按小时统计表
+CREATE TABLE `online_learner_stat_hour` (
+ `id` bigint(20) NOT NULL AUTO_INCREMENT,
+ `provider_id ` bigint(20) NOT NULL COMMENT `机构ID`,
+ `stat_time` bigint(20) NOT NULL COMMENT `统计时间（日期）`,
+ `stat_time_hour` TINYINT NOT NULL COMMENT `统计时间（小时）`, 
+ `online_count` int NOT NULL COMMENT `在线人数`,
+ `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='在线学习人数按小时统计表';
+ 
+
+# 用户期次学习进度统计表（用户、期次维度）
+CREATE TABLE `s2_term_learn_progress_stat_date` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`date` bigint(20) NOT NULL COMMENT `日期,毫秒数`,
+`member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+`provider_id` bigint(20) DEFAULT '-1' COMMENT '机构id',
+`term_id` bigint(20) DEFAULT NULL COMMENT '期次id',
+`term_type` smallint(2) DEFAULT NULL COMMENT '期次类型，随到随学班次0 学期制班次3',
+`online_flag` smallint(2) DEFAULT NULL COMMENT '是否线下培训 1:线上 2：线下',
+`enroll_time` bigint(20) DEFAULT NULL COMMENT '课程参加时间',
+`signed_count` smallint(6) DEFAULT NULL COMMENT '出勤次数，即签到次数',
+`leave_count` smallint(6) DEFAULT NULL COMMENT '请假次数',
+`not_Signed_count` smallint(6) DEFAULT NULL COMMENT '缺勤次数',
+`online_learn_total_time` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+`offline_learn_total_time` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数）',
+`term_unit_learn_count` smallint(6) DEFAULT NULL COMMENT '学期课件学习数',
+`term_unit_finished_count` smallint(6) DEFAULT NULL COMMENT '学期课件完成数',
+`term_unit_total_count` smallint(6) DEFAULT NULL COMMENT '学期总课件数',
+`term_unit_learn_time` bigint(20) DEFAULT NULL COMMENT '课件观看时间',
+`score` decimal(10,2) DEFAULT NULL COMMENT '学期成绩，来自s2_term_score_summary.total_normalized_score_plus_bonus',
+`first_learn_time` bigint(20) DEFAULT NULL COMMENT '首次学习时间',
+`last_learn_time` bigint(20) DEFAULT NULL COMMENT '最近学习时间',
+`post_count` smallint(6) DEFAULT NULL COMMENT '发帖数',
+`post_reply_count` smallint(6) DEFAULT NULL COMMENT '回帖数',
+`post_comment_count` smallint(6) DEFAULT NULL COMMENT '评论数',
+`post_top_count` smallint(6) DEFAULT NULL COMMENT '被顶数',
+PRIMARY KEY (`id`),
+KEY `idx_termid` (`term_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户期次学习进度统计表';
+ 
+ 
+# 用户学习记录统计表（用户维度）（时间维度：平台创建日起至昨天的时间段）
+CREATE TABLE `s2_user_learn_record_stat_total` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+`provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+`assigned_count` INT DEFAULT NULL COMMENT '指派课数',
+`assigned_finished_count` INT DEFAULT NULL COMMENT '指派完课数',
+`enroll_count` INT DEFAULT NULL COMMENT '自选课数',
+`enroll_finished_count` INT DEFAULT NULL COMMENT '自选完课数',
+`online_learn_total_time` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+`offline_learn_total_time` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数）',
+PRIMARY KEY (`id`),
+KEY `idx_member_id` (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户学习记录统计表,所有时间统计';
+ 
+
+ # 用户选课记录统计表（用户维度）（时间维度：按天）
+CREATE TABLE `s2_user_term_select_record_stat_day` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`date` bigint(20) NOT NULL COMMENT `日期,毫秒数`,
+`member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+`provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+`assigned_count` INT DEFAULT NULL COMMENT '指派课数',
+`assigned_finished_count` INT DEFAULT NULL COMMENT '指派完课数',
+`enroll_count` INT DEFAULT NULL COMMENT '自选课数',
+`enroll_finished_count` INT DEFAULT NULL COMMENT '自选完课数',
+PRIMARY KEY (`id`),
+KEY `idx_member_id` (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户选课记录统计表,按天统计';
+
+
+# 用户学习时长统计表（用户维度）（时间维度：按天）
+CREATE TABLE `s2_user_learn_time_stat_day` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`date` bigint(20) NOT NULL COMMENT `日期,毫秒数`,
+`member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+`provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+`online_learn_total_time` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+`offline_learn_total_time` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数）',
+PRIMARY KEY (`id`),
+KEY `idx_member_id` (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户学习时长统计表,按天统计';
+
+
+ 
+
+# 部门学习时间表
+CREATE TABLE `department_learn_term_date` (
+  `id` bigint(20) NOT NULL,
+  `department_id` bigint(20) NOT NULL COMMENT `部门ID`,
+  `date` bigint(20) NOT NULL COMMENT `日期`,
+  `staff_num` INT COMMENT `部门员工数，包括所有子节点的员工`,
+  `aggregation_learn_staff_num` INT COMMENT `今日部门选课总人数,包括自选和指派`,
+  `assign_staff_count` INT COMMENT `今日部门课程指派人次`,
+  `enroll_staff_count` INT COMMENT `今日部门课程自选人次`,
+  `assign_staff_finished_count` INT COMMENT `assign_staff_count范围中截止目前完课数`,
+  `enroll_staff_finished_count` INT COMMENT `enroll_staff_count范围中截止目前完课数`,
+  `provider_id` bigint(20) NOT NULL COMMENT `企业ID`,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='部门期次学习表（按天统计）';
+
+CREATE TABLE `department_learn_duration_date` (
+  `id` bigint(20) NOT NULL,
+  `department_id` bigint(20) NOT NULL COMMENT `部门ID`,
+  `date` bigint(20) NOT NULL COMMENT `日期`,
+  `online_learn_time` bigint(20) COMMENT `部门下员工目前线上学习总时长(毫秒)`,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='部门学习时长表（按天统计）';
+
+
+
+# 岗位学习时间表
+CREATE TABLE `position_learn_term_date` (
+  `id` bigint(20) NOT NULL,
+  `position_id` bigint(20) NOT NULL COMMENT `岗位ID`,
+  `date` bigint(20) NOT NULL COMMENT `日期`,
+  `staff_num` INT COMMENT `部门员工数，包括所有子节点的员工`,
+  `aggregation_learn_staff_num` INT COMMENT `今日岗位选课总人数,包括自选和指派`,
+  `assign_staff_count` INT COMMENT `今日岗位课程指派人次`,
+  `enroll_staff_count` INT COMMENT `今日岗位课程自选人次`,
+  `assign_staff_finished_count` INT COMMENT `assign_staff_count范围中截止目前完课数`,
+  `enroll_staff_finished_count` INT COMMENT `enroll_staff_count范围中截止目前完课数`,
+  `provider_id` bigint(20) NOT NULL COMMENT `企业ID`,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='岗位期次学习表（按天统计）';
+
+CREATE TABLE `position_learn_duration_date` (
+  `id` bigint(20) NOT NULL,
+  `position_id` bigint(20) NOT NULL COMMENT `岗位ID`,
+  `date` bigint(20) NOT NULL COMMENT `日期`,
+  `online_learn_time` bigint(20) COMMENT `岗位下员工目前线上学习总时长(毫秒)`,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='岗位学习时长表（按天统计）';
+
+
+
+# 标签学习时间表
+CREATE TABLE `group_learn_term_date` (
+  `id` bigint(20) NOT NULL,
+  `group_id ` bigint(20) NOT NULL COMMENT `标签ID`,
+  `date` bigint(20) NOT NULL COMMENT `日期`,
+  `staff_num` INT COMMENT `标签绑定的员工数 `,
+  `aggregation_learn_staff_num` INT COMMENT `今日选课总人数,包括自选和指派 `,
+  `assign_staff_count` INT COMMENT `今日课程指派人次 `,
+  `enroll_staff_count` INT COMMENT `今日课程自选人次 `,
+  `assign_staff_finished_count` INT COMMENT `assign_staff_count范围中截止目前完课数`,
+  `enroll_staff_finished_count` INT COMMENT `enroll_staff_count范围中截止目前完课数`,
+  `provider_id` bigint(20) NOT NULL COMMENT `企业ID`,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='标签期次学习表（按天统计）';
+
+CREATE TABLE `group_learn_duration_date` (
+  `id` bigint(20) NOT NULL,
+  `group_id` bigint(20) NOT NULL COMMENT `岗位ID`,
+  `date` bigint(20) NOT NULL COMMENT `日期`,
+  `online_learn_time` bigint(20) COMMENT `岗位下员工目前线上学习总时长(毫秒)`,
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=136937 DEFAULT CHARSET=utf8 COMMENT='标签学习时长表（按天统计）';
+
+
+ 
+#DDB表变更：
+# s2_term_schedule
+alter table s2_term_schedule add expect_lesson_time smallint(6) DEFAULT NULL COMMENT '预计授课时长（小时）';
+ 
+# s2_term_finish
+alter table s2_term_finish add actual_lesson_time smallint(6) DEFAULT NULL COMMENT '实际授课时长（小时）';
+ 
+#s2_position
+alter table s2_position add level TINYINT NOT NULL COMMENT `层级`;
+ 
+#s2_department
+s2_department alter table add level TINYINT NOT NULL COMMENT `层级`;
+
+
+
+
+
+
+搜索引擎 字段设计：
+
+    private Long gmtCreate;
+    memberId
+    private String idNum;
+    private String name;
+    private Long staffid;
+    private Integer status;			状态	
+
+    termid							期次id
+    term_type						授课方式
+    online_flag						线上/线下
+    term_enroll_type				选课方式
+    enrolltime
+
+    private String groupIds;		标签
+    private String positionIds;		岗位
+    private String departmentIds;	部门
+
+    providerId
+
+
+
+******************************************************************************** 20170222
+
+测试日志地址：【伪造数据】
+/home/study/logs/statlog-web/statistics/ykt/statistics_test.log
+
+
+
+
+
+
+******************************************************************************** 20170224
+
+一、s2_aggregation_learn[表] 数据订正：
+
+http://teach.study.163.com/userLearn/dataCorrect/updateAggregationlearnProviderIdWithBatch.htm
+
+日志：
+
+2017-02-24 14:46:58,778 INFO  [AggregationlearnMangerImpl] ***** page[ 648 ] update finish...[subCount = 200]
+2017-02-24 14:46:58,788 INFO  [AggregationlearnMangerImpl] ***** page[ 649 ] update start...[subTotalCount = 200]
+2017-02-24 14:47:02,044 INFO  [AggregationlearnMangerImpl] ***** page[ 649 ] update finish...[subCount = 200]
+2017-02-24 14:47:02,054 INFO  [AggregationlearnMangerImpl] ***** page[ 650 ] update start...[subTotalCount = 200]
+2017-02-24 14:47:05,067 INFO  [service_perform_log] {"consuming":212,"sql":"calling sql:update s2_aggregation_learn set provider_id=? where id = ? and member_id = ? params: [400000001055001, 400000001923546, 1020415103]"}
+2017-02-24 14:47:05,409 INFO  [AggregationlearnMangerImpl] ***** page[ 650 ] update finish...[subCount = 200]
+2017-02-24 14:47:05,418 INFO  [AggregationlearnMangerImpl] ***** page[ 651 ] update start...[subTotalCount = 200]
+2017-02-24 14:47:08,603 INFO  [service_perform_log] {"consuming":207,"sql":"calling sql:update s2_aggregation_learn set provider_id=? where id = ? and member_id = ? params: [400000001055001, 400000001923765, 1020415195]"}
+2017-02-24 14:47:08,693 INFO  [AggregationlearnMangerImpl] ***** page[ 651 ] update finish...[subCount = 200]
+2017-02-24 14:47:08,702 INFO  [AggregationlearnMangerImpl] ***** page[ 652 ] update start...[subTotalCount = 200]
+2017-02-24 14:47:09,926 INFO  [service_perform_log] {"consuming":235,"sql":"calling sql:update s2_aggregation_learn set provider_id=? where id = ? and member_id = ? params: [400000001055001, 400000001923838, 1020415483]"}
+2017-02-24 14:47:11,733 INFO  [AggregationlearnMangerImpl] ***** page[ 652 ] update finish...[subCount = 200]
+2017-02-24 14:47:11,742 INFO  [AggregationlearnMangerImpl] ***** page[ 653 ] update start...[subTotalCount = 200]
+2017-02-24 14:47:14,822 INFO  [AggregationlearnMangerImpl] ***** page[ 653 ] update finish...[subCount = 200]
+2017-02-24 14:47:14,833 INFO  [AggregationlearnMangerImpl] ***** page[ 654 ] update start...[subTotalCount = 200]
+2017-02-24 14:47:17,744 INFO  [AggregationlearnMangerImpl] ***** page[ 654 ] update finish...[subCount = 200]
+2017-02-24 14:47:17,760 INFO  [AggregationlearnMangerImpl] ***** page[ 655 ] update start...[subTotalCount = 200]
+2017-02-24 14:47:20,741 INFO  [AggregationlearnMangerImpl] ***** page[ 655 ] update finish...[subCount = 200]
+2017-02-24 14:47:20,750 INFO  [AggregationlearnMangerImpl] ***** page[ 656 ] update start...[subTotalCount = 200]
+
+统计结果：
+
+Batch update Aggregationlearn finish...[finishedCount = 509543][updateExceptionIds = [], termNotExistAggreIds = [400000001305044,400000001480002,400000001480004,400000001480007,400000001480008,400000001480009,400000001480010,400000001480011,400000001480012,400000001480013,400000001481001,400000001483001,400000001483003,400000001483004,400000001483005,400000001489001,400000001495003,400000001495006,400000001495010,400000001495011,400000001499001,400000001499002,400000001500002,400000001502023,400000001511044,400000001515008,400000001515010,400000001544058,400000001544059,400000001544061,400000001546002,400000001546003]][costTime = 6378276]
+
+
+二、
+
+select * from s2_user_learn_record_stat_total_master where member_id = ? and provider_id = ? 
+
+select * from s2_term_learn_progress_stat_master where member_id = ? and provider_id = ? limit ? offset ?; [20条分页]
+
+select * from s2_term_learn_progress_stat_master where member_id = ? and provider_id = ? and term_type = ? and online_flag = ? and term_choose_type = ? and enroll_time >= startTime and enroll_time <= endTime limit ? offset ?; [20条分页]
+
+
+
+400000001305044,400000001480002,400000001480004,400000001480007,400000001480008,400000001480009,400000001480010,400000001480011,400000001480012,400000001480013,400000001481001,400000001483001,400000001483003,400000001483004,400000001483005,400000001489001,400000001495003,400000001495006,400000001495010,400000001495011,400000001499001,400000001499002,400000001500002,400000001502023,400000001511044,400000001515008,400000001515010,400000001544058,400000001544059,400000001544061,400000001546002,400000001546003]][costTime = 6378276
+
+
+
+
+
+
+******************************************************************************** 20170227
+
+一、突发事故总结
+
+
+二、搜索引擎 - 索引搜索
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=departmentIds:78005%20AND%20termEnrollType:2%20AND%20onlineFlag:1%20AND%20groupIds:1038001
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003
+
+
+
+线上索引查看：
+
+
+http://10.171.160.191/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003
+
+
+http://10.171.160.191/sd/service/query?index=edu_provider_staff_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000074001
+
+
+%20AND%20departmentIds:211001
+
+
+
+******************************************************************************** 20170306
+一、数据订正
+
+select count(*) from s2_aggregation_learn where provider_id = 0;			487
+
+select count(*) from s2_aggregation_learn where provider_id != 0;			509536
+
+select count(*) from s2_aggregation_learn;									510023
+
+订正url【全量数据订正】：  http://teach.study.163.com/userLearn/dataCorrect/updateAggregationlearnProviderIdWithBatch.htm?rangeType=1
+
+订正url【增量数据订正】：  http://teach.study.163.com/userLearn/dataCorrect/updateAggregationlearnProviderIdWithBatch.htm?rangeType=2
+
+订正执行日志：
+
+2017-03-06 11:15:17,927 INFO  [service_perform_log] {"consuming":2943,"sql":"calling sql:select * from  s2_aggregation_learn where id > ? and provider_id = 0 order by id asc limit ?  params: [0, 200]"}
+2017-03-06 11:15:18,032 INFO  [AggregationlearnMangerImpl] ***** page[ 1 ] update start...[subTotalCount = 200]
+2017-03-06 11:15:18,098 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001305044, termId = 4000000000200109]
+2017-03-06 11:15:18,098 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480002, termId = 4000000014210019]
+2017-03-06 11:15:18,099 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480004, termId = 4000000014210019]
+2017-03-06 11:15:18,099 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480007, termId = 4000000014210019]
+2017-03-06 11:15:18,099 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480008, termId = 4000000014210019]
+2017-03-06 11:15:18,100 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480009, termId = 4000000014210019]
+2017-03-06 11:15:18,100 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480010, termId = 4000000014210019]
+2017-03-06 11:15:18,100 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480011, termId = 4000000014220029]
+2017-03-06 11:15:18,101 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480012, termId = 4000000014220029]
+2017-03-06 11:15:18,101 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001480013, termId = 4000000014220029]
+2017-03-06 11:15:18,101 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001481001, termId = 4000000014220029]
+2017-03-06 11:15:18,102 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001483001, termId = 4000000014220029]
+2017-03-06 11:15:18,102 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001483003, termId = 4000000014220029]
+2017-03-06 11:15:18,103 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001483004, termId = 4000000014220029]
+2017-03-06 11:15:18,103 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001483005, termId = 4000000014220029]
+2017-03-06 11:15:18,104 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001489001, termId = 4000000014380019]
+2017-03-06 11:15:18,104 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001495003, termId = 4000000014380019]
+2017-03-06 11:15:18,105 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001495006, termId = 4000000014380029]
+2017-03-06 11:15:18,105 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001495010, termId = 4000000014380029]
+2017-03-06 11:15:18,105 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001495011, termId = 4000000014380039]
+2017-03-06 11:15:18,106 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001499001, termId = 4000000014380039]
+2017-03-06 11:15:18,106 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001499002, termId = 4000000014380039]
+2017-03-06 11:15:18,106 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001500002, termId = 4000000014380039]
+2017-03-06 11:15:18,107 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001502023, termId = 4000000014510159]
+2017-03-06 11:15:18,107 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001511044, termId = 4000000014510179]
+2017-03-06 11:15:18,107 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001515008, termId = 4000000014510169]
+2017-03-06 11:15:18,108 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001515010, termId = 4000000014510179]
+2017-03-06 11:15:18,108 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001544058, termId = 4000000014780019]
+2017-03-06 11:15:18,108 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001544059, termId = 4000000014780019]
+2017-03-06 11:15:18,109 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001544061, termId = 4000000014780019]
+2017-03-06 11:15:18,109 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001546002, termId = 4000000014790019]
+2017-03-06 11:15:18,109 INFO  [AggregationlearnMangerImpl] ##### update Aggregationlearn failed - 期次不存在! [aggregationlearnId = 400000001546003, termId = 4000000014790019]
+2017-03-06 11:15:21,569 INFO  [AggregationlearnMangerImpl] ***** page[ 1 ] update finish...[subCount = 168]
+2017-03-06 11:15:21,620 INFO  [AggregationlearnMangerImpl] ***** page[ 2 ] update start...[subTotalCount = 200]
+2017-03-06 11:15:23,007 INFO  [service_perform_log] {"consuming":216,"sql":"calling sql:update s2_aggregation_learn set provider_id=? where id = ? and member_id = ? params: [400000001069001, 400000003285003, 1020494017]"}
+2017-03-06 11:15:25,375 INFO  [service_perform_log] {"consuming":225,"sql":"calling sql:update s2_aggregation_learn set provider_id=? where id = ? and member_id = ? params: [400000000003003, 400000003291029, 1018871874]"}
+2017-03-06 11:15:25,546 INFO  [AggregationlearnMangerImpl] ***** page[ 2 ] update finish...[subCount = 200]
+2017-03-06 11:15:25,573 INFO  [AggregationlearnMangerImpl] ***** page[ 3 ] update start...[subTotalCount = 87]
+2017-03-06 11:15:27,462 INFO  [AggregationlearnMangerImpl] ***** page[ 3 ] update finish...[subCount = 87]
+2017-03-06 11:15:27,565 INFO  [AggregationlearnMangerImpl] ##### Batch update Aggregationlearn finish...[finishedCount = 455][updateExceptionIds = [], termNotExistAggreIds = [400000001305044,400000001480002,400000001480004,400000001480007,400000001480008,400000001480009,400000001480010,400000001480011,400000001480012,400000001480013,400000001481001,400000001483001,400000001483003,400000001483004,400000001483005,400000001489001,400000001495003,400000001495006,400000001495010,400000001495011,400000001499001,400000001499002,400000001500002,400000001502023,400000001511044,400000001515008,400000001515010,400000001544058,400000001544059,400000001544061,400000001546002,400000001546003]][costTime = 12591]
+
+
+
+
+二、postman 请求中： 参数构造格式：
+
+Body ——> raw : 
+{"limit":20,"offset":0,"pageIndex":1,"pageSize":20,"staffId":"","learningType":null,"termEnrollType":null,"startTime":null,"endTime":null,"_t":1488768118800}
+
+
+
+
+
+provider_team:  member_id 	id_num 	provider_id
+
+s2_provider_staff_invite : 	id(staffId)， id_num ， providerId
+
+
+s2_department :  id
+
+s2_position : id
+
+s2_provider_group : id
+
+s2_staff_department_position_rel :  s2_provider_staff_invite.id  s2_department.id   s2_position.id
+
+s2_provider_group_rel : id_num + group_id
+
+
+
+518
+458
+
+
+
+
+******************************************************************************** 20170309
+
+一、日志传输
+
+① 预发+线上 ， qyy路径， 联通集群
+
+预发：
+hzaxs-study-pre14.server.163.org【pre3】	/home/appops/logs/statlog-web/statistics/qyy/statistics.log
+
+线上：
+hzabj-study007.server.163.org				/home/appops/logs/statlog-web/statistics/qyy/statistics.log
+hzaxs-study017.server.163.org				/home/appops/logs/statlog-web/statistics/qyy/statistics.log
+
+
+② 线上老日志 迁移
+（滨江，ykt路径下）/datastream/study/online/statlog/ykt/%{date}      迁移到 	/datastream/study/online/statlog/qyy/%{date}（联通）
+	[2016-09-11，2017-03-08] 为时间截点，包括 0308 当天的数据；
+
+二次迁移：
+	[2017-03-09, 2017-03-12]	
+
+
+③ 
+
+你好，云课堂  线上 HDFS集群 日志数据 需要做一下迁移：
+
+源数据路径地址： 
+	滨江集群 /datastream/study/online/statlog/ykt/%{date}
+
+目标迁移地址：
+	联通集群（联通1） /datastream/study/online/statlog/qyy/%{date}
+
+数据天数范围： [2016-09-11，2017-03-08] ，包括 0911, 0308 当天的数据；
+
+
+
+
+
+******************************************************************************** 20170311
+一、明天工作准备：
+
+1、数据库提工单：
+
+ddb表变更 + bi mysql 表创建：
+
+2、日志数据迁移：
+
+	【2.1】 日志数据迁移 + 数据修补任务；hg 搞定
+
+		旧日志修正处理：
+		s2_user_learn_total_duration_stat_master
+			online_learn_duration
+
+		s2_online_learner_stat_date_master
+		s2_online_learner_stat_hour_master
+
+		s2_user_learn_time_stat_date_master
+
+	部门、岗位、标签 时长修正
+
+	【2.2】  婷姐 数据load 代码可能需要 修正，支持 导入部分表数据；
+
+3、 代码合并 master ，部署 预发机器， 【新增 预发statistic-server】， statlog-web 日志路径切换;
+
+4、上预发 先跑 aggregation_learn 数据订正；【*************************** 很重要】
+
+5、线上机器申请 + nginx 等配置；
+
+6、线上计划
+
+7、ndir 索引；
+
+
+二、BI 数据：
+
+日志迁移 ： （滨江机器已准备） 预计1h （2016-09-11 -  201）
+日志解析： 代码不确定 1h 运行 4h
+
+
+线上环境切换 
+output 、以及中间表数据删除 路径删除1h
+
+首次 和 最后一次学习时间需要按天跑， 修复到中间表中即可。
+4h
+
+6张增量表  3h + 1h测试
+线上学习总时长 使用全量数据。s2_user_learn_total_duration_stat
+线上学习人数按天统计表 和 按小时统计表。 需要代码重构。生成一份数据。
+机构、标签、职位的三个维度的学习统计时长，需要代码重构，生成一份数据。
+用户粒度的统计学习时长需要代码重构生成一份数据。 s2_user_learn_time_stat_date  
+5分代码 1份0.5*5 = 2.5 
+
+预计晚上8点。
+
+
+
+
+
+
+select * from s2_term_learn_progress_stat_master where member_id= ? and provider_id= ? and term_type= ? and online_flag=? and term_choose_type=? and enroll_time >= ? and enroll_time <= ? order by enroll_time desc limit ? offset ?;
+
+select count(*) from s2_term_learn_progress_stat_master where member_id= ? abd provider_id= ? and term_type= ? and online_flag=? and term_choose_type=? and enroll_time >= ? and enroll_time <= ?;
+
+select count(*) from s2_term_learn_progress_stat_master where term_id= ? and provider_id= ? and member_id in (,,);
+
+select * from s2_term_learn_progress_stat_master where term_id= ? and provider_id= ? and member_id in (,,) order by enroll_time desc limit ? offset ?;
+
+
+select * from s2_user_learn_record_stat_total_master where member_id= ? abd provider_id= ?;
+
+
+数据订正：
+	S2_aggregation_learn 表 provider_id 字段修正：
+订正url：
+	预发跑全量的订正脚本：http://teach.study.163.com/userLearn/dataCorrect/updateAggregationlearnProviderIdWithBatch.htm?rangeType=1
+	上线之后，再跑增量的订正脚本；http://teach.study.163.com/userLearn/dataCorrect/updateAggregationlearnProviderIdWithBatch.htm?rangeType=2
+
+
+
+
+CREATE TABLE `s2_term_learn_progress_stat_slave` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `aggregation_learn_id` bigint(20) NOT NULL COMMENT 'aggregation_learn表主键id',
+  `member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `provider_id` bigint(20) DEFAULT '-1' COMMENT '机构id',
+  `term_id` bigint(20) DEFAULT NULL COMMENT '期次id',
+  `term_type` smallint(2) DEFAULT NULL COMMENT '期次类型，随到随学班次0 学期制班次3',
+  `term_choose_type` smallint(2) DEFAULT NULL COMMENT '选课类型，即期次报名方式，1指派 2 自选，取自s2_term_entry_mode 表的 enroll_type',
+  `online_flag` smallint(2) DEFAULT NULL COMMENT '是否线下培训 1:线上 2：线下',
+  `enroll_time` bigint(20) DEFAULT NULL COMMENT '课程参加时间',
+  `signed_count` smallint(6) DEFAULT NULL COMMENT '出勤次数，即签到次数',
+  `leave_count` smallint(6) DEFAULT NULL COMMENT '请假次数',
+  `not_signed_count` smallint(6) DEFAULT NULL COMMENT '缺勤次数',
+  `online_learn_duration` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+  `offline_learn_duration` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数）',
+  `term_unit_learn_count` smallint(6) DEFAULT NULL COMMENT '学期课件学习数',
+  `term_unit_finished_count` smallint(6) DEFAULT NULL COMMENT '学期课件完成数',
+  `term_unit_total_count` smallint(6) DEFAULT NULL COMMENT '学期总课件数',
+  `term_unit_duration` bigint(20) DEFAULT NULL COMMENT '课件观看时间',
+  `score` decimal(10,2) DEFAULT NULL COMMENT '学期成绩，来自s2_term_score_summary.total_normalized_score_plus_bonus',
+  `first_learn_time` bigint(20) DEFAULT NULL COMMENT '首次学习时间',
+  `last_learn_time` bigint(20) DEFAULT NULL COMMENT '最近学习时间',
+  `post_count` smallint(6) DEFAULT NULL COMMENT '发帖数',
+  `post_reply_count` smallint(6) DEFAULT NULL COMMENT '回帖数',
+  `post_comment_count` smallint(6) DEFAULT NULL COMMENT '评论数',
+  `post_top_count` smallint(6) DEFAULT NULL COMMENT '被顶数',
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_memberid_providerid` (`member_id`,`provider_id`),
+  KEY `idx_providerid_aggregationlearnid` (`provider_id`,`aggregation_learn_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户期次学习进度统计表'
+
+
+CREATE TABLE `s2_user_learn_record_stat_total_master` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `provider_id` bigint(20) DEFAULT NULL COMMENT '机构id',
+  `assigned_count` int(11) DEFAULT NULL COMMENT '指派课数',
+  `assigned_finished_count` int(11) DEFAULT NULL COMMENT '指派完课数',
+  `enroll_count` int(11) DEFAULT NULL COMMENT '自选课数',
+  `enroll_finished_count` int(11) DEFAULT NULL COMMENT '自选完课数',
+  `online_learn_duration` bigint(20) DEFAULT NULL COMMENT '线上学习总时长（毫秒数）',
+  `offline_learn_duration` bigint(20) DEFAULT NULL COMMENT '线下学习总时长（毫秒数）',
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_providerid_memberid` (`provider_id`,`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户学习记录统计表,所有时间统计';
+
+
+
+******************************************************************************** 20170313
+
+1、旧日志数据 uid 在 bizData 外面，而新日志 在 bizData 里面，导致 BI 第一次就日志数据解析失败；
+2、mooc-02 机器 对于 BI数据库 的 白名单配置；
+
+
+
+SELECT * from s2_term_learn_progress_stat_slave where aggregation_learn_id = 400000001370004;
+
+tar -zcvf 2017-03-12.tar.gz 2017-03-12
+python -m SimpleHTTPServer 9876
+wget 'host:port/XXX.tar.gz'
+
+
+日志路径切换**************** @hg
+
+
+线上ykt + 预发qyy  ——> 线上联通 s2log
+
+
+
+
+
+
+XMLHttpRequest cannot load http://log.study.163.com/__utm.gif. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://edu.study.163.com' is therefore not allowed access. The response had HTTP status code 502.
+
+
+list<String> 转 String[] ：
+java [Ljava.lang.Object; cannot be cast to [Ljava.lang.String
+
+
+
+47214
+
+
+
+61.50 61.5
+61.00 61
+
+
+
+线上问题：
+select * from s2_aggregation_learn where id in (400000001100004,400000001103004,400000001106047) and member_id = 1024158114;
+
+termids： 400000000658003,400000000651004,400000000642006
+
+unitIds：  400000001422016,400000001441001
+
+2017/3/15 11:5:25		
+
+
+课件播放页 日志 只有起止时间相同的日志，并没有 时长日志；	
+课件全是 视频：  400000001422016,400000001441001
+
+
+	
+1489542945006		：  2017/3/15 9:55:45
+
+1489545266273		：  2017/3/15 10:34:26
+
+1489547125621		：  2017/3/15 11:5:25
+
+

@@ -1,0 +1,281 @@
+
+7月2号 提测：
+
+ww 		24下午（熟悉）、25、26、1、2		4d	3d开发 + 1d自测
+cy		24下午（熟悉）- 2					7d	4d开发 + 2d自测 + 1
+
+24下午半天的需求熟悉
+
+后端： 8d开发
+
+
+
+
+http://127.0.0.1:18042/task/invoke.htm?type=calculateProjectMemberProgressTask
+
+
+
+edu-base-framework;search-server;provider-server;course-server;enterprise-web;study-backend;study-teach;
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<project-list>edu-base-framework;search-server;provider-server;course-server;enterprise-web;study-backend;study-teach</project-list>
+	<branch-name>feature/optimize_ww_20170804</branch-name>
+	<version-suffix>optimize_ww_20170804</version-suffix>
+</root>
+
+
+
+
+***************************************************************************************************************** 20170725
+
+
+运营数据订正：  因为 scorm 进度 与 课件观看完成【has_finished】不一致的 问题
+
+【测试环境 订正测试】
+整个机构扫描 订正接口：  http://wjncorp12.study.163.com/j/coursedesign/correctUserScormLearnProgressByTerms.json?termIds=&providerId=400000001139001
+
+【线上环境 正式订正】【预发上进行】
+河北建投：		http://fes1test.study.163.com/j/coursedesign/correctUserScormLearnProgressByTerms.json?termIds=&providerId=400000000108001
+
+
+
+select * from s2_lesson_unit where term_id=400000001007052;
+
+select * from s2_lesson_content_learn where term_id=400000002181143 and member_id=7735049;
+
+select * from scorm_view_record where lesson_unit_id=400000002261078 and learner_id=7735049
+
+
+
+select * from s2_lesson_content_learn where term_id=400000002181143 and unit_id=400000002261078;
+
+
+
+线上数据验证：
+400000001007052  		400000001834279			1026728715
+
+term_id=400000001007052 and member_id=1026728715;
+
+
+
+
+
+***************************************************************************************************************** 20170726
+
+1、网络课堂列表
+
+http://admin.study.163.com/j/backend/provider/getList.json
+
+pageIndex:1
+pageSize:50
+
+
+belongTypes： VirtualProviderConstants.BELONG_PROVIDER_APPLY, VirtualProviderConstants.BELONG_PERSONAL_APPLY	（0,1）
+
+VirtualProvider :  belong_type in (0,1) order by gmt_create desc [分页]
+
+
+2、企业站点管理 > 企业站点列表
+http://admin.study.163.com/j/backend/account/getList.json?siteId=&siteName=&pageIndex=1&pageSize=20
+
+siteId:
+siteName:
+pageIndex:1
+pageSize:20
+
+
+SiteListDto listDto = siteShareService.searchSiteList(siteId, siteName, pageIndex, pageSize);
+
+id = ? and site_name = ? order by gmt_create desc [分页]
+
+
+3、课程授权列表
+搜索站点： http://admin.study.163.com/j/backend/enterprise/getAuthCoursesToEnterprise.json
+siteId:400000001134001
+pageIndex:1
+pageSize:20
+
+
+
+企业站点列表
+课程授权列表:
+provider_name +   site_domain	【二选一】
+
+网络课堂列表：
+provider_name
+
+
+
+providerDocument：
+
+Long providerId  
+String providerName		【模糊搜索】
+Integer belongType 		【支持多值】【0,1,4】【排序】
+Long gmtCreate 			【倒序排序】
+Long siteId
+siteDomain
+
+
+
+字段        		值类型    是否主键   是否store  是否index  是否sort   是否analyze  分词
+id 					Long        是    是    是    是    否    无
+providerId			long        否	  是    是    是    否    无
+gmtCreate			long        否	  是    是    是    否    无
+providerName 		String		否	  是	是	  是	是	后缀分词
+belongType 			Integer     否	  是	是	  是	否	  无
+siteId 				long        否	  是    是    是    否    无
+siteDomain 			String		否	  是	是	  是	是	后缀分词
+
+
+
+
+1、网络课堂列表：
+/j/backend/provider/searchList.json
+
+参数：
+pSize
+pIndex
+providerName   【可以不传】
+
+
+
+2、企业站点列表
+j/backend/account/searchList.json
+
+参数：
+siteDomain:		可以不传
+providerName:	可以不穿
+pageIndex:
+pageSize:
+
+【注意】 siteDomain 和 providerName 不能同时以正常数值 存在
+
+
+3、课程授权列表:【精确搜索】
+/j/backend/enterprise/getAuthCoursesToEnterpriseWithSearch.json
+
+参数：
+siteDomain:		可以不传
+providerName:	可以不穿
+pageIndex:
+pageSize:
+
+【注意】 siteDomain 和 providerName 不能同时传，也不能同时不传
+
+
+
+***************************************************************************************************** 20170801
+
+查看测试索引：
+
+http://10.165.125.15/sd/service/query?index=edu_course_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003%20AND%20name:zby
+
+
+http://10.165.125.15/sd/service/query?index=edu_course_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=termName:zby
+
+
+
+
+study-teach 服务器调用：
+curl "http://127.0.0.1:18042/task/invoke.htm?type=providerIndexTask"
+
+
+select * from  s2_virtual_provider where id > 0 and  belong_type in (0,1,4) order by id asc limit 10;
+
+
+0:1596
+1:1186
+4:271
+
+
+http://10.165.125.15/sd/service/query?index=edu_provider_v2&stype=1&offset=0&length=88&ps=false&sort=id+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=belongType:4
+
+
+http://10.165.125.15/sd/service/query?index=edu_provider_v2&stype=1&offset=0&length=88&ps=false&sort=id+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerName:%E4%BA%94%E8%A1%8C%E7%BC%BA%E6%B0%B4
+
+%20AND%20providerName:fes企业云1
+
+http://10.165.125.15/sd/service/query?index=edu_provider_v2&stype=1&offset=0&length=88&ps=false&sort=id+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=belongType:4%20AND%20providerName:fes%E4%BC%81%E4%B8%9A%E4%BA%911
+
+
+
+工程范围： provider-server;course-server;enterprise-web;
+		   search-server;study-backend;study-teach;
+
+
+
+***************************************************************************** 20170803
+
+诗人不放羊Y
+1028717246
+
+1019032790
+
+
+INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id_num) VALUES(seq,1,1,1028717246,'-1','H22223');
+
+INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id_num) VALUES(seq,1,1,1019032790,'-1','H22224');
+
+
+
+二、猛犸线上job spark版本升级：
+enterprise-etl-online
+
+1、pom.xml
+<spark.version>2.0.2</spark.version>
+
+<dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>2.7.3</version>
+            <scope>provided</scope>
+        </dependency>
+
+2、spark_common.properties：
+spark-version=2.0.2-2.7.3
+
+
+
+curl "http://127.0.0.1:18042/task/invoke.htm?type=calculateProjectMemberProgressTask"
+
+
+
+
+
+
+
+
+
+
+
+
+工程范围： provider-server;course-server;enterprise-web;
+		   search-server;study-backend;study-teach;
+
+
+
+
+
+provider-server ： release 
+ course-server ：release 
+ edu-statistic-server：release 
+ enterprise-web ： release 
+ study-teach : release
+
+
+
+
+
+
+select * from scorm_view_record where lesson_unit_id=400000002169014 and learner_id=1028155364;
+
+select * from s2_lesson_content_learn where term_id=400000001292006 and member_id=1028155364 order by unit_id;
+
+select * from s2_lesson_unit where term_id=400000001292006;
+
+
+
+30 2 * * * curl -s http://10.122.138.125:18042/task/invoke.htm?type=providerIndexTask  > /dev/null 2>&1
+

@@ -1,0 +1,171 @@
+日志来源： ${mid}.user_behavior
+
+	biz_dat['term_id'] as term_id,
+    user_id as uid,
+    biz_dat['start_time'] as start_time,
+    biz_dat['end_time'] as end_time
+
+    active_name
+
+
+统计指标：
+一、时长指标
+（1）type='1d',tag='unit_learn'
+
+	day = '$etlDay' and active_name in ('lesson_unit_learn_record', 'lesson_unit_learn_end') and biz_dat['term_id'] is not null and user_id is not null and biz_dat['start_time'] != '0'
+
+（2）type='td',tag='unit_learn'
+
+	day='${etlDay.yesterday}' and type = 'td' and tag='unit_learn'
+	union all
+	day='$etlDay' and type = '1d' and tag='unit_learn'
+
+（3）type='1d',tag='all_learn'
+	day = '$etlDay' and device_type = 'web' and active_name = 'user_learn_record' and biz_dat['term_id'] is not null and user_id is not null
+	union all
+	day = '$etlDay' and device_type = 'web' and active_name = 'lesson_unit_learn_record' and biz_dat['term_id'] is not null and user_id is not null
+	union all
+	day = '$etlDay' and device_type != 'web' and active_name in ('lesson_unit_learn_record', 'lesson_unit_learn_end') and biz_dat['term_id'] is not null and user_id is not null and app_name is null and biz_dat['start_time'] != 0
+	union all
+	day = '$etlDay' and device_type != 'web' and active_name in ('user_learn_record', 'user_learn_end') and biz_dat['term_id'] is not null and user_id is not null and biz_dat['start_time'] != 0
+
+（4）type='td',tag='all_learn'
+	day='${etlDay.yesterday}' and type = 'td' and tag = 'all_learn'
+	union all
+	day='$etlDay' and type = '1d' and tag = 'all_learn'
+
+（5）${mid}.term_learn_progress_stat_kv.online_learn_total_time	【OnlineLearnTotalTime】
+	from ${mid}.user_term_learn_duration where day= '$etlDay' and type = 'td' and tag='all_learn'
+
+（6）${mid}.term_learn_progress_stat_kv.term_unit_learn_time	【TermUnitLearnTime】
+	from ${mid}.user_term_learn_duration where day= '$etlDay' and type = 'td' and tag='unit_learn'
+
+（7）${output}.s2_user_project_learn_time_date.online_learn_duration 	【S2UserProjectLearnTimeDate】
+	from ${mid}.user_term_learn_duration where day='$etlDay' and type='1d' and tag='all_learn'
+
+（8）${output}.s2_user_project_stat_total.online_learn_duration		【S2UserProjectStatTotal】
+	from ${mid}.user_term_learn_duration where day='$etlDay' and type='td' and tag='all_learn'
+
+（9）${output}.s2_department_learn_duration_date.online_learn_duration	【S2DepartmentLearnTermDate】
+	from ${mid}.user_term_learn_duration where type = '1d' and tag = 'all_learn' and day = '$etlDay'
+
+（10）${output}.s2_group_learn_duration_date.online_learn_duration		【S2GroupLearnTermDate】
+	from ${mid}.user_term_learn_duration where type = '1d' and tag = 'all_learn' and day = '$etlDay'
+
+（11）${output}.s2_position_learn_duration_date.online_learn_duration	【S2PositionLearnTermDate】
+	from ${mid}.user_term_learn_duration where type = '1d' and tag = 'all_learn' and day = '$etlDay'
+
+（12）${output}.s2_user_learn_time_stat_date.online_learn_duration		【S2UserLearnTimeStatDate】
+	from ${mid}.user_term_learn_duration where type = '1d' and tag = 'all_learn' and day = '$etlDay'
+
+（13）${output}.s2_user_learn_total_duration_stat.online_learn_duration【S2UserLearnTotalDurationStat】
+	${mid}.user_term_learn_duration where day= '$etlDay' and type = 'td' and tag='all_learn'
+
+
+二、在线人数指标
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

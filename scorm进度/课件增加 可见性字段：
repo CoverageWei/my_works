@@ -1,0 +1,129 @@
+课件增加 可见性字段：
+
+# s2_lesson_unit 表增加2个字段 标识： 端可见性；
+alter table s2_lesson_unit add column `client_visible` smallint(2) DEFAULT '0' COMMENT '课件端可见性， 0:所有端显示，1:仅在web端显示， 2:仅在移动端显示 ';
+
+#scorm_view_record【表】增加字段 view_progress 记录 观看进度：
+alter table scorm_view_record add column `view_progress` decimal(10,2) DEFAULT NULL COMMENT 'scorm课件观看进度';
+
+增加 端支持性：
+web端支持但是移动端不支持的课件， 在两端都可以 展现，但是 会分别带 标识， 进度 还是按照 两端 可以展现的目录计算；
+
+
+
+
+课件创建： 课件增加 端可见性 + 运营录入可见性 http接口；	1d
+DB表变更：  s2_lesson_unit 表增加1个字段 标识： 端可见性；
+
+ 
+web接口排查修改范围：
+1、若课件设置为某一端不可见则对应端的目录列表中不展示对应课件：	1d
+        接口排查，目录列表中 非本端显示的 课件不显示；
+        如果发布后因为隐藏课件导致某个章或节下没有课件，则不显示这个章或节（最好后端处理后，直接给前端）
+
+2、web端所有已学过的课件、最新发布的课件、上次学到课件 逻辑需调整为web端可见的已学过、最新发布、上次学到的课件	1d
+ 
+3、app端所有上次学到课件逻辑需调整为app端可见的上次学到的课件【移动端做】
+
+4、进度条数据取web进度、app进度两者中较多者的百分比来展示
+
+5、学习中心-卡片进度展示
+	已学 4/6课 ——> 较大的百分比
+
+
+数据订正：	【1d】
+
+需运营同学提供对应源课程的id，企业id、期次id（包括未出售的源课程，已经售出的企业内的课程），统一订正：
+1、
+scorm课件订正为仅web端可见，进度单独计算	1d
+对应的mp4课件订正为仅app端可见，进度单独计算	
+
+2、相关课程的用户学习进度订正后需重新计算 	【BI job按照新的逻辑 重新跑一次就好】
+
+scorm课件导入脚本修改：
+scorm课件导入的脚本内需增加对应字段（scorm课件web可见、mp4课件仅app端可见）
+
+
+BI job统计变更：2d
+
+3、修改 CommonAttribute：
+学期总课件数 term_unit_total_count  ： 目前包括所有类型课件 ，不区分分支；
+ ——> 【增加指标】 学期web端可见总课件数 + 学期app端可见总课件数
+学期web端可见总课件数（term_web_total_count）： count(id) from s2_lesson_unit where client_visible in (0,1)
+学期app端可见总课件数（term_app_total_count）： count(id) from s2_lesson_unit where client_visible in (0,2)
+
+
+4、修改 TermUnit：
+学期课件学习数 term_unit_learn_count ：  目前包括所有类型课件 ，不区分分支；【保持原逻辑不变】
+学期课件完成数 term_unit_finished_count 
+
+——> 【增加指标】 学期分支内课件完成数 + 分支以外课件完成数
+学期web端可见课件完成数（term_unit_web_finished_count）： s2_lesson_unit.client_visible in (0,1) and  s2_lesson_content_learn.hasFinished = 1 
+学期app端可见课件完成数（term_unit_app_finished_count）：s2_lesson_unit.client_visible in (0,2) and  s2_lesson_content_learn.hasFinished = 1
+
+
+web课程进度： 	【根据BI计算的count，实时计算】
+if（term_web_total_count > 1）
+	term_unit_web_finished_count / term_web_total_count
+else
+	scorm 内部进度百分比；
+
+app课程进度：
+if（term_app_total_count > 1）
+	term_unit_app_finished_count / term_app_total_count
+
+else 
+	scorm内部进度百分比；
+
+最终课程进度： max（web课程进度， app课程进度）
+
+
+scorm 课件进度迭代wbs：
+共 9人日
+
+课件增加 端可见性 + 端可支持性 + 运营录入可见性 http接口；	1d
+对应端的目录列表中不展示对应课件：	0.5d
+web端可见的已学过、最新发布、上次学到的课件调整		0.5d
+进度计算、进度条展示 + 课程卡片调整：0.5d
+
+现有scorm课程数据订正：1.5d
+
+BI job统计变更：2d
+
+联调： 1.5d
+冒烟： 1.5d
+
+
+
+1、修改 CommonAttribute：1d
+2、修改 TermUnit：	1d
+
+
+
+
+http://10.164.97.175:18042/task/invoke.htm?type=courseTermRelIndexTask
+
+
+访问study-teach：
+std环境 + http://admin.study.163.com/admin.htm + "企业服务管理 > 网络课堂列表" > "进入网络课堂" > http://teach.study.163.com/...
+运营权限账号：
+hzwwedu@163.com
+
+
+http://wjnuser1test.study.163.com
+hzwwedu@163.com
+ww-test1
+U75U2U
+
+http://wjnuser1test.study.163.com
+test31111
+5B46DG
+
+
+update s2_course set status = 2 where provider_id = 400000000008007 and status = 0 and first_publish_time > 0;
+
+
+
+update s2_course set status = 2 where provider_id = 400000001139001 and status = 0 and first_publish_time > 0;
+
+
