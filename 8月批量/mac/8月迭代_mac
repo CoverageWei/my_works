@@ -1,0 +1,667 @@
+*************************** 20170807
+
+视频库：
+
+一、视频上传
+1、http://fes1.study.163.com/enterprise/UploaderCenterManager/getEduUploaderToken.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+type:2
+fileSize:86965726
+fileGmtModifiedTime:1499254712943
+
+code:0
+message:"ok"
+result:"3dfd3db1fc0642c29712304bde66a0ad"
+
+
+2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/exchangeNosTokenByEduToken.do
+
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+fileGmtModifiedTime:1499254712943
+
+
+code:0
+message:"ok"
+result:{status: 0, msg: "ok", nosKey: "12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4", expire: 1502116946,…}
+bucketName:"edu-video"
+expire:1502116946
+msg:"ok"
+nosKey:"12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4"
+status:0
+xnosToken:"UPLOAD 7ba71f968e4340f1ab476ecb300190fa:eq/JUlAiDrpgyMZaKLuUkDrOpFCDEshMsyulagvZyjY=:eyJCdWNrZXQiOiJlZHUtdmlkZW8iLCJFeHBpcmVzIjoxNTAyMTE2OTQ2LCJPYmplY3QiOiIxMmU1ZmRmZS03ZjZjLTQ3MDEtOTZhZS1jMzljOTcxMGZlNzEubXA0IiwiUmV0dXJuQm9keSI6IntcIk5vc0tleVwiOlwiMTJlNWZkZmUtN2Y2Yy00NzAxLTk2YWUtYzM5Yzk3MTBmZTcxLm1wNFwiLFwiQnVja2V0XCI6XCJlZHUtdmlkZW9cIn0ifQ=="
+
+
+3、http://wanproxy.127.net/lbs?version=1.0&bucketname=edu-video
+
+version:1.0
+bucketname:edu-video
+
+
+lbs:"http://223.252.196.38/lbs"
+upload:["http://223.252.216.48", "http://223.252.216.49"]
+0:"http://223.252.216.48"
+1:"http://223.252.216.49"
+
+
+4、http://up.study.163.com/j/uploader-server/UploaderCenterManager/getContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"contex或者已经失效，请重新上传"
+result:{context: "", offset: 0}
+	context:""
+	offset:0
+
+
+5.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=0&complete=false&version=1.0
+
+offset:0
+complete:false
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:1048576
+requestId:"70dabc53dffc000000005987d392d831"	[每次都不同]
+
+
+5.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+offset:1048576
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"ok"
+result:null
+
+
+6.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=1048576&complete=false&context=e490ec2f-e75d-6b6e-453a-99ed2be7f929&version=1.0
+
+offset:1048576
+complete:false
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:2097152
+requestId:"6bea8dbddffc000000005987d393d831"
+
+
+6.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+offset:2097152
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+
+code:0
+message:"ok"
+result:null
+
+
+
+7.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=84934656&complete=false&context=e490ec2f-e75d-6b6e-453a-99ed2be7f929&version=1.0
+
+offset:84934656
+complete:false
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:85983232
+requestId:"53ce1edddffc000000005987d3acd831"
+
+
+7.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+offset:85983232
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"ok"
+result:null
+
+
+8.1、http://223.252.216.48/edu-video/12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4?offset=85983232&complete=true&context=e490ec2f-e75d-6b6e-453a-99ed2be7f929&version=1.0【上传完成】
+
+offset:85983232
+complete:true
+context:e490ec2f-e75d-6b6e-453a-99ed2be7f929
+version:1.0
+
+callbackRetMsg:""
+context:"e490ec2f-e75d-6b6e-453a-99ed2be7f929"
+offset:86965726
+requestId:"2449b767dffc000000005987d3acd831"
+
+
+8.2、http://up.study.163.com/j/uploader-server/UploaderCenterManager/saveContext.do 	【上传完成】
+
+fileName:%E5%B9%B4%E8%BD%BB%E7%9C%9F%E5%A5%BD%EF%BC%81%E7%BA%A2%E9%AD%94%E6%97%B6%E6%9C%9F%E7%9A%84C%E7%BD%97%E8%84%9A%E4%B8%8B%E7%94%9F%E8%8A%B1.mp4
+fileSize:86965726
+context:
+offset:0
+fileGmtModifiedTime:
+eduUploaderToken:3dfd3db1fc0642c29712304bde66a0ad
+
+code:0
+message:"ok"
+result:null
+
+
+9、http://up.study.163.com/j/uploader-server/UploaderCenterManager/checkUploadSuccess.do 	【校验是否上传完成】
+
+bucketName:edu-video
+nosKey:12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4
+
+code:0
+message:"ok"
+result:true
+
+
+10、http://fes1.study.163.com/j/coursedesign/TermManager/updateVideoRepoOfTerm.do
+
+termId:400000002573001
+nosKey:12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4
+fileName:年轻真好！红魔时期的C罗脚下生花.mp4
+nosBucket:edu-video
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "videoId": 0,
+        "videoImgUrl": null,
+        "duration": null,
+        "flvSdUrl": null,
+        "flvHdUrl": null,
+        "flvShdUrl": null,
+        "mp4SdUrl": null,
+        "mp4HdUrl": null,
+        "mp4ShdUrl": null,
+        "key": "12e5fdfe-7f6c-4701-96ae-c39c9710fe71.mp4",
+        "needKeyTimeValidate": null,
+        "playerCollection": null,
+        "isEncrypt": false,
+        "clientEncryptKeyVersion": null,
+        "videoDecryptData": null,
+        "mp4Caption": null,
+        "flvCaption": null,
+        "srtKeys": null,
+        "name": "年轻真好！红魔时期的C罗脚下生花.mp4",
+        "origNosKey": null,
+        "status": null,
+        "uploadTime": null,
+        "start": null
+    }
+}
+
+11、获取视频列表
+http://fes1.study.163.com/j/coursedesign/TermManager/getAllVideoOfTermPaged.json?termId=400000002573001&pageSize=10&pageIndex=1&searchKey=&_t=1502073773939
+
+termId:400000002573001
+pageSize:10
+pageIndex:1
+searchKey:
+
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "videoReopList": [
+            {
+                "videoVo": {
+                    "videoId": 1006304001,
+                    "videoImgUrl": null,
+                    "duration": null,
+                    "flvSdUrl": null,
+                    "flvHdUrl": null,
+                    "flvShdUrl": null,
+                    "mp4SdUrl": null,
+                    "mp4HdUrl": null,
+                    "mp4ShdUrl": null,
+                    "key": null,
+                    "needKeyTimeValidate": null,
+                    "playerCollection": null,
+                    "isEncrypt": false,
+                    "clientEncryptKeyVersion": null,
+                    "videoDecryptData": null,
+                    "mp4Caption": null,
+                    "flvCaption": null,
+                    "srtKeys": null,
+                    "status": -1,
+                    "name": "年轻真好！红魔时期的C罗脚下生花.mp4",
+                    "origNosKey": null,
+                    "uploadTime": 1502073773783,
+                    "start": null
+                },
+                "videoFrom": 0
+            }
+        ],
+        "pagination": {
+            "pageSize": 10,
+            "pageIndex": 1,
+            "totlePageCount": 1,
+            "totleCount": 1,
+            "offset": 0,
+            "limit": 10,
+            "sortCriterial": null
+        }
+    }
+}
+
+
+********************** 下午 交互会
+1、勾选 后端存储，刷新后复现；
+2、标记已添加视频；
+3、期次处理维度上加限时锁【分场景，批量设置报名方式 2分钟，批量指派 10分钟等考虑】；
+4、不同权限 查看不同的 课程列表；
+
+
+课件名称 可以重复；
+
+
+
+
+************************************** 20170812
+
+一、期次发布：
+http://fes1.study.163.com/j/org/term/publishTerm.do
+	Boolean result = courseDesignManager.directPublishTerm(WebUser.getUserId(), termId);	// @EduTransaction，事务维护
+		// 1、更新 期次草稿的发布状态 + db中 s2_term表的发布状态及时间
+		Boolean res = termService.directPublishTerm(termId);
+			termDraftDocDao.updateStatus(termId, TermPublishStatusEnum.PUBLISHED.getValue());	// mongo 中更新期次草稿为 发布状态
+ 	
+ 			// 更新 db中 s2_term表，字段更新：PublishStatus（发布状态）、GmtModified、FirstPublishTime、LastSubmitReviewTime ；
+			termDao.updateSelectiveById(publishTerm); 	
+
+		TermDto term = termService.getTermDtoFromDB(termId);	// DB中读取期次 及 目录章节、课件等目录结构
+		// 2、
+		if (Boolean.TRUE.equals(res) && TermPublishStatusEnum.PUBLISHED.getValue().equals(term.getPublishStatus())) {
+            doPublishTerm(term);			// 2.1【总结】更新 课程表当前期次，发布期次详情页，发布 期次菜单栏 到 DB
+            autoPublishChapters(termId);	// 2.2【总结】真正的 期次目录树 节点发布： Mongo 草稿数据 ——> DB
+            doPbulishCourse(term);			// 2.3【总结】期次发布完成，更新课程表 的一些 必要状态
+            publishTest(termId);			// 2.4【总结】发布期次下的 习题
+            publishExam(termId);			// 2.5【总结】发布期次下的 考试、习题考试关联关系、总分规则
+        }
+
+
+
+//【总结】更新 课程表当前期次，发布期次详情页，发布 期次菜单栏 到 DB
+2.1、doPublishTerm(term);		
+（1）courseService.notifyCourseTermPublished(term.getCourseId(), term, System.currentTimeMillis());
+	// 更新 DB s2_course表，字段更新：GmtModified、FirstPublishTime（null时才set）、CurrentTermId（null时才set）、OnlineFlag ；
+	courseDao.updateSelectiveById(update);
+
+// 发布期次介绍页，包括：更新s2_term 表，mongo中保存 TermDetailDoc，DB 表生成 TermOnDemand 或 TermSchedule
+（2）termDraftService.publishTermInfo(term.getId());		
+	TermDraftDoc termDraftDoc = termValidate.validateTermInfoForPublish(termId);	// 获取期次草稿，并校验 草稿中 是否完成期次介绍页信息录入
+		TermDraftDoc termDraftDoc = termDraftDocDao.getById(termId);
+		ValidateUtils.notNull(termDraftDoc.getTermDetailDraftDoc());
+		ValidateUtils.isTrue(validateTermInfoFinished(termDraftDoc));
+			return TermDraftDoc.FINISH_TERM_INFO_TRUE.equals(termDraftDoc.getFinishTermInfo());
+
+	termDao.updateSelectiveById(updateTerm);	//  更新 db中 s2_term表： Name【 termDraftDoc.getName()】、GmtModified【当前时间】
+
+	// 保存 期次详情页 草稿 ——> mongo	
+	TermDetailDoc termDetailDoc = BeanConvertUtils.deepSafeConvert(termDraftDoc.getTermDetailDraftDoc(), 
+					TermDetailDraftDoc.class, TermDetailDoc.class);
+    termDetailDocDao.save(termDetailDoc);		// mongo 中保存 期次详情页信息
+
+    if：TERM_TYPE_ON_DEMAND
+    	TermOnDemand termOnDemand = BeanConvertUtils.convert(termDraftDoc.getTermOnDemandDraftDoc(),
+                    TermOnDemandDraftDoc.class, TermOnDemand.class);
+        TermOnDemand old = termOnDemandDao.getById(termId);
+        if (old == null) ： 
+        	termOnDemandDao.add(termOnDemand);		// 插入 DB 记录【草稿中信息 为准】
+        else：
+        	termOnDemandDao.updateSelectiveById(termOnDemand);	 // DB update【草稿中的信息为准，更新 DB 已有记录】
+    else：
+    	TermSchedule termSchedule = BeanConvertUtils.convert(termDraftDoc.getTermScheduleDraftDoc(),
+                	TermScheduleDraftDoc.class, TermSchedule.class);
+        TermSchedule old = termScheduleDao.getById(termId);
+        /**/ 接下来操作同上，注意： 线下学期制 CloseVisableStatus 默认全关闭
+
+        // 有确切结束时间的 期次，会 addOrUpdate 结业定时任务处理：TermGraduationTask，taskStatus 默认 NOT_STARTED ；
+        if(!TermScheduleConstants.END_TIME_NO_LIMIT.equals(termSchedule.getEndTime())){
+            termGraduationTaskService.saveTermGraduationTask(termId, termDraftDoc.getCompositeType(),termSchedule.getEndTime());
+        }
+
+// 发布期次菜单栏信息
+（3）dashboardValidate.publishDashboard(term.getId());
+	publishForum(termId);	// 发布讨论区
+		forumDraftShareService.publishForumByTermId(termId);
+			...
+			ForumDto forumDto = this.getDraftForumInfo(forumId,false);
+				ForumDraftDoc forumDraftDoc  = forumDraftDocDao.getById(id);
+				...
+			ForumDto forumDtoAfterPublish =  this.setDraftForumInfo(forumId, true, forumDto);
+				ForumDraftDoc forumDraftDoc = forumDraftDocDao.getById(id);
+				...
+				if(isPublish){					// 真正多 讨论区的 发布操作；
+		        	publishForum(id,forumDto);
+		        }
+		        ...	// 草稿数据中删除掉 标记为删除状态的 讨论区节点 
+		        //更新草稿	【发布操作后，DB 成功，更新草稿中数据，被标记为已删除的节点 草稿中会去掉】
+		        forumDraftDoc.setForumContent(JsonUtils.toJson(forumDto));
+		        forumDraftDocDao.save(forumDraftDoc);
+
+    termDraftService.publishMenu(termId);
+    	return termMenuHelper.publishMenu(termId);
+    		MenuDoc menuDoc = menuItemDocDao.getById(termId);		// mongo 中读取 菜单栏信息草稿，发布菜单项 menuDoc.getItemList()
+
+    		if (MenuDoc.menuItemPublish == menuDoc.getStatus()) {
+	            return true;// 该草稿已经发布
+	        }
+
+    		List<MenuItem> items = menuDoc.getItemList()；			// 类似处理
+    		先删除 当前草稿中 有id 的菜单项（已发布到 DB 中的菜单项）；
+    		for (MenuItem item : items) {
+    			item.setStatus(MenuItemConstants.STATUS_PUBLISHED);		// 每个菜单项设为 发布状态
+    			...
+    			menuItemDao.... ： 当前DB 该期次下 有该 iterm项，则 update； 否则，add；
+    		}
+
+    		menuDoc.setStatus(MenuDoc.menuItemPublish);				// 更新 mongo 中菜单栏信息草稿 为已发布状态；
+        	menuItemDocDao.save(menuDoc);
+
+
+//【总结】 真正的 期次目录树 节点发布： Mongo 草稿数据 ——> DB
+2.2	autoPublishChapters(termId);	
+	TermDto termDto = termDraftService.getTermDtoWithDraft(termId);		// Mongo 中查询草稿
+		TermDraftDoc doc = termDraftDocDao.getById(termId);	
+		if (doc == null) ...		// 如果mongo中没有记录，则 从db 中读取封装 并 插入Mongo记录；
+
+	CatalogDto catalogDto = termDto.getCatalog();
+    if (catalogDto == null || CollectionUtils.isEmpty(catalogDto.getCatalogList())) {		// 没有新的目录结构，走 老的章节目录发布流程；
+        1、publishOldChapters(termId, termDto);								// 发布旧的章节
+        	List<ChapterDto> chapterDtoList = termDto.getChapterDtos();		// 获取章节列表
+
+        	// 校验期次旧的目录结构：章节、课时、课件的内容正确性以及 完整性
+        	boolean verifyContentOk = courseManagerHelper.verifyChapterAndSetSwfStatus(chapterDtoList, new StringBuilder());
+        	if：校验不通过
+        		// 更新发布进度 为 发布失败，totalNum=章节数, finishedNum=0【疑问：失效时间设为 3600 * 24 * 30，为啥这么久？？】
+        		termManagerHelper.setTermPublishSchedule(termId, totalNum, finishedNum,CourseDesignServiceConstants.TERM_CHAPTER_PUBLISH_FAIL, msg);	
+        		return；	
+        	else：校验通过，开始发布：	// set redis状态为 发布中；
+        	while (chapterIt.hasNext())
+        		// 真正的发布操作：遍历所有章节，发布单章节，遍历最终做 章节下课时、课时单元的 发布
+        		// 【注意】1、发布课件的时候，发送消息：publishLessonUnitJmsProvider.publishLesonUnit(unit, DraftStatusEnum.PUBLISHED.getValue());
+        		try {
+        		1.1、termDraftService.publishChapter(termId, chapterDto.getId());	// 章节发布
+        			TermDraftDoc doc = termDraftDocDao.getById(termId);
+
+        			reOrderTermContentInner(doc);			// 草稿中，所有章节、课时、课件 节点排序
+
+        			// 如果草稿中章节状态为 已发布，则退出； 重复发布 已发布的期次，没有危险？！ 外层会捕获异常，发布操作结束；
+        			if (ChapterDraftDoc.DRAFT_STATUS_PUBLISHED.equals(chapterDraftDoc.getDraftStatus())) {	
+			            throw new TermServiceFrontException("章节已发布");
+			        }
+			        for(LessonDraftDoc lessonDraftDoc : lessonList){
+			        	1.1.1、publishLesson(doc, chapterDraftDoc, lessonDraftDoc);		// 课时发布
+			        		if (LessonDraftDoc.DRAFT_STATUS_DELETED.equals(lessonDraftDoc.getDraftStatus())) {
+			        			...	// 草稿中删除该章节
+			        			lessonDao.deleteById(lessonDraftDoc.getId());	// 如果课时被删除，则它下面都一并删除
+			        			for(LessonUnitDraftDoc lessonUnitDraftDoc : copyWrite)
+			        				// 如果课时被删除，则它下面都一并删除
+				                    lessonUnitDraftDoc.setDraftStatus(LessonUnitDraftDoc.DRAFT_STATUS_DELETED);
+				                    1.1.1.1、publishLessonUnit(lessonDraftDoc, lessonUnitDraftDoc);		// 课件发布
+				                    	... // lessonUnit DB表 操作，总分规则
+				                    	unit.fillModifedTime();
+        								changeUnitStatus(unit, LessonUnitDraftDoc.DRAFT_STATUS_PUBLISHED);
+        								...
+			        		} else if: (LessonDraftDoc.DRAFT_STATUS_CREATE, LessonDraftDoc.DRAFT_STATUS_MODIFIED)
+			        			...
+			        		else
+			        			return;
+
+			        		lessonDraftDoc.fillModifedTime();
+        					lessonDraftDoc.setDraftStatus(lessonDraftDoc.DRAFT_STATUS_PUBLISHED);	//更新该课时的 发布状态
+        				...
+
+        				Term update = new Term();
+		                update.setId(lessonDraftDoc.getTermId());
+		                update.setLastContentDeleteTime(System.currentTimeMillis());
+		                termDao.updateSelectiveById(update);						// 如果章节有删除，跟新 s2_term 表内容删除时间；
+			        }
+			        chapterDraftDoc.fillModifedTime();
+			        changeChapterStatus(chapterDraftDoc, ChapterDraftDoc.DRAFT_STATUS_PUBLISHED);
+			        // if failed, should retry
+			        termDraftDocDao.save(doc);		// 更新草稿信息
+        		} catch exception：	
+        			// 发布失败，set redis 为失败状态；抛异常快速失败；
+        		finishedNum++;		// 更新发布成功章节数
+        		// 更新发布进度，redis状态为 发布中；
+        	所有章节均发布完成，更新 redis 为发布成功状态；
+
+    }else{		// 新的目录章节结构 发布
+        ResultVo checkResult=catalogManager.checkNodeAndResourceStatus(termId,false);		// 新目录章节结构 发布前校验
+        	TermDto termDto = catalogService.getAndCheckTermDto(termId);
+        	...
+        	TreeNode<CatalogNodeDto> tree = nodeHelper.convertCatalogList2TreeNode(catalogList);
+        	nodeHelper.removeNodeIfDeleteStatus(tree);										//剔去所有被删除的节点
+
+        	ResultVo checkNodeResult = checkValidAndSetNodeStatus(tree);		// 根据节点类型，校验节点的有效性【策略类方式】
+        	if (!checkNodeResult.isSuccess()) {		// 校验不通过，快速失败
+            	return checkNodeResult;		// 内部已包装 失败信息
+
+            ResultVo checkResourceResult = checkValidAndSetResourceStatus(termId,tree);		// 校验所有课件关联资源 的有效性
+            if (!checkResourceResult.isSuccess()) {		// 校验不通过，快速失败
+            	return checkResourceResult;
+
+            // 更新 发布进度状态
+            termManagerHelper.setTermPublishSchedule(termId, 1, 0, CourseDesignServiceConstants.TERM_CHAPTER_PUBLISH_HANDLING, "");
+            return new ResultVo();
+        }
+        checkResult.throwMessageIfExcpetion();		// 根据校验的 结果，如果校验失败 ，则直接抛异常 快速失败
+
+        2、catalogManager.publishCatalog(termId,false);		// 新的目录结构发布操作，@EduTransaction，@Async   事务内 且异步线程 执行
+    		ResultVo checkResult=checkNodeAndResourceStatus(termId, checkTermPublish);		// 【疑问】为什么又做一次校验？？？？
+    		checkResult.throwMessageIfExcpetion();
+
+    		TermDto termDto = catalogService.getAndCheckTermDto(termId);
+    		...
+    		this.fixUnitVisible(catalogList);
+        	TreeNode tree = nodeHelper.convertCatalogList2TreeNode(catalogList);
+        	TreeUtil.addPosition(tree);
+
+        	publishAllNode(termId, catalogDto, tree);			// 真正的 发布操作，递归执行 所有节点的发布操作
+        		CatalogNodeDto nodeDto = (CatalogNodeDto) node.getWrapper();
+                if (isNeedPublish(nodeDto)) {
+                	// 策略类，add or update 章节、课时、课件 DB 表 
+                	// 【注意】1、删除章节时，会:
+                	//		更改 章节下 的子节点的 parent 为上层节点，即期次，最终更新DB :teachNodeResourceRel；
+                	// 		更改 期次草稿 termDraftDoc.getTeachNodeResourceRelDraftDocs(); 为最新；
+                	// 	2、发布课件，会发消息 publishLessonUnitJmsProvider.publishLesonUnit(unit, DraftStatusEnum.PUBLISHED);
+                    nodeStrategyFactory.chooseStrategy(nodeDto.getType()).publish(termId, node, catalogDto.getIsOrderChange());
+
+                    nodeDto.setDraftStatus(DraftStatusEnum.actionPublish(nodeDto.getDraftStatus()));
+                }
+
+        	nodeHelper.removeDataIfDeleteStatus(tree, catalogList);		// 目录树结构中 删除标记为删除的 节点
+
+        	catalogDto.setDraftStatus(DraftStatusEnum.PUBLISHED.getValue());
+        	catalogDto.setIsOrderChange(CatalogConstants.IsOrderChange.NOT_NEED);
+        	catalogService.saveCatalog(termId, catalogDto);				// 更新 Mongo 中期次草稿数据为最新，并修改为 发布状态
+
+        	removeCatalogCache(termId);			// 发布完成，清楚 目录树缓存
+    }
+
+// 【总结】期次发布完成，更新课程表 的一些 必要状态
+2.3 doPbulishCourse(term);
+	CourseDto courseDto = courseService.getCourseByTermId(term.getId());
+	if (CourseConstants.PUBLISH_STATUS_DRAFT.equals(courseDto.getStatus())) {		// 如果课程为草稿状态，update：Status + WebVisible
+        courseService.updateCourseStatus(courseDto.getId(), CourseConstants.PUBLISH_STATUS_PUBLISHED, CourseConstants.WEB_VISIBLE_YES);
+    }
+    // 根据期次price，set BonusType
+	courseService.updateCourseBonusType(courseDto);	
+
+
+// 【总结】 发布期次下的 习题
+2.4 publishTest(termId);
+	// Mongo 草稿中 读取 习题数据
+	List<TeachNodeResourceRelDto> dtos = termDraftService.getTeachNodeResourceRelFromDraft(termId,
+                                                                                               TeachNodeResourceRelConstants.RESOURCE_TYPE_QUIZ);
+    if (CollectionUtils.isNotEmpty(dtos)) {
+        publishTestProvider.publishTest(dtos);		// 通过 MQ 异步执行 习题发布
+        	// PublishTestJmsListener
+        	testManagerHelper.publistQuiz(teachNodeResourceRelDto);
+        		// 发布期次 下习题 + 习题附件 等操作
+    }
+
+
+// 【总结】 发布期次下的 考试
+2.5 publishExam(termId);
+	List<TeachNodeResourceRelDto> dtos = termDraftService.getTeachNodeResourceRelFromDraft(termId,
+                                                                                               TeachNodeResourceRelConstants.RESOURCE_TYPE_EXAM);
+    List<Long> examIds = PropertyExtractUtils.getByPropertyValue(dtos, "resourceId", Long.class);
+    if (CollectionUtils.isNotEmpty(examIds)) {
+        publishExamProvider.publishExam(termId, examIds);
+        	List<Long> examIds = JSONObject.parseArray(examIdsStr, Long.class);
+            List<TeachNodeResourceRelDto> teachNodeResourceRelDtos = termDraftService.getTeachNodeResourceRelFromDraft(termId,TeachNodeResourceRelConstants.RESOURCE_TYPE_EXAM);
+            if (CollectionUtils.isNotEmpty(examIds)) {
+                for(Long examId:examIds){
+                    examService.checkExamForPublish(examId);		// 考试发布校验
+                    examService.publishExam(termId, examId);		// 考试发布操作
+                    	...
+                    	testExamRelDao.add(testExamRels);
+                    	...
+                    	examDao.add(exam); / examDao.updateSelectiveById(exam);
+
+                    TeachNodeResourceRelDto teachNodeResourceRelDto = EduCollectionUtils.findMatchingItemByProperty(teachNodeResourceRelDtos, examId, "resourceId",Long.class);
+                    teachNodeResourceRelService.saveTeachNodeResourceRel(teachNodeResourceRelDto);
+                    	teachNodeResourceRelDao.add(...) / updateSelectiveById(...)			// DB 操作 
+                    termScoreSettingService.updateTotalScoreRuleForExam(termId,examId);
+                    	termScoreSettingDao...												// DB 操作，总分规则
+                }
+            }
+    }
+
+
+
+************************************** 20170814
+
+一、批量发布【考虑发布操作 是否异常后  可通过 重新执行操作 得到补偿】
+执行失败，事务回滚，DB 表回滚，对Mongo 表数据的影响：
+
+1、termDraftDocDao.updateStatus(termId, TermPublishStatusEnum.PUBLISHED.getValue());		
+【分析】可重复，再次发布无影响
+
+2、 【2.1】// 保存 期次详情页 草稿 ——> mongo	
+	TermDetailDoc termDetailDoc = BeanConvertUtils.deepSafeConvert(termDraftDoc.getTermDetailDraftDoc(), 
+					TermDetailDraftDoc.class, TermDetailDoc.class);
+    termDetailDocDao.save(termDetailDoc);		// mongo 中保存 期次详情页信息
+【分析】保存操作 可重复，再次发布无影响；
+
+3、 【2.1】// 【发布操作后，DB 成功，更新草稿中数据，被标记为已删除的节点 草稿中会去掉】
+forumDraftDoc.setForumContent(JsonUtils.toJson(forumDto));
+forumDraftDocDao.save(forumDraftDoc);
+【分析】保存操作 可重复，再次发布无影响；
+
+4、 【2.1】// 发布菜单栏的时候，有做 doc状态校验，已发布 则跳过，所以 可以重复发布，无影响；
+menuDoc.setStatus(MenuDoc.menuItemPublish);				// 更新 mongo 中菜单栏信息草稿 为已发布状态；
+menuItemDocDao.save(menuDoc);
+【分析】保存操作 可重复，再次发布无影响；
+
+5、publishOldChapters(termId, termDto);		// 旧的章节发布，
+chapterDraftDoc.fillModifedTime();
+changeChapterStatus(chapterDraftDoc, ChapterDraftDoc.DRAFT_STATUS_PUBLISHED);
+// if failed, should retry
+termDraftDocDao.save(doc);		// 更新草稿信息
+
+
+二、期次授权操作后 做期次发布
+
+p/backend/enterprise/doTermsAuthorization.json
+
+saveTermsAuthorizationJmsProvider.SaveTermsAuthorization(authorizationVos);
+
+
+1、选课中心
+/p/backend/confirmOrder.do
+saveTermsAuthorizationJmsProvider.SaveTermsAuthorization(bonusCourseAuthorizationVos);
+
+termAuthorizationShareService.initCourseAuthorization(authorizationDtos);
+                copyCourseJmsProvider.sendCopyCourseEvent(BeanConvertUtils.convert(authorizationDtos,
+                    CourseAuthorizationDto.class, CourseAuthorizationVo.class));
+
+
+
+2、运营后台 - 课程授权列表
+p/backend/enterprise/authorizeCourse.do
+
+
+
+3.1、导入课程，1.0 课程【不考虑】
+http://admin.study.163.com/j/backend/importCourses.do
+【1、2】修改后，不影响 3
+
+3.2、 审核列表
+j/backend/audit.do
+
+
+
+
+三、前后端 接口定义
+
+{
+	list<vo>
+		videoName,
+		unitid
+		contentId
+}
+
+unitVideoItemVo
+{
+	saveCatalogVo,	// 所有节点
+	list<NodeUploadResourceVo>	NodeUploadResourceVos
+}
+
+updateCatelogForVideoWithBatch
+
+
+【开发注意问题】
+指派全部时，需要校验 期次授权人数为 无限制 才可以，否则 跳过；
+批量进度 的时候，100% 的时候 ，后台 判断 是否 有异常，则 弹窗 提示 失败 期次；
+
+
+************************************** 20170815
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
