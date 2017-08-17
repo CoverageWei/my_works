@@ -729,6 +729,8 @@ http://fes1.study.163.com/p/lecture/updateLectureResource.do
     "name": "正能量！C罗最让人尊敬时刻"
 }
 
+{"total": 10,"loaded": 5} 【loaded >= total 为百分百】
+
 {
     "code": 0,
     "message": "ok",
@@ -1349,8 +1351,8 @@ search-server，course-server，enterprise-web，study-backend
 
 
 
+************************************************************ 2017-08-15 【迭代开始】
 
-
-
+【1】授权后 做期次发布，注意 是否更新了 course_term_rel 索引；
 
 

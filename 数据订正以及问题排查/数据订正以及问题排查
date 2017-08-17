@@ -1,0 +1,639 @@
+*************************** 20170815
+
+一、用户时长数据 排查
+
+1、问题数据
+http://jv.study.163.com/admin.htm#/m/statistics/learningProcess/personalSituation/general/?stime=1474416000000&etime=1502678418000
+
+admin01/7RS9Y3
+
+余雪梅
+
+
+provider_id: 400000000029002
+name:"余雪梅"
+staffId:54815
+idNum:"JV099"
+member_id： 1021191186
+
+2、数据排查
+
+select member_id, term_id, online_learn_total_time, day from qyy_mid_online.term_learn_progress_stat where day >= "2017-08-01" and member_id = 1021191186 and provider_id=400000000029002;
+发现问题：异常数据
+1021191186	400000000437003	7035637024	2017-08-01
+1021191186	400000000437003	7035637024	2017-08-02
+1021191186	400000000437003	7035637024	2017-08-03
+1021191186	400000000437003	7035637024	2017-08-04
+1021191186	400000000437003	7035637024	2017-08-05
+1021191186	400000000437003	7035637024	2017-08-06
+1021191186	400000000437003	7035637024	2017-08-06
+1021191186	400000000437003	7035637024	2017-08-07
+1021191186	400000000437003	7035637024	2017-08-08
+1021191186	400000000437003	7035637024	2017-08-09
+1021191186	400000000437003	7035637024	2017-08-10
+1021191186	400000000437003	7035637024	2017-08-11
+1021191186	400000000437003	7035637024	2017-08-12
+1021191186	400000000437003	7035637024	2017-08-13
+1021191186	400000000437003	7035637024	2017-08-14
+
+
+select member_id, term_id, cast(online_learn_total_time as bigint)/1000/3600, day from qyy_mid_online.term_learn_progress_stat where day = "2017-08-01" and member_id = 1021191186 and provider_id=400000000029002;
+
+1021191186	400000000437003	1954.3436177777778	2017-08-01
+1021191186	400000000437003	1954.3436177777778	2017-08-02
+1021191186	400000000437003	1954.3436177777778	2017-08-03
+1021191186	400000000437003	1954.3436177777778	2017-08-04
+1021191186	400000000437003	1954.3436177777778	2017-08-05
+1021191186	400000000437003	1954.3436177777778	2017-08-06
+1021191186	400000000437003	1954.3436177777778	2017-08-07
+1021191186	400000000437003	1954.3436177777778	2017-08-08
+1021191186	400000000437003	1954.3436177777778	2017-08-09
+1021191186	400000000437003	1954.3436177777778	2017-08-10
+1021191186	400000000437003	1954.3436177777778	2017-08-11
+1021191186	400000000437003	1954.3436177777778	2017-08-12
+1021191186	400000000437003	1954.3436177777778	2017-08-13
+1021191186	400000000437003	1954.3436177777778	2017-08-14
+
+select sum(cast(online_learn_total_time as bigint)) / 1000/3600, day from qyy_mid_online.term_learn_progress_stat where day >= "2017-07-01" and member_id = 1021191186 and provider_id=400000000029002 group by day;
+
+3902.0450102777777	2017-07-19
+3902.713097777778	2017-08-06
+3902.055817777778	2017-07-20
+3902.713097777778	2017-08-07
+3902.1998075	2017-07-21
+3902.713097777778	2017-08-08
+3899.070676388889	2017-07-01
+3902.1998075	2017-07-22
+3902.713097777778	2017-08-09
+3899.1591844444442	2017-07-02
+3902.1998075	2017-07-23
+3902.713097777778	2017-08-10
+3900.1159013888887	2017-07-03
+3902.1998075	2017-07-24
+3902.713097777778	2017-08-11
+3900.116451388889	2017-07-04
+3902.1998075	2017-07-25
+3902.713097777778	2017-08-12
+3900.3726266666667	2017-07-05
+3902.1998075	2017-07-26
+3902.713097777778	2017-08-13
+3900.3726266666667	2017-07-06
+3902.1998075	2017-07-27
+3902.713097777778	2017-08-14
+3900.3726266666667	2017-07-07
+3902.1998075	2017-07-28
+3900.3726266666667	2017-07-08
+3902.2846191666667	2017-07-29
+3900.3726266666667	2017-07-09
+3902.2846191666667	2017-07-30
+3900.3726266666667	2017-07-10
+3902.5771794444445	2017-07-31
+3900.5133041666663	2017-07-11
+3900.2692116666667	2017-07-12
+3900.2692116666667	2017-07-13
+3900.2692116666667	2017-07-14
+3902.5771794444445	2017-08-01
+3900.2692116666667	2017-07-15
+3902.713097777778	2017-08-02
+3900.2692116666667	2017-07-16
+3902.713097777778	2017-08-03
+3901.8735825	2017-07-17
+3902.713097777778	2017-08-04
+3901.8735825	2017-07-18
+3902.713097777778	2017-08-05
+
+
+
+
+
+select * from qyy_mid_online.user_term_learn_duration where day="2017-08-01" and member_id = 1021191186 and term_id=400000000437003;
+1021191186	400000000437003	7035637024	2017-08-01	td	all_learn
+1021191186	400000000437003	7035355882	2017-08-01	td	unit_learn
+
+select count(*) from qyy_mid_online.user_behavior where day="2017-08-01" and user_id=1021191186 and biz_dat['term_id']=400000000437003 and active_name in ('user_learn_record', 'lesson_unit_learn_record');
+
+0
+
+select * from qyy_mid_online.user_behavior where day="2017-08-01" and user_id=1021191186 and biz_dat['term_id']=400000000437003 and active_name in ('user_learn_record', 'lesson_unit_learn_record') limit 10;
+
+
+select * from qyy_mid_online.user_term_learn_duration where member_id = 1021191186 and term_id=400000000437003 order by day;
+
+1021191186	400000000437003	6745508819	2016-12-01	td	all_learn
+1021191186	400000000437003	6745508819	2016-12-01	1d	all_learn
+1021191186	400000000437003	6745508819	2016-12-01	td	unit_learn
+1021191186	400000000437003	6745508819	2016-12-01	1d	unit_learn
+
+
+select count(*) from qyy_mid_online.user_behavior where day="2016-12-01" and user_id=1021191186 and biz_dat['term_id']=400000000437003 and active_name in ('user_learn_record', 'lesson_unit_learn_record');
+
+
+
+
+
+
+select uid, term_id, sum(cast((end_time  - start_time) as bigint))
+ from (
+     select biz_dat['term_id'] as term_id,
+            user_id as uid,
+            biz_dat['start_time'] as start_time,
+            biz_dat['end_time'] as end_time
+     from qyy_mid_online.user_behavior
+     where day = '2016-12-01' and active_name in ('lesson_unit_learn_record', 'lesson_unit_learn_end')
+          and biz_dat['term_id'] is not null and user_id is not null and biz_dat['start_time'] != '0' 
+          and ((biz_dat['end_time'] - biz_dat['start_time']) < 24*60*60*1000) 
+ ) t1
+ where end_time > start_time and uid = 1021191186 group by term_id, uid
+
+
+
+1021191186	400000000119469	1915.9446594444446	2017-08-01
+1021191186	400000000437003	1954.3436177777778
+
+select * from qyy_mid_online.user_term_learn_duration where member_id = 1021191186 and term_id in (400000000437003,400000000119469) and day="2016-12-01";
+
+1021191186	400000000119469	6746423923	2016-12-01	1d	all_learn
+1021191186	400000000437003	6745508819	2016-12-01	1d	all_learn
+1021191186	400000000119469	6746423923	2016-12-01	1d	unit_learn
+1021191186	400000000437003	6745508819	2016-12-01	1d	unit_learn
+1021191186	400000000119469	6746423923	2016-12-01	td	all_learn
+1021191186	400000000437003	6745508819	2016-12-01	td	all_learn
+1021191186	400000000119469	6746423923	2016-12-01	td	unit_learn
+1021191186	400000000437003	6745508819	2016-12-01	td	unit_learn
+
+
+
+
+select * from qyy_mid_online.user_term_learn_duration where member_id = 1021191186 and term_id in (400000000437003,400000000119469) and day="2016-12-01";
+
+1021191186	400000000119469	1874.0066452777778
+1021191186	400000000437003	1873.7524497222223
+
+
+
+400000000119469 	2016/11/8 12:11:50 参加		SEO精英实战教程 随到随学班		41.93801416667 小时
+400000000437003    	2017/2/16 18:41:27 参加		跟简七学理财 	随到随学班  	80.59116805555 小时
+
+
+
+二、订正范围
+
+2.1、订正前
+1、学习概况统计
+线上学习总时长： 5953.1h
+
+接口：
+http://jv.study.163.com/j/end/statistics/overview.json?_t=1502864919482
+
+{"code":0,"message":"ok","result":{"onlineLearnDuration":21431235278,"offlineLearnDuration":0,"onlineLearnDurationHour":5953.1,"offlineLearnDurationHour":0}}
+
+2、课程学习统计
+
+部门 - 岗位	： 无；
+2.1、分组标签：
+
+2016.09.21 - 2016.11.30 ：	143 	743.5	5.2（754.3/143）
+2016.09.21 - 2016.12.01 ：	143 	4515.2	31.6（4515.2/143）
+2016.09.21 - 2016.12.02 ：	143 	4529	31.7（4529/143）
+2016.12.01 - 2016.12.01 ： 	143		3771.8	26.4（3771.8/143）	【增量数据，待订正】
+2016.12.02 - 2016.12.02 ： 	143		13.8	0.1（13.8/143）
+
+
+接口：
+http://jv.study.163.com/p/end/statistics/groupLearnStat.do
+
+{"limit":12,"offset":0,"pageIndex":1,"pageSize":12,"relativeOffset":0,"startTime":1480608000000,"endTime":1480694400000,"ids":null,"deep":null}
+
+
+2.2、个人学习情况 - 总览
+
+余雪梅		3903【线上学习时长（小时），待确定是不是取全量？？？】
+
+
+http://jv.study.163.com/p/end/statistics/personalSituationGeneral.json
+
+{"limit":12,"offset":0,"pageIndex":1,"pageSize":12,"relativeOffset":0,"keyword":"余雪梅","departmentId":null,"positionId":null,"groupIdList":null,"status":null,"startTime":null,"endTime":null}
+
+
+2016.09.21 - 2016.11.30 ：	22.1
+2016.09.21 - 2016.12.01 ：	3769.8
+2016.09.21 - 2016.12.02 ：	3769.8
+2016.12.01 - 2016.12.01 ：	3747.8	【待订正】
+2016.12.02 - 2017.08.15 ：	133.3	
+2016.09.21 - 2017.08.15 ：	3903
+
+
+
+
+2.3、个人学习情况 - 明细
+
+余雪梅	SEO精英实战教程	随到随学班	1916			【全量表，待订正】
+余雪梅	跟简七学理财	随到随学班	1954.4
+
+
+http://jv.study.163.com/p/end/statistics/personalSituationDetail.json	
+
+{"limit":12,"offset":12,"pageIndex":2,"pageSize":12,"relativeOffset":1,"keyword":"余雪梅","departmentId":null,"positionId":null,"groupIdList":[23003],"status":null,"startTime":null,"endTime":null,"learningType":null,"termEnrollType":null}
+
+
+
+3、课程资源统计
+无；
+
+4、
+机构无学习项目；无需订正；
+
+5、期次内部 学习统计列表	【待订正】
+
+接口：
+http://jv.study.163.com/p/end/statistics/learningSituationList.do
+
+
+SEO精英实战教程
+http://jv.study.163.com/terms/400000000119469#/m/statistics/learningSituation/?tid=400000000119469
+余雪梅	2017-02-14 10:58	1916	1916
+
+跟简七学理财
+http://jv.study.163.com/terms/400000000437003#/m/statistics/learningSituation/?tid=400000000437003
+余雪梅	2017-04-27 16:16	0	0
+
+
+三、表订正
+
+1、全量表
+
+【第一天】
+select term_id, member_id, online_learn_total_time, term_unit_learn_time from qyy_mid_online.term_learn_progress_stat where day="2016-12-01" 
+and term_id = 400000000119469 and member_id = 1021191186;
+空
+
+select term_id, member_id, online_learn_total_time, term_unit_learn_time from qyy_mid_online.term_learn_progress_stat where day="2017-05-12" 
+and term_id = 400000000119469 and member_id = 1021191186; 【第一天】
+400000000119469	1021191186	6897948434	6897948434
+
+select term_id, member_id, online_learn_total_time, term_unit_learn_time from qyy_mid_online.term_learn_progress_stat where day="2017-08-15" 
+and term_id = 400000000119469 and member_id = 1021191186;
+400000000119469	1021191186	6897400774	6897397189
+
+
+select * from qyy_mid_online.user_term_learn_duration where day="2016-11-30" and term_id = 400000000119469 and member_id = 1021191186;
+空
+select * from qyy_mid_online.user_term_learn_duration where day="2016-12-01" and term_id = 400000000119469 and member_id = 1021191186;
+1021191186	400000000119469	6746423923	2016-12-01	1d	all_learn
+1021191186	400000000119469	6746423923	2016-12-01	1d	unit_learn
+【结论】数据从 12-01 开始有；
+
+select * from qyy_mid_online.user_term_learn_duration where day="2017-05-12" and term_id = 400000000119469 and member_id = 1021191186;
+1021191186	400000000119469	6897397189	2017-05-12	td	all_learn
+1021191186	400000000119469	6897397189	2017-05-12	td	unit_learn
+
+select * from qyy_mid_online.user_term_learn_duration where day="2017-08-15" and term_id = 400000000119469 and member_id = 1021191186;
+1021191186	400000000119469	6897400774	2017-08-15	td	all_learn
+1021191186	400000000119469	6897397189	2017-08-15	td	unit_learn
+
+
+【订正结果】 
+1、term_id = 400000000119469 and member_id = 1021191186;
+qyy_mid_online.user_term_learn_duration 【增量表】
+1021191186	400000000119469	(6897400774 - 6746423923) 	2017-08-15	td	all_learn
+1021191186	400000000119469	(6897397189 - 6746423923)	2017-08-15	td	unit_learn
+
+qyy_mid_online.term_learn_progress_stat 【全量表】
+400000000119469	1021191186	(6897400774 - 6746423923)	(6897397189 - 6746423923)
+
+
+
+2、term_id = 400000000437003 and member_id = 1021191186;
+
+select term_id, member_id, online_learn_total_time, term_unit_learn_time from qyy_mid_online.term_learn_progress_stat where day="2017-05-12" 
+and term_id = 400000000437003 and member_id = 1021191186;    【第一天】
+400000000437003	1021191186	7013988114	7013868105
+
+select term_id, member_id, online_learn_total_time, term_unit_learn_time from qyy_mid_online.term_learn_progress_stat where day="2017-08-15" 
+and term_id = 400000000437003 and member_id = 1021191186;
+400000000437003	1021191186	7035655884	7035355882
+
+
+
+select * from qyy_mid_online.user_term_learn_duration where day="2016-11-30" and term_id = 400000000437003 and member_id = 1021191186;
+空
+
+select * from qyy_mid_online.user_term_learn_duration where day="2016-12-01" and term_id = 400000000437003 and member_id = 1021191186;
+1021191186	400000000437003	6745508819	2016-12-01	1d	all_learn
+1021191186	400000000437003	6745508819	2016-12-01	1d	unit_learn
+
+select * from qyy_mid_online.user_term_learn_duration where day="2017-05-11" and term_id = 400000000437003 and member_id = 1021191186;
+1021191186	400000000437003	7034361724	2017-05-11	td	all_learn
+1021191186	400000000437003	7034217665	2017-05-11	td	unit_learn
+
+select * from qyy_mid_online.user_term_learn_duration where day="2017-05-12" and term_id = 400000000437003 and member_id = 1021191186;
+1021191186	400000000437003	7034361724	2017-05-12	td	all_learn
+1021191186	400000000437003	7034217665	2017-05-12	td	unit_learn
+
+select * from qyy_mid_online.user_term_learn_duration where day="2017-08-14" and term_id = 400000000437003 and member_id = 1021191186;
+1021191186	400000000437003	7035637024	2017-08-14	td	all_learn
+1021191186	400000000437003	7035355882	2017-08-14	td	unit_learn
+
+select * from qyy_mid_online.user_term_learn_duration where day="2017-08-15" and term_id = 400000000437003 and member_id = 1021191186;
+1021191186	400000000437003	18860	2017-08-15	1d	all_learn
+1021191186	400000000437003	7035655884	2017-08-15	td	all_learn
+1021191186	400000000437003	7035355882	2017-08-15	td	unit_learn
+
+
+【订正结果】 
+1、term_id = 400000000437003 and member_id = 1021191186;
+qyy_mid_online.user_term_learn_duration 【增量表】
+1021191186	400000000119469	(7035655884 - 6745508819) 	2017-08-15	td	all_learn
+1021191186	400000000119469	(7035355882 - 6745508819)	2017-08-15	td	unit_learn
+
+qyy_mid_online.term_learn_progress_stat 【全量表】
+400000000119469	1021191186	(7035655884 - 6745508819)	(7035355882 - 6745508819)
+
+provider_id: 400000000029002
+
+
+${mid}.user_term_learn_duration
+	day= '$etlDay' and type = 'td' and tag='all_learn'
+		${mid}.term_learn_progress_stat_kv		online_learn_total_time	【OnlineLearnTotalTime】
+		${mid}.term_learn_progress_stat_kv		term_unit_learn_time	【TermUnitLearnTime】
+
+		${output}.s2_user_platform_learn_overview	online_learn_total_duration	【S2UserPlatformLearnOverview】
+			sum(cast(s1.duration as bigint))  每天 sum 所有人的 全量时长，所以 更新 每天全量时长后，会自动 成正确数值
+		${output}.s2_user_learn_record_stat_total 	online_learn_duration 		【 S2UserLearnRecordStatTotal 】
+			sum(cast(s1.duration as bigint))  每天 sum 所有人的 全量时长，所以 更新 每天全量时长后，会自动 成正确数值
+
+	day= '$etlDay' and type = '1d' and tag='all_learn'
+		${output}.s2_department_learn_duration_date		online_learn_duration   【S2DepartmentLearnTermDate】	【无】
+		${output}.s2_group_learn_duration_date 			online_learn_duration 	【S2GroupLearnTermDate】		【存在一个标签，订正】
+		${output}.s2_position_learn_duration_date		online_learn_duration 	【S2PositionLearnTermDate】		【无】
+		${output}.s2_user_learn_time_stat_date 			online_learn_duration 	【S2UserLearnTimeStatDate】
+
+		${output}.s2_user_learn_total_duration_stat 	online_learn_duration 	【S2UserLearnTotalDurationStat】
+			sum(cast(t1.duration as bigint) )   每天 sum 所有人的 全量时长，所以 更新 每天全量时长后，会自动 成正确数值
+
+
+订正方案：
+
+s2_user_platform_learn_overview_master 【全量表，用户+机构维度】
+	member_id, provider_id, online_learn_total_duration
+	订正前：
+		1021191186	400000000029002		14050645885
+    订正后：
+    	1021191186	400000000029002		（ 14050645885 - 6746423923 - 6745508819 ）= 558713143 （155.1980952777778 小时）
+
+    update s2_user_platform_learn_overview_master set online_learn_total_duration = 558713143 where member_id = 1021191186 and provider_id = 400000000029002;
+
+
+s2_user_learn_record_stat_total 【全量表，用户+机构维度】
+	member_id, provider_id, online_learn_duration
+	订正前：
+		1021191186		400000000029002 		14050645885
+		1021191186		400000000029002 		558766490  [已自我修复]
+	订正后：
+		1021191186	400000000029002		（ 14050645885 - 6746423923 - 6745508819 ）= 558713143 （155.1980952777778 小时）
+
+	update s2_user_learn_record_stat_total_master set online_learn_duration = 558713143 where member_id = 1021191186 and provider_id = 400000000029002;
+
+s2_group_learn_duration_date 【增量表】
+
+分析：
+	select count(*) from s2_group_learn_duration_date_master where group_id = 23003;
+	207
+
+	2016/9/22 0:0:0  最早
+	select date, max(online_learn_duration) from s2_group_learn_duration_date_slave where group_id = 23003;
+	1474473600000	13753329009
+	select * from s2_group_learn_duration_date_slave where group_id = 23003 and date = 1480435200000;	// 2016-11-30
+	70949043
+	select * from s2_group_learn_duration_date_slave where group_id = 23003 and date = 1480521600000;	// 2016-12-01
+	13578323014
+	select * from s2_group_learn_duration_date_slave where group_id = 23003 and date = 1480608000000;	// 2016-12-02
+	49538705
+
+
+	select date, online_learn_duration from s2_group_learn_duration_date_slave where group_id = 23003 order by online_learn_duration desc;
+	1487260800000	13753329009		// 2017/2/17		（3820.369169166667 小时）
+	1480521600000	13578323014		// 2016/12/1		（3771.756392777778 小时）
+	1487174400000	267451300
+	...
+
+
+	20160921 - 20161130 	743.5		5.2
+	20171201 - 20171201 	3771.8		26.4	【订正】 
+	20171202 - 20160216 	619.3		4.4
+	20160217 - 20160217 	3820.4		26.8	【订正】
+	20160218 - 20160816 	436.2		3.1
+
+	订正结果：
+		1487260800000	（ 13753329009 - 6746423923 - 6745508819 ）= 261396267 （72.61007416666667 小时）
+		1480521600000	（ 13578323014 - 6746423923 - 6745508819 ）= 86390272	（23.99729777777778 小时）
+
+		update s2_group_learn_duration_date_slave set online_learn_duration = ? where group_id = 23003 and date = 1487260800000;
+		update s2_group_learn_duration_date_slave set online_learn_duration = ? where group_id = 23003 and date = 1480521600000;
+
+s2_user_learn_time_stat_date	【增量表】【用户 + 机构 维度】
+
+	select * from s2_user_learn_time_stat_date_master where member_id = 1021191186 and provider_id = 400000000029002 ORDER BY online_learn_duration desc;
+		1021191186	400000000029002		1480521600000		6746423923		【2016-12-01 2个期次的 脏数据】
+										1480521600000		6745508819
+
+	订正语句：
+		update s2_user_learn_time_stat_date set online_learn_duration = 0 where member_id = 1021191186 and provider_id = 400000000029002 and date = 1480521600000;
+
+
+
+s2_user_learn_total_duration_stat	【增量表】【机构维度】
+
+	select * from s2_user_learn_total_duration_stat_master where provider_id = 400000000029002;
+	400000000029002		21431235278 （5953.120910555556 小时）
+
+	400000000029002		（ 21431235278 - 6746423923 - 6745508819 ） = 7939302536 	（2205.361815555556 小时）	8.15
+	400000000029002		（ 7960766649 ）	
+
+
+	订正语句：
+		update s2_user_learn_total_duration_stat_master set online_learn_duration = 7939302536 where provider_id = 400000000029002;
+
+
+
+************************************************** 订正过程处理
+Hive 中间表订正：
+
+【订正结果】 
+1、term_id = 400000000119469 and member_id = 1021191186;
+qyy_mid_online.user_term_learn_duration 【增量表】
+1021191186	400000000119469	(6897400774 - 6746423923) = 150976851	2017-08-15	td	all_learn
+1021191186	400000000119469	(6897397189 - 6746423923) = 150973266	2017-08-15	td	unit_learn
+
+qyy_mid_online.term_learn_progress_stat 【全量表】【不需要订正了，8-16号 依赖8-16 的全量（依赖 8-16的 增量 + 8-15的 全量），所以只订正 好8-15 的全量即可】
+400000000119469	1021191186	(6897400774 - 6746423923)	(6897397189 - 6746423923)
+
+
+【订正结果】 
+1、term_id = 400000000437003 and member_id = 1021191186;
+qyy_mid_online.user_term_learn_duration 【增量表】
+1021191186	400000000437003	(7035655884 - 6745508819) = 290147065 	2017-08-15	td	all_learn
+1021191186	400000000437003	(7035355882 - 6745508819) = 289847063	2017-08-15	td	unit_learn
+
+qyy_mid_online.term_learn_progress_stat 【全量表】【不需要订正了，8-16号 依赖8-16 的全量（依赖 8-16的 增量 + 8-15的 全量），所以只订正 好8-15 的全量即可】
+400000000119469	1021191186	(7035655884 - 6745508819)	(7035355882 - 6745508819)
+
+
+
+一、db 订正语句整理：
+
+1、全量表数据订正 【不需要订正，因为 全量 依赖 每天将 所有人昨天的 td + all_learn 时长 做聚合 sum，所以 保证了昨天用户 的 时长正确，全量结果自然正确】
+# 机构学习时长表
+#update s2_user_learn_total_duration_stat_master set online_learn_duration = 7939302536 where provider_id = 400000000029002;
+#update s2_user_learn_total_duration_stat_slave set online_learn_duration = 7939302536 where provider_id = 400000000029002;
+
+# 用户、机构维度 期次学习表
+#update s2_user_learn_record_stat_total_master set online_learn_duration = 558713143 where member_id = 1021191186 and provider_id = 400000000029002;
+#update s2_user_learn_record_stat_total_slave set online_learn_duration = 558713143 where member_id = 1021191186 and provider_id = 400000000029002;
+
+# 用户、机构 维度 期次+项目 学习总览表
+#update s2_user_platform_learn_overview_master set online_learn_total_duration = 558713143 where member_id = 1021191186 and provider_id = 400000000029002;
+#update s2_user_platform_learn_overview_slave set online_learn_total_duration = 558713143 where member_id = 1021191186 and provider_id = 400000000029002;
+
+
+2、增量表 数据订正 
+# 用户 机构维度 增量时长表
+update s2_user_learn_time_stat_date_master set online_learn_duration = 0 where member_id = 1021191186 and provider_id = 400000000029002 and date = 1480521600000;
+update s2_user_learn_time_stat_date_slave set online_learn_duration = 0 where member_id = 1021191186 and provider_id = 400000000029002 and date = 1480521600000;
+
+# 标签 维度 增量时长表
+update s2_group_learn_duration_date_master set online_learn_duration = 261396267 where group_id = 23003 and date = 1487260800000;
+update s2_group_learn_duration_date_master set online_learn_duration = 86390272 where group_id = 23003 and date = 1480521600000;
+
+update s2_group_learn_duration_date_slave set online_learn_duration = 261396267 where group_id = 23003 and date = 1487260800000;
+update s2_group_learn_duration_date_slave set online_learn_duration = 86390272 where group_id = 23003 and date = 1480521600000;
+
+【总结】增量表 和具体日期有关，有 历史数据性质，所以 不会自我修复，需要对特定日期 数据做订正；
+
+
+
+二、Hive 表记录订正：
+
+insert overwrite table qyy_mid_online.user_term_learn_duration partition(day='2017-08-15',type='td',tag='unit_learn')
+	select member_id, term_id, duration 
+	from qyy_mid_online.user_term_learn_duration
+	where duration not in (6897397189, 7035355882) and day='2017-08-15' and type='td' and tag='unit_learn'
+
+	union all
+
+	select member_id, term_id, 150973266 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000119469 and day='2017-08-15' and type='td' and tag='unit_learn'
+
+	union all
+
+	select member_id, term_id, 289847063 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000437003 and day='2017-08-15' and type='td' and tag='unit_learn';
+
+
+insert overwrite table qyy_mid_online.user_term_learn_duration partition(day='2017-08-15',type='td',tag='all_learn')
+	select member_id, term_id, duration 
+	from qyy_mid_online.user_term_learn_duration
+	where duration not in (6897400774, 7035655884) and day='2017-08-15' and type='td' and tag='all_learn'
+
+	union all
+
+	select member_id, term_id, 150976851 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000119469 and day='2017-08-15' and type='td' and tag='all_learn'
+
+	union all
+
+	select member_id, term_id, 290147065 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000437003 and day='2017-08-15' and type='td' and tag='all_learn';
+
+
+# 订正结果校验
+select * from
+(
+	select member_id, term_id, duration 
+	from qyy_mid_online.user_term_learn_duration
+	where duration not in (6897397189, 7035355882) and day='2017-08-15' and type='td' and tag='unit_learn'
+
+	union all
+
+	select member_id, term_id, 150973266 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000119469 and day='2017-08-15' and type='td' and tag='unit_learn'
+
+	union all
+
+	select member_id, term_id, 289847063 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000437003 and day='2017-08-15' and type='td' and tag='unit_learn'
+) t1 where member_id = 1021191186 and term_id in (400000000119469, 400000000437003);
+
+1021191186		400000000119469			150973266
+1021191186		400000000437003			289847063
+
+
+
+【注意】 
+1、提订正工单 要写库名！！写库名！！写库名！！
+
+2、多个条件过滤的时候，不能简单的 member_id != ？and term_id not in ( , ) 来过滤，这样子并不是 只过滤这两条记录，会多过滤掉；
+所以，本次采用 duration 值过滤（前提是 目标值 在所有记录中 唯一）’；
+所以，insert overwrite 之前 一定要 确定好 是否包含所有的记录，避免 记录被错误过滤而最终丢失！！！【很重要】【很重要】【很重要】
+
+正确语句如下：
+select count(*)
+	from qyy_mid_online.user_term_learn_duration
+	where duration not in (6897397189, 7035355882) and day='2017-08-15' and type='td' and tag='unit_learn'
+57249
+
+
+select count(*)
+	from qyy_mid_online.user_term_learn_duration
+	where day='2017-08-15' and type='td' and tag='unit_learn'
+57251
+
+
+select count(*)
+	from qyy_mid_online.user_term_learn_duration
+	where duration not in (6897400774, 7035655884) and day='2017-08-15' and type='td' and tag='all_learn'
+70954
+
+select count(*)
+	from qyy_mid_online.user_term_learn_duration
+	where duration  in (6897400774, 7035655884) and day='2017-08-15' and type='td' and tag='all_learn'
+	2
+
+select count(*)
+	from qyy_mid_online.user_term_learn_duration
+	where day='2017-08-15' and type='td' and tag='all_learn'
+70956
+
+
+错误语句如下：【错误的】【错误的】【错误的】
+insert overwrite table qyy_mid_online.user_term_learn_duration partition(day='2017-08-15',type='td',tag='unit_learn')
+	select member_id, term_id, duration 
+	from qyy_mid_online.user_term_learn_duration
+	where member_id != 1021191186 and term_id not in (400000000119469, 400000000437003) and day='2017-08-15' and type='td' and tag='unit_learn'
+
+	union all
+
+	select member_id, term_id, 150973266 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000119469 and day='2017-08-15' and type='td' and tag='unit_learn'
+
+	union all
+
+	select member_id, term_id, 289847063 as duration
+	from qyy_mid_online.user_term_learn_duration
+	where member_id = 1021191186 and term_id = 400000000437003 and day='2017-08-15' and type='td' and tag='unit_learn';
+
+
+
+
+
+
+
+
+
