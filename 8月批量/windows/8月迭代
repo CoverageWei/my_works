@@ -1356,3 +1356,165 @@ search-server，course-server，enterprise-web，study-backend
 【1】授权后 做期次发布，注意 是否更新了 course_term_rel 索引；
 
 
+
+************************************************************ 2017-08-23
+redis 记录3中状态：
+    批量执行维度 - 期次处理状态；（批量期次操作 增加）
+    期次指派 执行状态；（单期次操作已有）
+    期次指派 操作进度；（单期次操作已有）
+
+批量操作执行：
+for（termId： termIds）
+    if（期次指派正在处理中）
+        批量指派- 期次进度 置为 跳过状态（状态码： 2）；【key： XXX_batchId_providerId_termId】
+    else
+        操作开始；
+            批量指派-期次指派 已开始执行（1）；【key： XXX_batchId_providerId_termId】
+            单期次操作开始逻辑；
+                期次指派正在处理 状态置位；
+                单期次进度 状态置位；
+
+批量进度计算：
+for（termId： termIds）
+    if(批量指派期次进度 = 跳过状态（2）)
+        该期次进度 等同于1；
+    else if（批量指派期次进度 = 已开始执行（1））
+        读取单期次的进度；
+
+
+
+
+
+
+单期次内部 保存报名方式：
+p/org/coursedesign/saveEntryMode.json
+
+指派特定：
+{"id":400000002573001,"enrollType":1,"enrollRange":2}
+
+指派全部：
+{"id":400000002573001,"enrollType":1,"enrollRange":1}
+
+主动报名：
+{"id":400000002573001,"enrollType":2,"enrollRange":null,"enrollCount":-1,"enrollAuditType":1,"estimateTotalCharge":0,"estimateAvgCharge":0,"chargeType":1,"enrollEndTimeType":0}
+
+
+
+获取百分比进度：
+j/coursedesign/getEntryModeProcessingStatus.json
+id:400000002573001
+{"code":0,"message":"ok","result":{"retCode":0,"loaded":0,"total":1,"message":"OK"}}
+
+
+
+{
+    termEntryModeVo：{
+        。。。
+    }，
+    ids： 【,,,,】
+}
+
+
+
+
+
+
+************************************************************ 2017-08-24
+一、消息发送与处理
+
+1、定义：
+ProcessBatchVo  + TermEntryModeProcessBatchVo  （controller 层对接）
+
+ProcessUnitVo + TermEntryModeProcessUnitVo （拆分后的 独立执行单元，逻辑处理）
+
+BatchProcessProvider + TermEntryModeBatchProvider + ProcessUnitVo
+
+BatchProcessListener + TermEntryModeBatchListener + ProcessUnitVo
+
+2、MQ配置：
+
+applicationContext-jms.xml
+
+发布方：
+<rabbit:template    + <rabbit:direct-exchange +  <rabbit:queue
+消费方：
+ <rabbit:queue   + <rabbit:listener-container +　<bean
+
+【注意：】
+<!-- 批量指派操作，需要对消息接收处理 做并发限制 -->
+<rabbit:listener-container connection-factory="rabbitConnFactory" prefetch="1" concurrency="2" acknowledge="auto">
+    <rabbit:listener ref="termEntryModeBatchListener"
+                     queues="termEntryModeBatchProvider-course-1.0.0${local_service_version_suffix}" />
+
+</rabbit:listener-container>
+
+
+二、批量设置报名方式校验
+
+
+2.1、报名基本信息校验：
+指派类型：
+not null： 
+enrollRange
+
+报名类型：
+not null：
+enrollAuditType 、chargeType、enrollCount
+
+chargeType【批量时候默认为 免费： TermEntryModeConstants.chargeType.FREE（1）】
+
+2.2、报名时间校验
+随到随学 无需校验报名时间；
+学期制：
+    线下：
+        enrollBeginTime 、 enrollEndTime != null
+        enrollEndTime == -1 || (enrollBeginTime < enrollEndTime && enrollEndTime < schedule.getStartTime())
+
+vo.getEnrollEndTime() = TermScheduleConstants.END_TIME_NO_LIMIT;
+
+{"id":400000002630002,"enrollType":2,"enrollRange":null,"enrollCount":-1,"enrollAuditType":1,"estimateTotalCharge":"","estimateAvgCharge":"","chargeType":1,"enrollBeginTime":1503504000000,"enrollEndTime":1503586800000}
+
+    线上：
+        enrollEndTimeType ！= null 
+        enrollEndTimeType == 0（不限定） 则不校验；
+
+{"id":400000002573001,"enrollType":2,"enrollRange":null,"enrollCount":-1,"enrollAuditType":1,"estimateTotalCharge":0,"estimateAvgCharge":0,"chargeType":1,"enrollEndTimeType":0}
+
+
+结论：
+    线上： 
+        enrollEndTimeType = 0 ；
+        "estimateTotalCharge":0,"estimateAvgCharge":0,"chargeType":1
+    线下：
+        报名结束时间接取授课开始时间；报名开始时间取当前时间（如果当前时间晚于授课开始时间，则开始时间取授课开始时间的前一天）
+
+
+
+1512144000000
+1512057600000 + 86400000
+
+
+/j/lecture/getBatchSaveSchedule.json
+
+{"code":0,"message":"ok","result":{"retCode":0,"loaded":1,"total":1,"message":"OK"}}
+
+Map：
+{
+    "loadProgressVo":{"retCode":0,"loaded":1,"total":1,"message":"OK"},
+    "exceptionUnits":[58526,52655,17728]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
