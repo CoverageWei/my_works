@@ -1494,19 +1494,56 @@ vo.getEnrollEndTime() = TermScheduleConstants.END_TIME_NO_LIMIT;
 1512057600000 + 86400000
 
 
-/j/lecture/getBatchSaveSchedule.json
+/j/lecture/getBatchSaveSchedule.json     post
 
 {"code":0,"message":"ok","result":{"retCode":0,"loaded":1,"total":1,"message":"OK"}}
 
 Map：
 {
-    "loadProgressVo":{"retCode":0,"loaded":1,"total":1,"message":"OK"},
-    "exceptionUnits":[58526,52655,17728]
+    "loadProgressVo": {"retCode":0,"loaded":1,"total":1,"message":"OK"},
+    "exceptionUnits": [58526,52655,17728]
 }
 
 
 
+set hive.auto.convert.join=false;
 
+
+************************************************************ 20170827
+
+一、期次索引触发：
+curl "http://127.0.0.1:18042/task/invoke.htm?type=courseTermRelIndexTask"
+
+
+二、授权自动发布
+
+2.1、运营后台 - 课程授权列表：
+批量导入：
+j/backend/enterprise/addAuthorizeCourseByExcel.do
+    enterpriseManager.copyTermByExcel(nosKey, bucketName, providerId);
+        termAuthorizationShareService.initCourseAuthorization();
+            courseAuthorizationDao.add(authList);
+
+        CopyCourseJmsProvider.sendCopyCourseEvent(final List<CourseAuthorizationVo> authVos)
+            JmsSendThread jmsSendThread = new JmsSendThread(amqpTemplate, authVos);
+        CopyCourseJmsListener.
+            List<CourseAuthorizationVo> authVos = JSON.parseArray(objMsg, CourseAuthorizationVo.class);    
+                CopyCourseJmsListener.copyTermWithLock(auth, auth.getId());            //期次拷贝操作，同步                 
+
+添加：
+/p/backend/enterprise/authorizeCourse.do
+    enterpriseManager.addCourseAuthorization(vo)        // 增加授权记录（addOrUpdate）
+
+        termAuthorizationShareService.initCourseAuthorization(BeanConvertUtils.convert(authVos,
+            CourseAuthorizationVo.class, CourseAuthorizationDto.class));
+        CopyCourseJmsProvider.sendCopyCourseEvent(authVos);
+
+改动：
+1、消息内容中添加 是否发布 开关；避免影响 k12【根据机构信息区分】；
+2、拷贝同步操作完成后，同步执行 期次发布，catch 异常；
+
+
+2.2、选课中心
 
 
 
