@@ -593,12 +593,9 @@ termDraftDocDao.save(doc);		// 更新草稿信息
 
 二、期次授权操作后 做期次发布
 
-p/backend/enterprise/doTermsAuthorization.json
-
-saveTermsAuthorizationJmsProvider.SaveTermsAuthorization(authorizationVos);
-
-
-1、选课中心
+1、选课中心下单
+1.1、对于免费的 附赠课程，直接做授权操作
+1.2、对于付费的 课程，下单后在运营后台 - 课程采购单 做授权处理
 /p/backend/confirmOrder.do
 saveTermsAuthorizationJmsProvider.SaveTermsAuthorization(bonusCourseAuthorizationVos);
 
@@ -606,21 +603,26 @@ termAuthorizationShareService.initCourseAuthorization(authorizationDtos);
                 copyCourseJmsProvider.sendCopyCourseEvent(BeanConvertUtils.convert(authorizationDtos,
                     CourseAuthorizationDto.class, CourseAuthorizationVo.class));
 
+1.2、运营后台 - 课程采购单 - 企业名称（fes企业云1） - 详情 - 授权
+对 选课中心购买的 付费期次 做授权操作：
+p/backend/enterprise/doTermsAuthorization.json
+saveTermsAuthorizationJmsProvider.SaveTermsAuthorization(authorizationVos);
+
 
 
 2、运营后台 - 课程授权列表
 p/backend/enterprise/authorizeCourse.do
 
+批量 excel 授权：
 
 
-3.1、导入课程，1.0 课程【不考虑】
+
+3、导入课程，1.0 课程【不考虑】
 http://admin.study.163.com/j/backend/importCourses.do
 【1、2】修改后，不影响 3
 
-3.2、 审核列表
+
 j/backend/audit.do
-
-
 
 
 三、前后端 接口定义
@@ -647,6 +649,82 @@ updateCatelogForVideoWithBatch
 
 
 ************************************** 20170815
+
+
+
+select term_id,max(gmt_create) from qyy_dbload_test.s2_term_member_allow where status = 2 group by term_id limit 5;
+
+select t2.term_id, t2.max_gmt_create
+from
+( select id from qyy_dbload_test.s2_term where day = "2017-08-16" and provider_id = 400000000003003) t1
+join 
+( select term_id, max(gmt_create) as max_gmt_create from qyy_dbload_test.s2_term_member_allow where day = "2017-08-16" and status = 2 group by term_id )t2
+on (t1.id = t2.term_id)
+order by t2.max_gmt_create desc limit 20;
+
+t2.term_id  t2.max_gmt_create
+400000002190110 1496804399202
+400000001916003 1496804399188
+400000002192061 1496804399161
+400000000057090 1496740448074
+400000000028001 1496740448056
+400000001586001 1483528706557
+400000001596001 1483089287704
+400000001567003 1479560502522
+400000001469012 1478747503275
+400000001438001 1478660827420
+400000001422002 1478489591973
+【问题】数据偏多，存在 脏数据；以 下面的为准；
+
+
+select t3.term_id, t3.max_gmt_create
+from
+(select t1.id from
+    ( select id from qyy_dbload_test.s2_term where day = "2017-08-16" and provider_id = 400000000003003) t1
+    join
+    ( select id from qyy_dbload_test.s2_term_entry_mode where day = "2017-08-16" and enroll_type = 2 and enroll_audit_type = 2) t2
+    on (t1.id = t2.id)
+) tt1
+join 
+( select term_id, max(gmt_create) as max_gmt_create from qyy_dbload_test.s2_term_member_allow where day = "2017-08-16" and status = 2 group by term_id )t3
+on (tt1.id = t3.term_id)
+order by t3.max_gmt_create desc limit 20;
+
+t3.term_id  t3.max_gmt_create
+400000001586001 1483528706557
+400000001596001 1483089287704
+400000001567003 1479560502522
+400000001469012 1478747503275
+400000001438001 1478660827420
+400000001422002 1478489591973
+【数据正确，以该sql为准】
+
+
+select * from qyy_dbload_test.s2_term_member_allow where day="2017-08-16" and term_id = 400000002190110 and status = 2 order by gmt_create desc limit 5;
+p
+【注意】sql需要确定： 是按照 status in（2，3） 还是 status = 2 ？ 
+即 按照报名操作顺序排列 还是 按照 待审核的期次的排列顺序？
+
+
+取所有的 能看到的课程 - 期次；
+过滤调 非主动报名且需审核的 期次；
+遍历剩余所有期次，查找最近20条；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
