@@ -1517,41 +1517,129 @@ curl "http://127.0.0.1:18042/task/invoke.htm?type=courseTermRelIndexTask"
 
 二、授权自动发布
 
-2.1、运营后台 - 课程授权列表：
+
+
+
+二、期次授权操作后 做期次发布
+
+1、选课中心下单
+操作流程：对于免费的 附赠课程，直接做授权操作；对于付费的课程，下单后在运营后台 - 课程采购单 做授权处理；
+
+1.1、对于免费的 附赠课程，直接做授权操作；
+/p/backend/confirmOrder.do  【企业云选课包 确认下单】
+    purchaseOrderManager.confirmOrder(providerId, BizOrderConstants.BUYER_TYPE_PROVIDER, shopCartItemList);     // 传机构id
+        purchaseOrderHelper.doConfirmOrder(createOrderWrapper);
+            // 1、附赠课程（免费或者0）直接做授权操作；
+            saveTermsAuthorizationJmsProvider.SaveTermsAuthorization(bonusCourseAuthorizationVos);          
+
+            // 2、收费课程，确认订单并在成功后删除 购物车
+            result = bizServer1_0Service.confirmOrder(wrapper);     
+            if (result) {
+                purchaseOrderService.deleteShopCartItemDtoByIdList(buyerId, chargeableShopCartItemIdList);
+            }
+
+
+
+1.2、运营后台 - 课程采购单 - 企业名称（fes企业云1） - 详情 - 授权
+对 选课中心购买的 付费期次 做授权操作：
+p/backend/enterprise/doTermsAuthorization.json
+    purchaseOrderManager.doTermsAuthorization(parmVo.getOrderIds(), parmVo.getAuthStartTime(), parmVo.getAuthEndTime(), WebUser.getUserId());
+        purchaseOrderHelper.doTermsAuthorization(orderIds, authStartTime, authEndTime, operatorId);
+            saveTermsAuthorizationJmsProvider.SaveTermsAuthorization(authorizationVos);             // 承接1.1，对收费课程 运营后台手动授权；
+
+
+
+SaveTermsAuthorizationListener
+    List<CourseAuthorizationDto> authorizationDtos = JSON.parseArray(json.getString("authorizationVos"), CourseAuthorizationDto.class);
+
+    termAuthorizationShareService.initCourseAuthorization(authorizationDtos);
+    copyCourseJmsProvider.sendCopyCourseEvent(BeanConvertUtils.convert(authorizationDtos, CourseAuthorizationDto.class, CourseAuthorizationVo.class));
+
+
+
+【结论】
+1、market-server 作为消息发送方，发送授权消息； course-server 作为消息接收方，负责处理
+2、该消息只有B端 选课中心购买课程使用，C端和 k12 没有在用；
+3、修改方案： 在消息处理的时候 同步做期次发布即可； 
+
+
+
+2、运营后台 - 课程授权列表
+
+批量 excel 授权：
 批量导入：
 j/backend/enterprise/addAuthorizeCourseByExcel.do
     enterpriseManager.copyTermByExcel(nosKey, bucketName, providerId);
-        termAuthorizationShareService.initCourseAuthorization();
-            courseAuthorizationDao.add(authList);
+        // 1、课程授权表 add 操作
+        termAuthorizationShareService.initCourseAuthorization(BeanConvertUtils.convert(authVos, CourseAuthorizationVo.class, CourseAuthorizationDto.class));   
+            courseAuthorizationDao.add(authList);   
+        // 2、异步消息，触发期次拷贝
+        copyCourseJmsProvider.sendCopyCourseEvent(authVos);              
 
-        CopyCourseJmsProvider.sendCopyCourseEvent(final List<CourseAuthorizationVo> authVos)
-            JmsSendThread jmsSendThread = new JmsSendThread(amqpTemplate, authVos);
-        CopyCourseJmsListener.
-            List<CourseAuthorizationVo> authVos = JSON.parseArray(objMsg, CourseAuthorizationVo.class);    
-                CopyCourseJmsListener.copyTermWithLock(auth, auth.getId());            //期次拷贝操作，同步                 
 
-添加：
+单个添加：
 /p/backend/enterprise/authorizeCourse.do
-    enterpriseManager.addCourseAuthorization(vo)        // 增加授权记录（addOrUpdate）
-
-        termAuthorizationShareService.initCourseAuthorization(BeanConvertUtils.convert(authVos,
-            CourseAuthorizationVo.class, CourseAuthorizationDto.class));
+    enterpriseManager.addCourseAuthorization(vo)        
+        // 1、增加授权记录（addOrUpdate）
+        termAuthorizationShareService.initCourseAuthorization(BeanConvertUtils.convert(authVos, CourseAuthorizationVo.class, CourseAuthorizationDto.class));
+        // 2、异步消息，触发期次拷贝
         CopyCourseJmsProvider.sendCopyCourseEvent(authVos);
 
-改动：
+
+{
+    "authorizeCourseInfo": {
+        "fromTermId": "400000002190111",
+        "termName": "随到随学1班",
+        "fromCourseId": 400000002323062,
+        "courseName": "市场营销的研发",
+        "authorizationCount": "100",
+        "validStartTime": 1503878400000,
+        "validEndTime": 1535414400000,
+        "siteId": 400000000003003
+    }
+}
+
+
+CopyCourseJmsProvider.sendCopyCourseEvent(final List<CourseAuthorizationVo> authVos)
+    JmsSendThread jmsSendThread = new JmsSendThread(amqpTemplate, authVos);
+
+
+CopyCourseJmsListener.
+    List<CourseAuthorizationVo> authVos = JSON.parseArray(objMsg, CourseAuthorizationVo.class);    
+        CopyCourseJmsListener.copyTermWithLock(auth, auth.getId());            //期次拷贝操作，同步   
+
+
+【总结】
 1、消息内容中添加 是否发布 开关；避免影响 k12【根据机构信息区分】；
 2、拷贝同步操作完成后，同步执行 期次发布，catch 异常；
 
 
-2.2、选课中心
+
+3、导入课程，1.0 课程【不考虑】
+http://admin.study.163.com/j/backend/importCourses.do
+    termCopyManager.importOldCourse(newCourseIdList, eduWebPrivateConfig.getYktCourseImportUrl());      // 单独的逻辑，其他的修改对此无影响；
+
+courseType:1
+courseIds:1002962052
+【1、2】修改后，不影响 3
+
+
+j/backend/audit.do
 
 
 
 
 
+****************************** 20170829
+一、本地idea服务启动
+
+C:\Work_in_Netease\program_tools\autoconfig\scripts> autoconfig.bat web D:\Project_idea\ykt_2.0_properties\course-server.properties D:\Project_idea\ykt_2.0_projects\course-server\course-web
 
 
+C:\Work_in_Netease\program_tools\autoconfig\scripts> autoconfig.bat web D:\Project_idea\ykt_2.0_properties\enterprise-web.properties D:\Project_idea\ykt_2.0_projects\enterprise-web
 
 
-
+运营账号：
+festest2@163.com 
+a111111
 
