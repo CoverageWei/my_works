@@ -345,7 +345,7 @@ INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id
 		擅长领域: List<String> 数组存储 
 
 【注意考虑】
-	讲师 + 账号 关联？ 期次 + 讲师的 关联？机构 + 讲师的 关联？
+	讲师 + 账号 关联？期次 + 讲师的 关联？机构 + 讲师的 关联？
 
 
 4、机构主页设置		【1d】
