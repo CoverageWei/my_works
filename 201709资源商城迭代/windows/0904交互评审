@@ -386,7 +386,6 @@ INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id
 总计： 9d + 2.5d + 9d = 20.5d
 并发购买：
 	4d
->>>>>>> 6ce17b027f8992c20fcda05740656dd6d1a50107
 
 总计： 24.5d
 
