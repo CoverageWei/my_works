@@ -173,7 +173,7 @@ pageSize:
 http://10.165.125.15/sd/service/query?index=edu_course_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003%20AND%20name:zby
 
 
-http://10.165.125.15/sd/service/query?index=edu_course_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=termName:zby
+http://10.165.125.15/sd/service/query?index=edu_course_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=id:400000002657012
 
 
 
