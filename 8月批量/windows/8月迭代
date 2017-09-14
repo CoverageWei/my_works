@@ -1519,7 +1519,6 @@ curl "http://127.0.0.1:18042/task/invoke.htm?type=courseTermRelIndexTask"
 
 
 
-
 二、期次授权操作后 做期次发布
 
 1、选课中心下单
