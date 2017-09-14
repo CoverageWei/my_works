@@ -715,10 +715,38 @@ p
 
 
 
+**************************** 批量指派迭代  待优化
+
+
+termManagerHelper 
+207
+ for (Long memberId : memberIds) {
+            if (!assignedMemberIds.contains(memberId)) {
+                userLearnService.addAssignRecord(termDto.getCourseId(), memberId);
+                addLearnRecordCount++;
+            }
+        }
 
 
 
+userlearnserviceImpl  710
 
+//更新用户学习记录
+    private void handleAssignRecord(Term term,List<Long> memberIds){
+        List<AssignRecordDto> list = this.getAssignRecord(term.getId());
+
+        List<Long> assignedMemberIds = PropertyExtractUtils.safeGetByPropertyValue(list, "memberId", Long.class);
+        long addLearnRecordCount = 0;
+        for (Long memberId : memberIds) {
+            if (!assignedMemberIds.contains(memberId)) {
+                this.addAssignRecord(term.getCourseId(), memberId);
+                addLearnRecordCount++;
+            }
+        }
+        if (addLearnRecordCount > 0) {
+            this.addAssignStat(term.getCourseId(), addLearnRecordCount);
+        }
+    }
 
 
 

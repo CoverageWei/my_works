@@ -396,15 +396,6 @@ INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id
 
 ***************************** 20170905
 
-接下来我们有 3个案子一起做： 信息流 + 并发数销售模式 + 课程中心；
-其中，信息流 主要是移动端的开发，期间 余玮 会参与前端开发，后端 我们目前 无工作量投入；
-并发数销售模式 需要 web端和 移动端 共同开发，jira地址为： http://jira.netease.com/browse/QYY-3325，有对应的交互稿；
-课程中心 昨天下午刚开完交互会；
-
-前后端开发同学 可以熟悉下 这3个案子，信息流 + 并发数 算是小案子，主要是 课程中心
-
-
-
 二、并发数购买
 
 运营后台-创建企业站点：
@@ -539,8 +530,6 @@ javax.servlet.ServletException: Could not resolve view with name '/learn/learn' 
 
 
 /home/appops/edu-study-main/study-main_pre3/instance1/webroot/
-
-
 
 
 
