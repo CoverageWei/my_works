@@ -255,6 +255,7 @@ entry_mode_processing_key:400000002688004
 期次400000002688004指派变更处理结束
 
 
+运营后台权限：
 INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id_num) VALUES(seq,1,1,7735049,'-1','H56879');
 
 
@@ -396,6 +397,15 @@ INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id
 
 ***************************** 20170905
 
+接下来我们有 3个案子一起做： 信息流 + 并发数销售模式 + 课程中心；
+其中，信息流 主要是移动端的开发，期间 余玮 会参与前端开发，后端 我们目前 无工作量投入；
+并发数销售模式 需要 web端和 移动端 共同开发，jira地址为： http://jira.netease.com/browse/QYY-3325，有对应的交互稿；
+课程中心 昨天下午刚开完交互会；
+
+前后端开发同学 可以熟悉下 这3个案子，信息流 + 并发数 算是小案子，主要是 课程中心
+
+
+
 二、并发数购买
 
 运营后台-创建企业站点：
@@ -422,114 +432,90 @@ INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id
 
 
 
-周一： 迁移 预发3
-
-周二、周三： 二帅测试；上线计划； 
-		预留1天处理上线；
-	
-周三、周四：迁移test-web4；（预计2天）		ww、cy
 
 
+***************************** 20170915
+
+1、并发下周3左右上线，海涵 周4开始投入 课程中心；
 
 
-
-***************************** 20170911
-
-一、预发3环境迁移：
-
-集群的命名规则：${appName}_${env}     如上述创建集群的名称是front-study-web_dev-web5,该命名方式是为了使构建脚本可以根据路径中集群名判断当前构建环境；
-
-
-后端应用分为web类和server类，节省一点部署的话，web类和nginx全放一台服务器上，server类放在另外两台服务器上，目前40+个应用完整一套测试环境需要3台测试服务器：
-其中server类除study配置Xmx1024m; yooc Xmx 512m;其他server类Xmx256m
-
-
-待迁移：
-后端
-	course-import-schedule
-	study
-	yooc 								ok
-	study-backend 						ok
-	enterprise-web  					ok
-	study-teach 						ok
-	study-main 							ok			
-	study-business 						ok		
-	enterprise-mobile
-	passport-web          
-	api-web
-	statlog-web 						ok
-	live-app
-	uploader-app
-
-前端
-	front-study  front-study-wap front-study-web
-	front-yooc 							ok
-	front-study-backend-web 			ok
-	front-enterprise-web 				ok
-	front-study-teach-web 				ok
-	front-study-main-web 				ok
-	front-study-bussiness-web 			ok
-	front-passport-web 					ok
-
-
-
-二、迁移开始
-
-已完成：
-study-backend 		ok	
-study-teach 		ok
-study-business      ok
-study-main     		ok
-enterprise-web 		ok
-statlog-web         ok
-
-yooc
-
-
-
-
-一、修改配置
-1、修改脚本路径
-
-2、进入目标工程根目录： 
-/Users/weiwei/work/ykt2.0_project/study-backend
-
-3、执行脚本：
-sh /Users/weiwei/work/pre3/ndpProperty/ndppropertygenerator.sh pre3
-
-4、git push  【脚本已做 commit，但是需要手动push】
-
-
-二、 cmdb 上创建应用集群；
-
-三、ndp 上关联；
 
 
 【问题】
-
-1、前段静态工程：  一般有 12 和 14 两台机器；【omad 删除掉这 2实例， cmdb 配置 12】
-
-
-2、study-teach 共对应2个前端：  front-study-cp 和 front-study-web
-[copy] Copying 1232 files to /home/appops/ndp/source/study-teach_pre3/compressed/static/front-study-teach-web
-[copy] Copying 412 files to /home/appops/ndp/source/study-teach_pre3/compressed/static/front-study-cp
-
-
-2017-09-11 15:59:10,862 ERROR [com.netease.edu.web.filter.AuthenticationFilter] 认证过滤器异常
-javax.servlet.ServletException: Could not resolve view with name '/org/index' in servlet with name 'normal'
-【springMvc.properties 中路径还是 旧的路径】
+1、一门课 可以既有内训课 又有 公开课吗？
 
 
 
+2、运营后台 > 创建cp   是否需要创建 site ？ 不创建 site，因为 机构的 site_id = -1；
 
-2017-09-11 16:46:01,033 ERROR [com.netease.edu.web.filter.AuthenticationFilter] 认证过滤器异常
-javax.servlet.ServletException: Could not resolve view with name '/web/course/index' in servlet with name 'normal'
-
-2017-09-11 16:51:05,658 ERROR [com.netease.edu.web.filter.AuthenticationFilter] 认证过滤器异常
-javax.servlet.ServletException: Could not resolve view with name '/learn/learn' in servlet with name 'normal'
+s2_virtual_provider： providerName、belongType（0 / 1）、siteId = -1、provider_type(1)
 
 
-/home/appops/edu-study-main/study-main_pre3/instance1/webroot/
+二、运营后台 > 创建cp
+
+方案一、增加标签表
+targetId   targetType  tagType
+
+providerId    +   1   + 在线 / 内训
+
+
+方案二、
+s2_virtual_provider 表增加字段：  courseType 【1：在线 ，2：公开， 3 ： 在线+内训 】
+
+
+
+s2_provider_team  :
+
+
+
+
+
+
+
+
+周一开始：  
+下周四：
+
+ 
+ww 9  +1      
+cy 9 + 1
+yhh： 3 + 5   
+
+
+23
+
+targetId   targetType	videoId
+
+
+
+
+gghs  	 10d2h
+yw 		 10d5h
+lq 		 8d5h
+
+
+ww 	1 + 8 	 + 0.5 + 1
+cy  1 + 8.5    + 1
+hh  3 + 6	 + 不加了，线上bug
+
+
+courseName、内训type、categoryId、month、staffId、providerId、pIndex、pSize
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
