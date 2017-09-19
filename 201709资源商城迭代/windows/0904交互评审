@@ -499,15 +499,37 @@ cy  1 + 8.5    + 1
 hh  3 + 6	 + 不加了，线上bug
 
 
-courseName、内训type、categoryId、month、staffId、providerId、pIndex、pSize
-
-
-
- 
+keyword、offlineTeachType 、frontCategoryId、month、lectorId 、providerId 、pageIndex、pageSize
 
 
 
 
+1、讲师必须先绑定账号，所以 搜索结果出来的账号 确定： 做账号关联操作；
+2、更换新的账号的时候，去掉旧的账号，选择了新账号： 做账号关联关系的变更 以及 视频的新关联；
+			 去掉旧的账号，没有选择新账号： 原有的关联不变，不做任何事情；
+
+
+
+
+
+
+
+
+1、该课程创建的第一个期次 为 “内训课”；
+	第一个期次，是指 创建的第一个（不区分是否发布） 还是  发布的第一个？
+
+	offlineTeachType ：1： 内训， 2：公开
+
+	internalTraining    内训
+	openClass           公开
+
+	firstTermType :  1： 随到随学； 2：学期制；  3： 线下-内训， 4：线下-公开;  
+
+	
+
+2、创建cp的时候，cp的标签 在线 和 内训 是不是很奇怪？
+
+	providerTeachType  ：   null 普通cp； 1： 在线； 2： 内训： 3： 在线+内训；	
 
 
 
