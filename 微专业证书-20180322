@@ -1,0 +1,1338 @@
+一、微专业期次后台
+
+1、仪表盘
+增加“证书”
+
+证书开启后，该期次的证书即自动创建，名称为“微专业名称-证书”（隐藏字段）？？
+
+2、证书管理
+
+2.1、证书标准及申领设置
+2.1.1、证书标准
+（1）证书标准设置规则
+
+2.1.2、证书申领
+
+2.1.3、学员可获证书情况
+（1）“重新获取情况”  ： 
+    前端轮询？
+（2）搜索：member_term_rel 
+（3）列表：
+头： 证书标准设置项
+    
+
+3、证书制作
+
+
+
+证书属性:
+    正面：
+        证书背景图,
+    背面：
+        课程列表（通用考虑？），
+
+
+http://admin.study.163.com/j/backend/provider/doOfflineProviderChargableCourses.json?providerIdStr=111111&toAllProvider=0
+
+
+http://10.171.160.191/sd/service/query?index=edu_course_v2&stype=1&offset=0&length=88&ps=false&sort=id+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=id:400000000692040
+
+
+
+
+
+页面样式基类：
+
+
+
+正面样式：
+
+    [name, age, score, rank]
+
+
+背面样式：
+
+
+
+1、开启数据同步接口，前台 直接置灰 不支持修改；
+2、  
+
+
+
+
+
+内部数据打通；
+底层数据模型必须一致！
+流程可定制：
+方案穷尽！深度+宽度；
+
+
+4.28 晚上走， 29号中午到重庆北（12：11到），29下午去成都东（13：08 - 14：56 ）；
+30 成都玩一天；  成都东（21：03 - 22：01） 到遂宁；
+5.1 婚礼， 5月1号下午去重庆北（17：49 - 19：42）；
+5.2号 重庆玩一天；机票（23：00 - 01：20） 到杭州；
+
+overrideSubscribeUrl
+provider://10.242.15.5:20880/com.alibaba.dubbo.demo.DemoService?anyhost=true&application=demo-provider&category=configurators&check=false&dubbo=2.0.0&generic=false&interface=com.alibaba.dubbo.demo.DemoService&methods=sayHello&pid=74546&side=provider&timestamp=1522205332458
+
+                                                                                  
+    
+
+接口设计：
+
+一、列表
+
+(1)证书列表
+EdsResponseView<EdsPaginationResult<CertDto>> pageCert(Scope scope, Integer pageIndex, Integer pageSize)
+    gmt_create desc
+
+CertDto:
+    id
+    name
+    证书制作（状态说明）：信息中必填项未填写或模板未保存，必填项已填写且模板已保存
+        MakeStatusEnum
+
+    证书发放（状态说明）：证书制作未完成，存在待发放或发放失败（存在哪个显示那个），未发放过，发放过且目前无异常
+        GrantStatusEnum
+
+
+
+
+（2）创建证书
+addCert(Scope scope, CertDto certDto)
+    param： scope、name
+
+（3）编辑证书
+3.1、页面路由跳转： id
+
+3.2、保存
+updateCert(Scope scope, CertDto certDto)
+
+
+
+
+
+(1)证书列表
+EdsResponseView<EdsPaginationResult<CertDto>> pageCert(Scope scope, Integer pageIndex, Integer pageSize)
+    gmt_create desc
+
+CertDto:
+    id
+    name
+    证书制作（状态说明）：信息中必填项未填写或模板未保存，必填项已填写且模板已保存
+        MakeStatusEnum
+
+    证书发放（状态说明）：证书制作未完成，存在待发放或发放失败（存在哪个显示那个），未发放过，发放过且目前无异常
+        GrantStatusEnum
+
+
+1、证书创建
+
+（1）基本信息创建
+addCert(Scope scope, CertDto certDto)       
+    param： 
+        scope
+        certDto：name、certAuthority
+    return：
+        id ： 证书id
+（2）基本信息查询
+getCert(Scope scope, Long id)
+
+（3）模板样式保存
+saveCertTemplate(Scope scope, Long certId, CertTemplateDto)
+    frontStyle
+    backendStyle
+
+ (4)模板样式获取
+getCertTemplate(Scope scope, Long certId)
+    return: CertTemplateDto
+
+（5）证书删除
+deleteCert(Scope scope, Long id)
+    // scope 信息验证
+    return： true/false
+
+2. 证书生成
+
+// 单个用户生成证书
+generateCert(Scope scope, memberId, certId, serialNumbe, list<String> values)
+param：
+    memberId
+    certId
+    serialNumbe【规则】
+    extendField【扩展字段】
+return： url
+
+【问题】1、单证书，多样式，需要区别 样式模板？
+
+// 批量用户生成证书
+batchGenerateCert(Scope scope, certId, List<Long> memberIds, List<List<String>> values)
+    // list 数量限制
+
+
+3、证书发放名单
+listCertGrant(Scope scope, certId)
+
+
+
+5、证书撤回
+withdrawCert(Scope scope, memberId, certId)
+return： boolean
+撤回通知业务方：发消息；
+
+
+
+
+业务方：
+certId，totalPages，pageIndex，List<Long> memberIds, List<List<String>> values
+
+redis 保存进度：scope + certId 生成唯一key
+    totalPages = ？，finishedPages = ？
+
+
+
+
+cert-server：
+异步调用 node服务 生成证书图片；
+
+
+node 服务 
+certId，List<vo> values， totalCount
+批量生成图片，成功会 发 Http 请求通知 certs-erver，返回 true/false；
+
+
+
+
+**************************** 20180403
+
+
+eds-cert-server
+
+com.netease.edu.eds
+
+
+cert-api-inner       存放供内部调用的 接口
+cert-api-share       暴露出去供外部调用，rest 风格接口定义
+cert-facade         有跨service之间的事务操作，放在facade层操作
+
+
+
+
+
+证书
+工程搭建 1d ww
+基本信息创建 1d ww
+基本信息查询 0.5d ww
+证书图片生成 3d ww
+证书图片获取 0.5d
+证书回撤 1d ww
+
+
+证书样式编辑 1d yhh
+新工程环境配置及上线流程（包括截图服务） 1d yhh
+
+截图
+截图工程支持前端搞环境、技术问题解决 2d yhh
+截图服务接口包装及标准制定 2d  yhh
+
+
+
+
+**************************** 20180404
+
+一、证书交互
+1、复制先不做；
+2、二维码 、日期、编号；
+
+3、发放中状态；
+
+
+
+
+
+147357626
+
+学校
+
+信命sfz
+
+非恶意秦宽
+
+
+13732226115
+
+
+银行业务员
+
+非恶意欠款
+
+
+
+
+中行西安高新支行零售部 
+
+
+
+7、8、24 ~ 29栋，98-333平米，286套左右，4月份会推
+
+
+
+// ReentrantLock
+public class ReentrantLock implements Lock, java.io.Serializable {
+    
+    abstract static class Sync extends AbstractQueuedSynchronizer {...}
+
+    static final class FairSync extends Sync {...}
+
+    static final class NonfairSync extends Sync {...}
+
+}
+
+
+// 预期引用：100，更新后的引用：110，预期标识getStamp() 更新后的标识getStamp() + 1
+                atomicStampedReference.compareAndSet(100,110,atomicStampedReference.getStamp(),atomicStampedReference.getStamp() + 1);
+                atomicStampedReference.compareAndSet(110,100,atomicStampedReference.getStamp(),atomicStampedReference.getStamp() + 1);
+            }
+
+
+System.out.println("AtomicStampedReference:" +atomicStampedReference.compareAndSet(100,120,stamp,stamp + 1));
+            }
+
+
+
+
+
+java.util.concurrent.locks.AbstractQueuedSynchronizer#acquireQueued
+
+
+
+
+
+java.util.concurrent.locks.AbstractQueuedSynchronizer#release
+1、释放锁；
+Node h = head;
+
+
+
+java.util.concurrent.locks.AbstractQueuedSynchronizer#unparkSuccessor（node）
+更新 node 节点等待状态为 0；
+s = next;       // 获取 node 的 next 节点；
+if （s == null || s.waitStatus > 0）    // s 为null 或者 因为等待超时或者中断 而处于取消等待状态
+    s = while 循环获取 之后第一个 waitStatus <= 0 状态的节点；
+LockSupport.unpark(s.thread);
+
+
+
+
+io.netty.channel.nio.NioEventLoop#run
+
+
+
+
+公积金提取只是针对共有人和产权人提取的，如果不是共有人的话是不能提取的，因为共同还款人可以是任何人，所以不能提取。
+
+
+
+
+
+
+
+
+
+
+Socket
+SocketWrapper
+SocketProcessor
+
+getExecutor().execute(new SocketProcessor(wrapper));
+org.apache.tomcat.util.net.JIoEndpoint.SocketProcessor#run
+org.apache.coyote.AbstractProtocol.AbstractConnectionHandler#process
+
+processor.process(socket);
+
+
+
+
+将关键字段  组合成  唯一索引 从mysql 端 避免重复写入 
+
+CREATE TABLE `xxx` (
+  `a` int(11) NOT NULL default '0',
+  `b` int(11) default NULL,
+  `c` int(11) default NULL,
+  `d` int(11) default NULL,
+  PRIMARY KEY  (`a`),
+  UNIQUE KEY `xxx` (`b`,`c`,`d`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+当for update的字段为唯一索引或者主键的时候，只会锁住索引或者主键对应的行。
+而当for update的字段为普通字段的时候，Innodb会锁住整张表，在执行完update后锁才释放。
+
+
+//quantity为请求减掉的库存数量
+update s_store set amount = amount - quantity where amount>=quantity and postID = 12345';
+
+
+
+
+
+
+CREATE TABLE `eduos_cert_number` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`app_id` varchar(32) NOT NULL COMMENT '应用id',
+`date` varchar(32) NOT NULL COMMENT '日期，格式为yyyyMMdd',
+`sequence` int NOT NULL COMMENT '日期内序列号',
+PRIMARY KEY (`id`),
+UNIQUE KEY `unique_index_app_date` (`app_id`,`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 证书编号表' /* BF=app_id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+
+CertGenerateSourceDataDto
+certGenerateSourceDataDto
+
+
+RichTextFilter.filterRichText(paperDto);
+
+
+
+
+2018-04-18 19:42:31.902  WARN 5511 --- [           main] ationConfigEmbeddedWebApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Invalid bean definition with name 'com.alibaba.dubbo.config.RegistryConfig' defined in null: Could not resolve placeholder 'deployAppName' in value "${deployUserHome}/${deployAppName}/${deployAppClusterName}/instance1/approot"; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'deployAppName' in value "${deployUserHome}/${deployAppName}/${deployAppClusterName}/instance1/approot"
+2018-04-18 19:42:31.923  INFO 5511 --- [           main] utoConfigurationReportLoggingInitializer :
+
+Error starting ApplicationContext. To display the auto-configuration report re-run your application with 'debug' enabled.
+2018-04-18 19:42:31.931 ERROR 5511 --- [           main] o.s.b.SpringApplication                  : Application startup failed
+
+
+
+
+
+
+http://10.171.160.78:20092/api/cert/1111/test
+
+
+
+
+cert-common     
+1.0.0.FIRST-SNAPSHOT
+
+cert-api-share
+1.0.0.FIRST-SNAPSHOT
+
+
+
+http://10.171.160.78:20092/api/cert/410000000000001/get
+
+
+eds-cert.study.163.com/api/cert/410000000000001/get
+
+
+
+mvn deploy -pl coursedesign-service-share,category-service-share,courseSearch-service-share,courseSearch-commons,coursedesign-commons,category-commons,quiz-service-share,quiz-service-inner,quiz-commons,questionnaire-service-share,questionnaire-service-inner,questionnaire-commons --also-make -Dmaven.test.skip=true
+
+mvn deploy -pl cert-common,cert-api-share  --also-make -Dmaven.test.skip=true
+
+
+任务：
+1、zk 的 选举算法； 项目zk使用；（15:00 - 15：30）
+2、熟悉项目；
+3、快速过一遍 juc；【ing】
+4、数据库acid，索引，锁等；
+5、rabbitmq的机制；
+
+
+
+可以总结出来Spring解决循环依赖的方法：创建bean的ObjectFactory，用以解决循环依赖的问题
+
+在B中创建依赖A时通过ObjectFactory提供的实例化方法来中断A中的属性填充，
+使B中持有的A仅仅是刚刚初始化并没有填充任何属性的A，而这正初始化A的步骤还是在最开始创建A的时候进行的，
+但是因为A与B中的A所表示的属性地址是一样的，所以在A中创建好的属性填充自然可以通过B中的A获取，这样就解决了循环依赖的问题。
+
+
+
+
+
+
+hadoop fs -getmerge $INPUT_PATH $OUTPUT_PATH
+
+
+
+String.format("load data local infile '%s' replace into table %s character set GBK fields terminated by ',' (%s);",
+                file.getAbsoluteFile(), targetTable, tableEnum.getColumns());
+
+
+
+
+
+IOC:
+
+对属性的注入过程分以下两种情况：
+(1).属性值类型不需要转换时，不需要解析属性值，直接准备进行依赖注入。
+(2).属性值需要进行类型转换时，如对其他对象的引用等，首先需要解析属性值，然后对解析后的属性值进行依赖注入。
+对属性值的解析是在BeanDefinitionValueResolver类中的resolveValueIfNecessary方法中进行的，
+对属性值的依赖注入是通过bw.setPropertyValues方法实现的，在分析属性值的依赖注入之前，我们先分析一下对属性值的解析过程。
+
+ 
+7、BeanDefinitionValueResolver解析属性值：
+
+
+//解析属性值，对注入类型进行转换  
+public Object resolveValueIfNecessary(Object argName, Object value)：
+
+当容器在对属性进行依赖注入时，如果发现属性值需要进行类型转换，如属性值是容器中另一个Bean实例对象的引用，
+则容器首先需要根据属性值解析出所引用的对象，然后才能将该引用对象注入到目标实例对象的属性上去，
+对属性进行解析的由resolveValueIfNecessary方法实现，其源码如下：
+
+//解析引用类型的属性值 
+1、获取引用的Bean名称  
+2、如果引用的对象在父类容器中，则从父类容器中获取指定的引用对象
+3、从当前的容器中获取指定的引用Bean对象，如果指定的Bean没有被实例化，则会递归触发引用Bean的初始化和依赖注入
+    Object bean = this.beanFactory.getBean(refName);
+
+//解析array类型的属性
+1、创建一个指定类型的数组，用于存放和返回解析后的数组
+2、递归解析array的每一个元素，并将解析后的值设置到resolved数组中，索引为i 
+    resolveValueIfNecessary（......）
+
+// 解析set、map同上，都是递归 resolveValueIfNecessary（）；
+
+
+【总结】Spring是如何将引用类型 以及 集合类型等属性进行解析的；
+
+
+8、BeanWrapperImpl对Bean属性的依赖注入：
+
+Spring是如何将引用类型，内部类以及集合类型等属性进行解析的，属性值解析完成后就可以进行依赖注入了；
+依赖注入的过程就是Bean对象实例设置到它所依赖的Bean对象属性上去；
+在第7步中我们已经说过，依赖注入是通过bw.setPropertyValues方法实现的，该方法也使用了委托模式，
+在BeanWrapper接口中至少定义了方法声明，依赖注入的具体实现交由其实现类BeanWrapperImpl来完成，
+下面我们就分析依BeanWrapperImpl中赖注入相关的源码：
+
+
+BeanWrapperImpl类主要是对容器中完成初始化的Bean实例对象进行属性的依赖注入，即把Bean对象设置到它所依赖的另一个Bean的属性中去；
+
+
+//获取属性值，该方法内部使用JDK的内省( Introspector)机制，调用属性//的getter(readerMethod)方法，获取属性的值
+
+
+//对非集合类型的属性注入
+无法获取到属性名或者属性没有提供setter(写方法)方法，
+    如果属性值是可选的，即不是必须的，则忽略该属性值
+    如果属性值是必须的，则抛出无法给属性赋值，因为每天提供setter方法异常
+获取属性的getter方法(读方法)，JDK内省机制
+
+根据JDK的内省机制，获取属性的setter(写方法)方法
+将属性值设置到属性上去：
+    writeMethod.invoke(object, value); 
+
+【总结】对于集合类型的属性，将其属性值解析为目标类型的集合后直接赋值给属性。
+对于非集合类型的属性，大量使用了JDK的反射和内省机制，
+通过属性的getter方法(reader method)获取指定属性注入以前的值，
+同时调用属性的setter方法(writer method)为属性设置注入后的值。看到这里相信很多人都明白了Spring的setter注入原理。
+
+
+
+
+
+*handlerMapping的工作就是为了请求找到合适的处理器handler 
+ *最常用的两个handlerMapping：BeanNameURLHandlerMapping：查找spring容器中和请求的url同名的bena 
+ *SimpleUrlHandlerMapping：配置请求url和handler的映射关系
+
+
+
+
+
+**************************20180422
+
+
+public static void main(String[] args) {
+        CertDto certDto = new CertDto();
+        certDto.setApplicationId("ykt");
+        certDto.setSceneType(11);
+        certDto.setSceneId(11111L);
+        certDto.setName("ww测试证书创建");
+        certDto.setCertAuthority("ww测试证书机构");
+
+        System.out.println(JSON.toJSONString(certDto));
+    }
+
+public static void main(String[] args) {
+        CertStyleDto certStyleDto = new CertStyleDto();
+        certStyleDto.setFrontStyle("{\"width\":1482,\"height\":1028,\"printWidth\":297,\"printHeight\":210,\"areas\":[{\"image\":{\"url\":\"http://img0.ph.126.net/cxqDeYySbt93AfsfCyh7qA==/6630353083141817853.jpg\"},\"left\":0,\"top\":0,\"width\":1482,\"height\":1028,\"borderWidth\":0},{\"image\":{\"url\":\"http://img4.cache.netease.com/news/2017/6/16/2017061616093576cbb.jpg\",\"repeat\":\"repeat\"},\"left\":500,\"top\":500,\"width\":300,\"height\":300,\"borderWidth\":0},{\"text\":{\"content\":\"课程名称\",\"template\":\"课程名称:{name}\",\"fontFamily\":\"MicrosoftYaHei\",\"color\":\"#666\",\"fontSize\":\"30px\",\"isBold\":true,\"isItalic\":true,\"isUnderline\":false,\"lineHeight\":30},\"left\":200,\"top\":200,\"width\":300,\"height\":30,\"borderWidth\":0}]}");
+        certStyleDto.setBackendStyle("{\"width\":1482,\"height\":1028,\"printWidth\":297,\"printHeight\":210,\"areas\":[{\"image\":{\"url\":\"http://img0.ph.126.net/cxqDeYySbt93AfsfCyh7qA==/6630353083141817853.jpg\"},\"left\":0,\"top\":0,\"width\":1482,\"height\":1028,\"borderWidth\":0},{\"text\":{\"content\":\"昵称\",\"template\":\"昵称:{name}\",\"color\":\"#666\",\"fontSize\":\"30px\",\"isBold\":true,\"isItalic\":true,\"lineHeight\":30},\"left\":100,\"top\":100,\"width\":300,\"height\":30,\"borderWidth\":0}]}");
+        certStyleDto.setCertId(410000000002001L);
+        System.out.println(JSON.toJSONString(certStyleDto));
+    }
+
+
+
+
+
+
+
+1、证书创建
+http://eds-cert.study.163.com/api/cert/save
+
+Headers:
+Content-type    application/json
+eds-scope       eyJzY29wZSI6eyJhcHBsaWNhdGlvbklkIjoieWt0Iiwic2NlbmVUeXBlIjoiMTEiLCJzY2VuZUlkIjoiMTExMTEifX0=
+
+
+{"scope":{"applicationId":"ykt","sceneType":"11","sceneId":"11111"}}
+eyJzY29wZSI6eyJhcHBsaWNhdGlvbklkIjoieWt0Iiwic2NlbmVUeXBlIjoiMTEiLCJzY2VuZUlkIjoiMTExMTEifX0=
+
+Body:
+{"applicationId":"ykt","certAuthority":"ww测试证书机构","name":"ww测试证书创建","sceneId":11111,"sceneType":11}
+
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": 410000000002001,
+    "uuid": null
+}
+
+
+2、证书获取
+http://eds-cert.study.163.com/api/cert/410000000002001/get
+
+Headers:
+eds-scope       eyJzY29wZSI6eyJhcHBsaWNhdGlvbklkIjoieWt0Iiwic2NlbmVUeXBlIjoiMTEiLCJzY2VuZUlkIjoiMTExMTEifX0=
+
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": {
+        "id": 410000000002001,
+        "gmtCreate": 1524379153923,
+        "applicationId": "ykt",
+        "sceneId": 11111,
+        "sceneType": 11,
+        "name": "ww测试证书创建",
+        "certAuthority": "ww测试证书机构",
+        "validate": 1
+    },
+    "uuid": null
+}
+
+
+3、证书删除
+http://eds-cert.study.163.com/api/cert/410000000002001/delete
+DELETE 请求
+
+Headers:
+eds-scope       eyJzY29wZSI6eyJhcHBsaWNhdGlvbklkIjoieWt0Iiwic2NlbmVUeXBlIjoiMTEiLCJzY2VuZUlkIjoiMTExMTEifX0=
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": true,
+    "uuid": null
+}
+
+
+4、保存样式
+http://eds-cert.study.163.com/api/cert/style/save
+
+
+Body:
+{"backendStyle":"{\"width\":1482,\"height\":1028,\"printWidth\":297,\"printHeight\":210,\"areas\":[{\"image\":{\"url\":\"http://img0.ph.126.net/cxqDeYySbt93AfsfCyh7qA==/6630353083141817853.jpg\"},\"left\":0,\"top\":0,\"width\":1482,\"height\":1028,\"borderWidth\":0},{\"text\":{\"content\":\"昵称\",\"template\":\"昵称:{name}\",\"color\":\"#666\",\"fontSize\":\"30px\",\"isBold\":true,\"isItalic\":true,\"lineHeight\":30},\"left\":100,\"top\":100,\"width\":300,\"height\":30,\"borderWidth\":0}]}","certId":410000000002001,"frontStyle":"{\"width\":1482,\"height\":1028,\"printWidth\":297,\"printHeight\":210,\"areas\":[{\"image\":{\"url\":\"http://img0.ph.126.net/cxqDeYySbt93AfsfCyh7qA==/6630353083141817853.jpg\"},\"left\":0,\"top\":0,\"width\":1482,\"height\":1028,\"borderWidth\":0},{\"image\":{\"url\":\"http://img4.cache.netease.com/news/2017/6/16/2017061616093576cbb.jpg\",\"repeat\":\"repeat\"},\"left\":500,\"top\":500,\"width\":300,\"height\":300,\"borderWidth\":0},{\"text\":{\"content\":\"课程名称\",\"template\":\"课程名称:{name}\",\"fontFamily\":\"MicrosoftYaHei\",\"color\":\"#666\",\"fontSize\":\"30px\",\"isBold\":true,\"isItalic\":true,\"isUnderline\":false,\"lineHeight\":30},\"left\":200,\"top\":200,\"width\":300,\"height\":30,\"borderWidth\":0}]}"}
+
+{
+    "code": 0,
+    "message": "ok",
+    "result": true,
+    "uuid": null
+}
+
+
+5、获取证书样式
+http://eds-cert.study.163.com/api/cert/410000000002001/style/get
+
+
+
+
+6、获取证书生成
+http://eds-cert.study.163.com/api/cert/410000000002001/imgBuilder/get
+
+targetId=11111&targetType=11
+
+
+7、
+http://eds-cert.study.163.com/api/cert/410000000002001/imgBuilder/11/list
+
+Body:
+[11111,22222]
+
+
+8、
+http://eds-cert.study.163.com/api/cert/imgBuilder/certNumber/get
+certNumber=
+
+
+9、撤回
+http://eds-cert.study.163.com/api/cert/410000000002001/imgBuilder/withdraw
+PUT 请求
+
+targetType=&targetId=
+
+
+
+
+map 中 "1" : "name1" 时候， 如果 key 使用 int 的 1 去取，是取不到的；必须 String.value(1) 作为 key;
+
+
+
+
+流
+排序
+
+
+> show create table qyy_mid_online.user_behavior;
+OK
+CREATE EXTERNAL TABLE `qyy_mid_online.user_behavior`(
+  `active_name` string COMMENT '??????',
+  `time_tag` bigint COMMENT '????????',
+  `biz_dat` map<string,string> COMMENT '?????',
+  `device_type` string COMMENT '?????web, AndroidPhone, iPad, iPhone',
+  `device_id` string COMMENT '??ID',
+  `app_version` string COMMENT '???APP???',
+  `ip` string COMMENT 'IP??',
+  `nt_sid` string COMMENT '??session id',
+  `ref_url` string COMMENT '??????URL',
+  `req_url` string COMMENT '????URL',
+  `st_info` string COMMENT '??',
+  `ua` string COMMENT '????',
+  `user_id` bigint COMMENT '??ID',
+  `ua_id` string COMMENT '????ID',
+  `browser` string COMMENT '?????',
+  `browser_version` string COMMENT '??????',
+  `os` string COMMENT '??????',
+  `brand` string COMMENT '????',
+  `is_edu_app` boolean COMMENT '?????????????',
+  `app_name` string COMMENT '????????APP??',
+  `address` map<string,string> COMMENT '???????country, province, city')
+PARTITIONED BY (
+  `day` string COMMENT '??')
+ROW FORMAT SERDE
+  'org.openx.data.jsonserde.JsonSerDe'
+STORED AS INPUTFORMAT
+  'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/online/middle/user_behavior'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1492570716')
+
+
+> show create table qyy_mid_online.term_learn_progress_stat_kv;
+OK
+CREATE EXTERNAL TABLE `qyy_mid_online.term_learn_progress_stat_kv`(
+  `member_id` string COMMENT '??id',
+  `term_id` string COMMENT '??ID',
+  `type` string COMMENT 'key',
+  `value` string COMMENT 'value')
+PARTITIONED BY (
+  `day` string COMMENT '????',
+  `category` string COMMENT '?????')
+ROW FORMAT SERDE
+  'org.openx.data.jsonserde.JsonSerDe'
+STORED AS INPUTFORMAT
+  'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/online/middle/term_learn_progress_stat_kv'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1492765136')
+
+
+> show create table qyy_mid_online.term_learn_progress_stat;
+OK
+CREATE EXTERNAL TABLE `qyy_mid_online.term_learn_progress_stat`(
+  `member_id` string COMMENT '??id',
+  `term_id` string COMMENT '??ID',
+  `aggregation_learn_id` string COMMENT 'aggregation_learn_id',
+  `provider_id` string COMMENT '??id',
+  `term_type` string COMMENT '???????????0 ?????3',
+  `enroll_type` string COMMENT '?????1?? 2 ??',
+  `online_flag` string COMMENT '?????? 1:?? 2???',
+  `term_unit_total_count` string COMMENT '??????',
+  `term_offline_total_duration` string COMMENT '???????',
+  `signin_total_count` string COMMENT '???????',
+  `enroll_time` string COMMENT '??????',
+  `term_end_time` string COMMENT '??????',
+  `term_learn_finish_status` string COMMENT ' ????????????1:???2:???',
+  `enroll_date_time` string COMMENT '??????????',
+  `score` string COMMENT '????',
+  `first_learn_time` string COMMENT '??????',
+  `last_learn_time` string COMMENT '??????',
+  `signed_count` string COMMENT '????',
+  `leave_count` string COMMENT '????',
+  `not_signed_count` string COMMENT '????',
+  `online_learn_total_time` string COMMENT '???????',
+  `offline_learn_total_time` string COMMENT '???????',
+  `term_unit_learn_count` string COMMENT '???????',
+  `term_unit_finished_count` string COMMENT '???????',
+  `term_unit_learn_time` string COMMENT '?????? ',
+  `post_count` string COMMENT '???',
+  `post_reply_count` string COMMENT '???',
+  `post_comment_count` string COMMENT '???',
+  `post_top_count` string COMMENT '???',
+  `term_web_unit_total_count` string COMMENT '??web???????',
+  `term_app_unit_total_count` string COMMENT '??app???????',
+  `term_web_unit_learn_count` string COMMENT 'web??? ???????',
+  `term_app_unit_learn_count` string COMMENT 'app??? ???????',
+  `term_web_unit_finished_count` string COMMENT 'web??? ???????',
+  `term_app_unit_finished_count` string COMMENT 'app??? ???????',
+  `user_web_learn_progress` string COMMENT '???? web????? ???????',
+  `user_app_learn_progress` string COMMENT '???? app????? ???????',
+  `term_user_learn_progress` string COMMENT '????????',
+  `target_type` string COMMENT '',
+  `credit` string COMMENT '??',
+  `credit_hours` string COMMENT '??',
+  `obtain_time` string COMMENT '??????',
+  `obtain_date_time` string COMMENT '???????yyyy-MM-dd')
+PARTITIONED BY (
+  `day` string COMMENT '????')
+ROW FORMAT SERDE
+  'org.openx.data.jsonserde.JsonSerDe'
+STORED AS INPUTFORMAT
+  'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/online/middle/term_learn_progress_stat'
+TBLPROPERTIES (
+  'last_modified_by'='study',
+  'last_modified_time'='1520303840',
+  'transient_lastDdlTime'='1520303840')
+
+
+CREATE EXTERNAL TABLE `s2_term_learn_progress_stat`(
+  `aggregation_learn_id` string COMMENT 'aggregation_learn???id',
+  `member_id` string COMMENT '??id',
+  `provider_id` string COMMENT '??id',
+  `term_id` string COMMENT '??id',
+  `term_type` string COMMENT '???????????0 ?????3',
+  `term_choose_type` string COMMENT '?????????????1?? 2 ?????s2_term_entry_mode ?? enroll_type',
+  `online_flag` string COMMENT '?????? 1:?? 2???',
+  `enroll_time` string COMMENT '??????',
+  `signed_count` string COMMENT '??????????',
+  `leave_count` string COMMENT '????',
+  `not_signed_count` string COMMENT '????',
+  `online_learn_duration` string COMMENT '????????????',
+  `offline_learn_duration` string COMMENT '????????????',
+  `term_unit_learn_count` string COMMENT '???????',
+  `term_unit_finished_count` string COMMENT '???????',
+  `term_unit_total_count` string COMMENT '??????',
+  `term_unit_duration` string COMMENT '??????',
+  `score` string COMMENT '???????s2_term_score_summary.total_normalized_score_plus_bonus',
+  `first_learn_time` string COMMENT '??????',
+  `last_learn_time` string COMMENT '??????',
+  `post_count` string COMMENT '???',
+  `post_reply_count` string COMMENT '???',
+  `post_comment_count` string COMMENT '???',
+  `post_top_count` string COMMENT '???',
+  `term_user_learn_progress` string COMMENT '???????????',
+  `credit` string COMMENT '??',
+  `credit_hours` string COMMENT '??')
+PARTITIONED BY (
+  `day` string COMMENT '????')
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+STORED AS INPUTFORMAT
+  'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/online/output/s2_term_learn_progress_stat'
+TBLPROPERTIES (
+  'last_modified_by'='study',
+  'last_modified_time'='1520304080',
+  'transient_lastDdlTime'='1520304080')
+
+
+我们知道，Hive的数据是存储在HDFS中。那么，以上三种文件存储格式，肯定有对应的InputFormat和OutputFormat来对应。
+
+TEXTFILE 对应的是org.apache.hadoop.mapred.TextInputFormat 和 org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat。
+
+
+对于HDFS数据文件中的记录，Hive是如何转换为字段的哪？这就是SerDe。一个SerDe包含了将一条记录的非结构化字节转化为Hive可以使用的一条记录的过程。
+
+使用子句ROW FORMAT SERDE ‘....’可以指定具体语句。
+
+
+
+Hive中，默认使用的是TextInputFormat，一行表示一条记录。在每条记录(一行中)，默认使用^A分割各个字段。
+
+在有些时候，我们往往面对多行，结构化的文档，并需要将其导入Hive处理，此时，就需要自定义InputFormat、OutputFormat，以及SerDe了。
+
+首先来理清这三者之间的关系，我们直接引用Hive官方说法：
+
+SerDe is a short name for “Serializer and Deserializer.”
+Hive uses SerDe (and !FileFormat) to read and write table rows.
+HDFS files –> InputFileFormat –> <key, value> –> Deserializer –> Row object
+Row object –> Serializer –> <key, value> –> OutputFileFormat –> HDFS files
+
+总结一下，当面临一个HDFS上的文件时，Hive将如下处理（以读为例）：
+
+(1) 调用InputFormat，将文件切成不同的文档。每篇文档即一行(Row)。
+(2) 调用SerDe的Deserializer，将一行(Row)，切分为各个字段。
+
+当HIVE执行INSERT操作，将Row写入文件时，主要调用OutputFormat、SerDe的Seriliazer，顺序与读取相反。
+
+
+
+
+
+
+
+
+
+select
+        distinct(day)
+    from
+        qyy_mid_online.user_behavior 
+    where
+        user_id=1031462036 and active_name in ('lesson_unit_learn_record' , 'user_learn_record', 'lesson_unit_learn_end' , 'user_learn_end') 
+        and day >= '2018-04-01' ;
+
+2018-04-01
+
+
+
+
+member_id = 1031462036
+term_id=400000002334006,400000002296052,400000002303050
+
+
+member_id      term_id 
+1031462036  400000002334006     id=1100771      1522552810613           1522552820772
+1031462036  400000002303050     id=1475562     1522553075875            1522554183237
+1031462036  400000002296052     id=3538422     first=1522552886036      1522553040998
+
+
+UPDATE s2_term_learn_progress_stat_slave set first_learn_time = 1522552886036,last_learn_time = 1522553040998 where id = 3538422;
+UPDATE s2_term_learn_progress_stat_slave set first_learn_time = 1522553075875,last_learn_time = 1522554183237 where id = 1475562;
+UPDATE s2_term_learn_progress_stat_slave set first_learn_time = 1522552810613,last_learn_time = 1522552820772 where id = 1100771;
+
+
+
+s2_term_learn_progress_stat_master
+
+
+member_id      term_id 
+1031462036  400000002334006     id=2985952      1522552810613           1522552820772
+1031462036  400000002303050     id=1668929     1522553075875            1522554183237
+1031462036  400000002296052     id=2797823     first=1522552886036      1522553040998
+
+
+UPDATE s2_term_learn_progress_stat_master set first_learn_time = 1522552886036,last_learn_time = 1522553040998 where id = 2797823;
+UPDATE s2_term_learn_progress_stat_master set first_learn_time = 1522553075875,last_learn_time = 1522554183237 where id = 1668929;
+UPDATE s2_term_learn_progress_stat_master set first_learn_time = 1522552810613,last_learn_time = 1522552820772 where id = 2985952;
+
+
+
+ALTER TABLE table_name DROP INDEX index_name
+
+
+
+alter table eduos_cert_img_builder drop index `index_cert_member_id`;
+
+alter table eduos_cert_img_builder add KEY `unique_index_number_cert` (`cert_id`,`target_id`);
+
+alter table eduos_cert_img_builder add UNIQUE KEY `unique_index_number_cert` (`cert_number`,`cert_id`);
+
+
+
+
+
+
+通常大多数Servlet是在用户第一次请求的时候由应用服务器创建并初始化，
+但<load-on-startup>n</load-on-startup>   可以用来改变这种状况，根据自己需要改变加载的优先级！
+
+1)load-on-startup元素标记容器是否在启动的时候就加载这个servlet(实例化并调用其init()方法)。
+2)它的值必须是一个整数，表示servlet应该被载入的顺序
+2)当值为0或者大于0时，表示容器在应用启动时就加载并初始化这个servlet；
+3)当值小于0或者没有指定时，则表示容器在该servlet被选择时才会去加载。
+4)正数的值越小，该servlet的优先级越高，应用启动时就越先加载。
+5)当值相同时，容器就会自己选择顺序来加载。
+所以，<load-on-startup>x</load-on-startup>，中x的取值1，2，3，4，5代表的是优先级，而非启动延迟时间。
+
+
+
+
+
+
+
+
+IoC容器的初始化包括BeanDefinition的Resource定位、载入和注册这三个基本的过程。
+
+Spring IoC容器对Bean定义资源的载入是从refresh()函数开始的，refresh()是一个模板方法，refresh()方法的作用是：在创建IoC容器前，如果已经有容器存在，则需要把已有的容器销毁和关闭，以保证在refresh之后使用的是新建立起来的IoC容器。refresh的作用类似于对IoC容器的重启，在新建立好的容器中对容器进行初始化，对Bean定义资源进行载入
+
+先判断BeanFactory是否存在，如果存在则先销毁beans并关闭beanFactory，接着创建DefaultListableBeanFactory，并调用loadBeanDefinitions(beanFactory)装载bean 定义；
+
+//创建XmlBeanDefinitionReader，即创建Bean读取器，并通过回调设置到容器中去，容  器使用该读取器读取Bean定义资源
+
+//委派调用其子类XmlBeanDefinitionReader的方法，实现加载功能
+//如果是类路径的方式，那需要使用ClassPathResource 来得到bean 文件的资源对象 
+
+在Spring 中我们看到它提供 的各种资源抽象，比如ClassPathResource, URLResource,FileSystemResource
+
+
+//将XML文件转换为DOM对象，解析过程由documentLoader实现 
+载入Bean定义资源文件的最后一步是将Bean定义资源转换为Document对象，该过程由documentLoader实现；这些Document对象并没有按照Spring的Bean规则进行解析。这一步是载入的过程
+Spring IoC容器根据定位的Bean定义资源文件，将其加载读入并转换成为Document对象
+
+//启动对Bean定义解析的详细过程，该解析过程会用到Spring的Bean配置规则，将其解析为Spring IoC管理的Bean对象并将其注册到容器中的。
+
+//从Document的根元素开始进行Bean定义的Document对象 
+    //获取Bean定义的Document对象根元素的所有子节点
+
+
+//2、使用Spring的Bean规则解析Document元素节点
+    //2.1、如果元素节点是<Import>导入元素，进行导入解析 
+
+    //2.2、解析<Alias>别名元素，为Bean向Spring IoC容器注册别名
+
+    //2.3、元素节点既不是导入元素，也不是别名元素，即普通的<Bean>元素，按照Spring的Bean规则解析元素 
+        // BeanDefinitionHolder是对BeanDefinition的封装，即Bean定义的封装类 
+        对Document对象中<Bean>元素的解析由BeanDefinitionParserDelegate实现
+        //向Spring IoC容器注册解析得到的Bean定义，这是Bean定义向IoC容器注册的入口 
+
+【总结】Spring IoC容器对载入的Bean定义Document解析可以看出，我们使用Spring时：
+在Spring配置文件中可以使用<Import>元素来导入IoC容器所需要的其他资源，Spring IoC容器在解析时会首先将指定导入的资源加载进容器中。
+使用<Ailas>别名时，Spring IoC容器首先将别名元素所定义的别名注册到容器中。
+对于既不是<Import>元素，又不是<Alias>元素的元素，即Spring配置文件中普通的<Bean>元素的解析由BeanDefinitionParserDelegate类的parseBeanDefinitionElement方法来实现。
+
+
+2.3、BeanDefinitionParserDelegate解析Bean定义资源文件中的<Bean>元素：
+//解析Bean定义资源文件中的<Bean>元素，这个方法中主要处理<Bean>元素的id，name 和别名属性
+
+//这里只读取<Bean>元素中配置的class名字，然后载入到BeanDefinition中去 ，只是记录配置的class名字，不做实例化，对象的实例化在依赖注入时完成  
+
+//如果<Bean>元素中配置了parent属性，则获取parent属性的值
+
+// 配置的一些属性进行解析和设置，如配置的单态(singleton)属性等；
+
+//解析<Bean>元素的<property>设置
+    //解析获取property的值
+    //根据property的名字和值创建property实例 PropertyValue
+        //获取<property>的所有子元素，只能是其中一种类型:ref,value,list等
+            ref被封装为指向依赖对象一个引用。
+            value配置都会封装成一个字符串类型的对象。
+        // 对<property>元素中配置的Array、List、Set、Map、Prop等各种集合子元素的都通过上述方法解析
+
+......
+
+【小结】在解析<Bean>元素过程中没有创建和实例化Bean对象，只是创建了Bean对象的定义类BeanDefinition，将<Bean>元素中的配置信息设置到BeanDefinition中作为记录，当依赖注入时才使用这些记录信息创建和实例化具体的Bean对象。
+
+经过对Spring Bean定义资源文件转换的Document对象中的元素层层解析，Spring IoC现在已经将XML形式定义的Bean定义资源文件转换为Spring IoC所识别的数据结构——BeanDefinition，它是Bean定义资源文件中配置的POJO对象在Spring IoC容器中的映射；
+
+通过Spring IoC容器对Bean定义资源的解析后，IoC容器大致完成了管理Bean对象的准备工作，即初始化过程，但是最为重要的依赖注入还没有发生，现在在IoC容器中BeanDefinition存储的只是一些静态信息，接下来需要向容器注册Bean定义信息才能全部完成IoC容器的初始化过程；
+
+
+3、//将解析的BeanDefinitionHold注册到容器中
+    //获取解析的BeanDefinition的名称
+
+使用一个HashMap的集合对象存放IoC容器中注册解析的BeanDefinition，key 为 beanName，value 为 BeanDefinition 对象；
+
+至此，Bean定义资源文件中配置的Bean被解析过后，已经注册到IoC容器中，被容器管理起来，真正完成了IoC容器初始化所做的全部工作。现  在IoC容器中已经建立了整个Bean的配置信息，这些BeanDefinition信息已经可以使用，并且可以被检索，IoC容器的作用就是对这些注册的Bean定义信息进行处理和维护。这些的注册的Bean定义信息是IoC容器控制反转的基础，正是有了这些注册的数据，容器才可以进行依赖注入。
+
+
+【总结】IOC容器初始化
+
+1、初始化的入口在容器实现中的 refresh()调用来完成
+2、对 bean 定义载入 IOC 容器使用的方法是 loadBeanDefinition,其中的大致过程如下：
+通过 ResourceLoader 来完成资源文件位置的定位，DefaultResourceLoader 是默认的实现，同时上下文本身就给出了 ResourceLoader 的实现，可以从类路径，文件系统, URL 等方式来定为资源位置。
+
+如果是 XmlBeanFactory作为 IOC 容器，那么需要为它指定 bean 定义的资源，也就是说 bean 定义文件时通过抽象成 Resource 来被 IOC 容器处理的；
+
+容器通过 BeanDefinitionReader来完成定义信息的解析和 Bean 信息的注册,往往使用的是XmlBeanDefinitionReader 来解析 bean 的 xml 定义文件 - 实际的处理过程是委托给 BeanDefinitionParserDelegate 来完成的，从而得到 bean 的定义信息，这些信息在 Spring 中使用 BeanDefinition 对象来表示 - 
+
+这个名字可以让我们想到loadBeanDefinition,RegisterBeanDefinition  这些相关的方法 - 他们都是为处理 BeanDefinitin 服务的， 容器解析得到 BeanDefinitionIoC 以后，需要把它在 IOC 容器中注册，这由 IOC 实现 BeanDefinitionRegistry 接口来实现。注册过程就是在 IOC 容器内部维护的一个HashMap 来保存得到的 BeanDefinition 的过程。这个 HashMap 是 IoC 容器持有 bean 信息的场所，以后对 bean 的操作都是围绕这个HashMap 来实现的.
+
+
+
+四、IOC容器的依赖注入
+1、依赖注入发生的时间
+
+当Spring IoC容器完成了Bean定义资源的定位、载入和解析注册以后，IoC容器中已经管理类Bean定义的相关数据，但是此时IoC容器还没有对所管理的Bean进行依赖注入，依赖注入在以下两种情况发生：
+
+(1).用户第一次通过getBean方法向IoC容索要Bean时，IoC容器触发依赖注入。
+
+(2).当用户在Bean定义资源中为<Bean>元素配置了lazy-init属性，即让容器在解析注册Bean定义时进行预实例化，触发依赖注入。
+
+BeanFactory接口定义了Spring IoC容器的基本功能规范，是Spring IoC容器所应遵守的最底层和最基本的编程规范。BeanFactory接口中定义了几个getBean方法，就是用户向IoC容器索取管理的Bean的方法，我们通过分析其子类的具体实现，理解Spring IoC容器在用户索取Bean时如何完成依赖注入。
+
+
+
+//1、根据指定的名称获取被管理Bean的名称
+
+//2、先从缓存中取是否已经有被创建过的单态类型的Bean，对于单态模式的Bean整个IoC容器中只创建一次，不需要重复创建
+    //如果指定名称的Bean在容器中已有单态模式的Bean被创建，直接返回已经创建的Bean
+    //获取给定Bean的实例对象，主要是完成FactoryBean的相关处理
+
+//3、缓存没有正在创建的单态模式Bean
+    //3.1、对IoC容器中是否存在指定名称的BeanDefinition进行检查，首先检查是否能在当前的BeanFactory中获取的所需要的Bean，如果不能则委托当前容器的父级容器去查找，如果还是找不到则沿着容器的继承体系向父级容器查找
+        //当前容器的父级容器存在，且当前容器中不存在指定名称的Bean
+            //委派父级容器根据指定名称和显式的参数查找
+    //3.2、当前容器的父级容器不存在
+        //3.2.1、获取当前Bean所有依赖Bean的名称  
+            //递归调用getBean方法，获取当前Bean的依赖Bean 
+            //把被依赖Bean注册给当前依赖的Bean
+
+        //3.2.2、
+        if 如果是单例
+            创建单态模式Bean的实例对象，获取给定Bean的实例对象
+        else 
+            //IoC容器创建原型模式Bean实例对象  
+            //原型模式(Prototype)是每次都会创建一个新的对象 
+        else
+            //要创建的Bean既不是单态模式，也不是原型模式，则根据Bean定义资源中  
+            //配置的生命周期范围，选择实例化Bean的合适方法，这种在Web应用程序中  
+            //比较常用，如：request、session、application等生命周期
+
+//4、对创建的Bean实例对象进行类型检查 
+
+
+【小结】在Spring中，如果Bean定义的单态模式(Singleton)，则容器在创建之前先从缓存中查找，以确保整个容器中只存在一个实例对象。
+如果Bean定义的是原型模式(Prototype)，则容器每次都会创建一个新的实例对象。除此之外，Bean定义还可以扩展为指定其生命周期范围。
+
+
+AbstractAutowireCapableBeanFactory的 createBean(final String beanName, final RootBeanDefinition mbd, final Object[] args) 创建Bean实例的具体实现过程。
+
+//创建Bean的入口 ,//真正创建Bean的方法  
+Object beanInstance = doCreateBean(beanName, mbd, args);
+
+//1、单态模式的Bean，先从容器中缓存中获取同名Bean
+    没有，//创建实例对象  
+    instanceWrapper = createBeanInstance(beanName, mbd, args);  
+
+//获取实例化对象的类型
+//向容器中缓存单态模式的Bean对象，以防循环引用 
+
+//Bean对象的初始化，依赖注入在此触发 
+//将Bean实例对象封装，并且Bean定义中配置的属性值赋值给实例对象
+populateBean(beanName, mbd, instanceWrapper);
+
+//注册完成依赖注入的Bean 
+registerDisposableBeanIfNecessary(beanName, bean, mbd); 
+
+
+【小结】
+(1).createBeanInstance：生成Bean所包含的java对象实例。
+(2).populateBean ：对Bean属性的依赖注入进行处理
+
+
+（1）在createBeanInstance方法中，根据指定的初始化策略，使用静态工厂、工厂方法或者容器的自动装配特性生成java实例对象，创建对象的源码如下：
+1、//使用工厂方法对Bean进行实例化
+否则，//使用容器的自动装配方法进行实例化  
+    //配置了自动装配属性，使用容器的自动装配实例化  
+    //容器的自动装配是根据参数类型匹配Bean的构造方法
+    否则，//使用默认的无参构造方法实例化
+
+否则，//使用Bean的构造方法进行实例化 （非自动装配）
+
+【小结】
+对使用工厂方法和自动装配特性的Bean的实例化相当比较清楚，调用相应的工厂方法或者参数匹配的构造方法即可完成实例化对象的工作；
+但是对于我们最常使用的 默认无参构造方法 就需要使用相应的初始化策略( JDK的反射机制 或者 CGLIB ) 来进行初始化了
+
+
+//如果Bean定义中没有方法覆盖，则就不需要CGLIB父类类的方法  
+//JDK： 使用BeanUtils实例化，通过反射机制调用”构造方法.newInstance(arg)”来进行实例化  
+
+【小结】如果Bean有方法被覆盖了，则使用JDK的反射机制进行实例化，否则，使用CGLIB进行实例化。
+
+
+
+
+
+（2）populateBean方法对Bean属性的依赖注入：//将Bean属性设置到生成的实例对象上
+
+/获取容器在解析Bean定义资源时为BeanDefiniton中设置的属性值
+
+//依赖注入开始，首先处理autowire自动装配的注入
+    //对autowire自动装配的处理，根据Bean名称自动装配注入  或 类型
+
+//对属性进行注入  
+applyPropertyValues(beanName, mbd, bw, pvs);  // 用到了PropertyValues
+
+//创建一个Bean定义属性值解析器，将Bean定义中的属性值解析为Bean实例对象的实际值  ： BeanDefinitionValueResolver
+
+//为属性的解析值创建一个拷贝，将拷贝的数据注入到实例对象中
+
+for (PropertyValue pv : original) {
+     //属性值不需要转换 
+
+     //属性值需要转换  
+        //转换属性值，例如将引用转换为IoC容器中实例化对象引用
+        valueResolver.resolveValueIfNecessary(pv, originalValue);
+
+        //设置属性转换之后的值  
+
+
+【小结】
+对属性的注入过程分以下两种情况：
+
+(1).属性值类型不需要转换时，不需要解析属性值，直接准备进行依赖注入。
+(2).属性值需要进行类型转换时，如对其他对象的引用等，首先需要解析属性值，然后对解析后的属性值进行依赖注入。
+当容器在对属性进行依赖注入时，如果发现属性值需要进行类型转换，如属性值是容器中另一个Bean实例对象的引用，则容器首先需要根据属性值解析出所引用的对象，然后才能将该引用对象注入到目标实例对象的属性上去
+
+
+对属性值的解析是在BeanDefinitionValueResolver类中的resolveValueIfNecessary方法中进行的，对属性值的依赖注入是通过bw.setPropertyValues方法实现的
+
+//解析属性值，对注入类型进行转换  
+    //对引用类型的属性进行解析 
+
+    //对集合数组类型的属性解析
+        //获取数组元素的类型
+        //创建指定类型的数组 
+    //解析list类型的属性值
+
+    // set、map......
+
+
+//解析引用类型的属性值
+    //获取引用的Bean名称
+    //如果引用的对象在父类容器中，则从父类容器中获取指定的引用对象
+    否则， //从当前的容器中获取指定的引用Bean对象，如果指定的Bean没有被实例化 则会递归触发引用Bean的初始化和依赖注入  
+
+
+//解析array类型的属性
+    //创建一个指定类型的数组，用于存放和返回解析后的数组 
+    //递归解析array的每一个元素，并将解析后的值设置到resolved数组中，索引为i
+......
+
+
+
+注入：
+属性值解析完成后就可以进行依赖注入了，依赖注入的过程就是Bean对象实例设置到它所依赖的Bean对象属性上去：
+依赖注入是通过bw.setPropertyValues方法实现的
+
+//实现属性依赖注入功能
+    //获取属性值，该方法内部使用JDK的内省( Introspector)机制，调用属性//的getter(readerMethod)方法，获取属性的值 
+
+    //对非集合类型的属性注入
+        //无法获取到属性名或者属性没有提供setter(写方法)方法
+            /如果属性值是可选的，即不是必须的，则忽略该属性值
+            //如果属性值是必须的，则抛出无法给属性赋值，因为每天提供setter方法异常
+        //设置属性的注入值  
+         //根据JDK的内省机制，获取属性的setter(写方法)方法  //将属性值设置到属性上去
+
+【小结】
+(1).对于集合类型的属性，将其属性值解析为目标类型的集合后直接赋值给属性。
+(2).对于非集合类型的属性，大量使用了JDK的反射和内省机制，通过属性的getter方法(reader method)获取指定属性注入以前的值，同时调用属性的setter方法(writer method)为属性设置注入后的值。
+
+
+1、每天10点开团，大量的用户涌入，下单，导致高并发，高性能的问题 
+2、聚划算每个商品的开团时间仅有一天，对稳定性，可用性有非常高的要求 
+
+2、JAVA基础扎实，熟悉io、多线程、集合等基础框架，熟悉分布式、缓存、消息、搜索等机制； 3、三年以上使用java进行web开发的经验，精通AOP、MVC等框架，熟悉Linux下的常用命令，熟悉MySQL； 4、熟悉JAVAEE规范，熟悉常用的设计模式；精通Java及Web的开发和应用；熟悉高并发、高性能的分布式系统的设计及应用、调优； 5、具有一定的项目规划和决策能力，善于捕捉业务需求、架构设计中存在的问题，并给出有效的解决措施和方法； 6、具有高度的抽象设计能力，思路清晰，善于思考，能独立分析和解决问题； 7、能承受一定的工作压力，有责任心和上进心，能通过持续学习完善自身，有担当，执行力强，乐于分享；
+
+
+
+AbstractBeanFactory
+
+/** List of bean definition names, in registration order */
+private volatile List<String> beanDefinitionNames = new ArrayList<String>(256);
+
+/** Map of bean definition objects, keyed by bean name */
+private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, BeanDefinition>(256);
+
+/** BeanPostProcessors to apply in createBean */
+private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+********************************************* 20180425
+
+
+1、批改 评语支持富文本
+com.netease.edu.eds.question.api.impl.v2.PaperImpl#judgeSubjectiveQuestion
+
+2、重新判分逻辑修改，避免主观题 已经判断的 重复批改
+http://fes1.study.163.com/api/v1/paper/410000103957018/reJudge
+{"userId":"1020652009"}
+
+发送异步消息处理判分 ： com.netease.edu.eds.paper.service.jms.listener.PaperRejudgeListener#onMessage
+
+JudgeService judgeService = judgeServiceFactory.getJudgeService(PaperSettingContants.JudgeTypeEnum.SYSTEM);
+judgeService.reJudgePaperAnswerform(scope, aggreScore.getPaperId(), aggreScore.getMemberId(), updateAggreScore);
+
+
+
+3、题库导入模板更换，去掉标签列（标签字段目前没有使用场景
+http://fes1.study.163.com/api/v1/questionBank/question/import
+com.netease.edu.eds.question.api.impl.QuestionBankImpl#importQuestion
+
+
+4、根据 题库id列表获取题目列表分页修改，为空时候表示 获取所有分页
+com.netease.edu.eds.question.api.share.v2.QuestionBankAPI#pageQuestion
+questionBankIdList 分页逻辑修改，为空时候表示获取所有分页。questionBankIdList 参数id长度限制
+
+
+
+
+id
+gmt_create
+db_update_time
+member_id
+paper_id
+submit_time
+submit_status
+effect_status
+correcting_people
+application_id
+user_object_score
+user_subject_score
+no_judge_subject_count
+start_answer_time
+submit_after_deadline
+judge_status
+validate
+scene_id
+scene_type
+recommended
+gmt_modified
+score_published
+user_total_score
+passed
+410000001129265 1524655692240   2018-04-25 19:30:43 7735049 410000103962801 1524655732085   2   1   7735049 enterprise  20.00   30.00   0   1524655684912   null    1   0   400000000003003 101 -1  null    null    30.00   null
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<project-list>eds-common;eds-common-ext;question-api-server</project-list>
+<branch-name>feature/question_optimize_ww_20180426</branch-name>
+<version-suffix>question-optimize-ww-20180426</version-suffix>
+</root>
+
+
+
+
+
+机构员工已激活的情况下，可与根据 member 表的  last_logon_time 来查询，存在即登陆过，且可以得出 上次登录时间；
+员工 未激活，肯定 未登录过 企业云平台； 
+
+
+
+

@@ -1,0 +1,166 @@
+    dev-web4  
+enterprise-web
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.191 -L 18273:127.0.0.1:18273 -N
+
+study-backend
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.191 -L 18113:127.0.0.1:18113 -N
+
+provider-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.191 -L 18073:127.0.0.1:18073 -N
+
+course-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.191 -L 18013:127.0.0.1:18013 -N
+
+static-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.191 -L 18733:127.0.0.1:18733 -N
+
+
+
+	test-web3
+course-server   
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.155 -L 18013:127.0.0.1:18013 -N
+
+search-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.155 -L 18283:127.0.0.1:18283 -N
+
+statistic-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.155 -L 18733:127.0.0.1:18733 -N
+
+study-backend
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.32 -L 18113:127.0.0.1:18113 -N
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.32 -L 18273:127.0.0.1:18273 -N 
+
+
+
+
+	test-web4
+study-platform
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.186 -L 18363:127.0.0.1:18363 -N
+
+enterprise-web
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.186 -L 18273:127.0.0.1:18273 -N  
+edu-statistic
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.190 -L 18733:127.0.0.1:18733 -N	
+course-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.190 -L 18013:127.0.0.1:18013 -N
+provider-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.190 -L 18073:127.0.0.1:18073 -N
+
+study-teach
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.186 -L 18043:127.0.0.1:18043 -N
+
+study-business
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.186 -L 18533:127.0.0.1:18533 -N
+
+study-backend
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.186 -L 18113:127.0.0.1:18113 -N
+
+biz-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.190 -L 18393:127.0.0.1:18393 -N
+
+search-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.190 -L 18283:127.0.0.1:18283 -N
+
+
+
+	预发1
+study-platform
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.219 -L 18363:127.0.0.1:18363 -N
+
+study-teach
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.62 -L 18043:127.0.0.1:18043 -N
+
+course-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.223 -L 18013:127.0.0.1:18013 -N
+
+
+
+	预发3  
+pre3: course-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.178 -L 18013:127.0.0.1:18013 -N
+pre3: edu-statistic
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.178 -L 18733:127.0.0.1:18733 -N
+pre3: search-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.184 -L 18283:127.0.0.1:18283 -N
+provider-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.184 -L 18073:127.0.0.1:18073 -N
+enterprise-web
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.175 -L 18273:127.0.0.1:18273 -N
+
+study-backend
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.175 -L 18113:127.0.0.1:18113 -N
+
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.184 -L 18173:127.0.0.1:18173 -N
+
+
+	pre5：
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.151 -L 18013:127.0.0.1:18013 -N
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.164.97.175 -L 18113:127.0.0.1:18113 -N
+
+
+	pre2:
+enterprise-web
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.150 -L 18273:127.0.0.1:18273 -N
+
+course-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.151 -L 18013:127.0.0.1:18013 -N
+
+
+dev-t1
+study
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.82 -L 18363:127.0.0.1:18363 -N
+
+test-m1
+study
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.36 -L 18363:127.0.0.1:18363 -N
+	
+10.165.124.200
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.200 -L 18023:127.0.0.1:18023 -N
+
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.219 -L 18363:127.0.0.1:18363 -N
+
+
+
+dev-web5  
+
+course-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.165.124.193 -L 18013:127.0.0.1:18013 -N
+
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.223 -L 18013:127.0.0.1:18013 -N
+
+
+
+
+mac下 profiles 配置 ssh 登录远程服务器：
+
+test-web3 web
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa hzweiwei2015@10.165.124.32 -p 1046
+
+test-m1 【study】
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa hzweiwei2015@10.165.124.36 -p 1046
+
+dev-t1 【study】
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa hzweiwei2015@10.165.124.82 -p 1046
+
+
+线上镜像库
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa hzweiwei2015@10.171.160.147 -p 1046
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa hzweiwei2015@10.171.160.89 -p 1046
+
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa hzweiwei2015@10.165.124.209 -p 1046
+
+
+
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa hzweiwei2015@10.171.160.219 -p 1046
+
+
+
+
+

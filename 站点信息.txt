@@ -1,0 +1,4200 @@
+/* 1 */
+{
+    "_id" : NumberLong(400000000002004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/4ffc500b-f2c1-4b76-b0ef-0b7d82a0a3e81.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/57127aa3-606c-4f6c-ac88-c68ae99d4d9b3.bmp?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/5c259ad6-b056-4a6a-be8c-12a2e51012272.png?imageView&quality=100"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000003001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "广告/媒体",
+    "logoUrl" : "http://nos.netease.com/edu-image/5c3cbd9f-bca5-4caa-abb3-a06bcba1d5775.JPG?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/c6302a45-6082-4d86-b0a5-3b6c06f9b55b6.JPG?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/f231d997-8104-4578-9306-5797bd0008531.JPG?imageView&quality=100"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000003003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/0d5780d4-58f0-4137-90a5-b338ce3e0d0f.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/dd96b2e5-8833-41c9-8a75-f244a6e45996.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/0d5780d4-58f0-4137-90a5-b338ce3e0d0f.png?imageView&quality=100",
+    "mobLoginBgUrl" : ""
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000004007),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://nos.netease.com/edu-image/79551052-729e-45a3-9729-5e4b19eb7cc9w.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/3cba2e63-e8ea-42f4-aedf-8d3b7714be4dw.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/79ba7776-2312-4305-8ba9-05699ef39e26w.png?imageView&quality=100"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000004009),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "国企",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/22cb82a5-ad85-4fd5-b7fe-c7f04cffba59.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a52a847a-7bc8-41a2-87bf-8cbf87874c07.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/347788c3-efda-45aa-95bf-3819de9d5967.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000006005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000006011),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/2b1d1001-0217-43ef-8da7-e293d8bb85ddd.jpg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/d4d61502-70c1-422d-85b2-8e9c823695627.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/2b1d1001-0217-43ef-8da7-e293d8bb85ddd.jpg?imageView&quality=100"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000006013),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://nos.netease.com/edu-image/d9087f65-1e25-4122-ae79-191c30b365d53.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/d9087f65-1e25-4122-ae79-191c30b365d53.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/0183994f-7c00-4709-ad69-0ad8aa933f69o.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000006019),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://nos.netease.com/edu-image/02aa2c2c-776c-4889-8ced-9f485719f1f30.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/4d832c59-449f-4a43-a4f5-a279cb1c57f7E.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/3b540132-c3d4-4d5c-a65d-6f68439615f7k.png?imageView&quality=100"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000006023),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000007001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "制药/医疗"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000009005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/521cb047-f679-494a-9a6c-08dac14ba5e22.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/31f0dd11-392e-4346-8ef0-bae9d55c64f90.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/81aa83ca-17b1-4ad0-85d6-0cbaa012c5012.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000009006),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/53de533b-eea1-4e83-a867-0ed7743b15a2.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/4c286113-1b6c-4509-a0b5-ba259145dc67.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/7c2650bf-4d79-4133-b503-cc021dd2af26.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000011001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/46222951-f380-40c4-be47-170424c0be9a2.jpeg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/9894a75a-918d-4291-8e9c-4ac804a3273cc.jpeg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/46222951-f380-40c4-be47-170424c0be9a2.jpeg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/5272de47-8a41-4595-972b-e5b3f206968c.jpg?imageView&quality=100"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000012002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "政府机关",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000012015),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/9f92b05d-2db8-43b7-a9d2-42346fa67a4c9.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/a42b9eef-5cbf-488d-ad29-f0d7f58349a49.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/591c11d2-725a-4884-942f-5d82d70642069.png?imageView&quality=100"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000017001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000017002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000017015),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000018002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/ab6c057f-91e2-4308-968b-2a0a79b74028.PNG?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/ab6c057f-91e2-4308-968b-2a0a79b74028.PNG?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/ab6c057f-91e2-4308-968b-2a0a79b74028.PNG?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000018005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "合资",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000021001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/315af552-4ea9-404c-95cc-e643a558bc0f.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b561958f-952e-4c4f-8c18-55940bda39ae.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/4d86781d-fa43-4a47-baa8-816bab35664b.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/ba12e794-2c9e-4469-9d18-8ac80eb033de.png?imageView&quality=100"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000021002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 24 */
+{
+    "_id" : NumberLong(400000000022001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "pwdResetHint" : ""
+}
+
+/* 25 */
+{
+    "_id" : NumberLong(400000000023005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/940bbd5a-2ec3-4dfe-a63a-8664ab5a11bc7.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/6ef7a234-cf76-4840-967c-be35b69214c08.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/62598bae-5f5e-4c41-ab83-fd7dea672bc7.png?imageView&quality=100"
+}
+
+/* 26 */
+{
+    "_id" : NumberLong(400000000024001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "会计/金融/银行/保险",
+    "pwdResetHint" : "我要回归呀"
+}
+
+/* 27 */
+{
+    "_id" : NumberLong(400000000024002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "企业代表处",
+    "siteCategory" : "广告/媒体"
+}
+
+/* 28 */
+{
+    "_id" : NumberLong(400000000025003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/f9979a0d-0cb7-4fa5-b268-6de59e9ed0b0.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/f56f7e4b-09d0-48d5-9c3d-2655aa9c9237o.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/07d2b051-d7bc-4fc2-baf0-6028c6846f472.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 29 */
+{
+    "_id" : NumberLong(400000000026001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 30 */
+{
+    "_id" : NumberLong(400000000028001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 31 */
+{
+    "_id" : NumberLong(400000000028002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/0b2aec50-07f0-467c-aa99-327ba8636f4a.jpeg?imageView&quality=100"
+}
+
+/* 32 */
+{
+    "_id" : NumberLong(400000000028003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 33 */
+{
+    "_id" : NumberLong(400000000029002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/872a1851-d5a9-445a-a3a7-02ccac1eb123.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a089a979-f25b-46e6-87fd-8cab9563578c.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/872a1851-d5a9-445a-a3a7-02ccac1eb123.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 34 */
+{
+    "_id" : NumberLong(400000000029003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d32cc568-635f-4d8e-bce0-7fd2dd3e5778.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/1d359a2f-b22d-450a-b8e9-7405c02be37b.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a32956b9-5b74-49a3-9e35-37762e53e015.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员"
+}
+
+/* 35 */
+{
+    "_id" : NumberLong(400000000029004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://nos.netease.com/edu-image/2aa9113b-4144-4296-bad8-e25197e0691d0.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/2aa9113b-4144-4296-bad8-e25197e0691d0.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/2aa9113b-4144-4296-bad8-e25197e0691d0.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 36 */
+{
+    "_id" : NumberLong(400000000029005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/d3f27a81-4fab-44c7-8124-8b9992d9cdba3.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/a2fa3c73-6dd2-4ae9-b863-0dce146b93300.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/933f4c6e-778c-48ea-9575-0419e423cdf5a.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 37 */
+{
+    "_id" : NumberLong(400000000029006),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/63e3a8fd-457b-415b-86d8-943d71723f59.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/709b4fb4-5c35-4c4b-9ca4-c862235f3d35.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/95ed5098-2b7e-449d-b8f9-58256d7433e5.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 38 */
+{
+    "_id" : NumberLong(400000000029008),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "事业单位",
+    "siteCategory" : "能源/原材料",
+    "logoUrl" : "http://nos.netease.com/edu-image/db727339-db3c-4915-b8d6-58f182458ef51.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/b15f1524-f22e-4ef0-9808-7a2aa9bbede11.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/9c8e2ffd-bdf1-43df-a3f4-ab8243dd304c2.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 39 */
+{
+    "_id" : NumberLong(400000000030002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/67efa472-cb85-4dcf-8e0a-a5ec0dce8ec4.jpg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/3130899d-de70-4adc-94d1-bced26dacfd3.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/b8917497-fd89-4fd4-9155-4855e9c96409.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 40 */
+{
+    "_id" : NumberLong(400000000030003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://nos.netease.com/edu-image/8d1fbe7c-8ed4-43db-a21b-c7fc20d9dda5O.gif?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/03a9dbfb-c7c7-404d-83e7-c59fb440f481E.gif?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/e54604f7-2396-4bdf-a69c-2c5e7e17062a).gif?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 41 */
+{
+    "_id" : NumberLong(400000000030004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "非盈利机构",
+    "siteCategory" : "政府/非盈利机构/其他",
+    "logoUrl" : "http://nos.netease.com/edu-image/8d0e55f4-31ba-45b1-acd2-79bcecb925358.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/1932abb4-b5b2-452a-a166-b6870f6fd7e5C.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/abcaa912-20a5-44a1-b3b4-e34a74250e908.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 42 */
+{
+    "_id" : NumberLong(400000000030005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/cbd30296-6b8d-40d3-9548-364936d911de.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/3611b4a8-6734-477a-a318-fc5892e2a49d.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e0ccad3c-7a23-419d-801f-17f6209aeef0.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/9904bc59-53cc-404e-8962-8aacdfcef443.jpg?imageView&quality=100"
+}
+
+/* 43 */
+{
+    "_id" : NumberLong(400000000030006),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/c58d6258-4fa6-4896-b10e-afa073c148c71.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/2c59769b-d41d-4f1d-a885-3ce16f2d4077).png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/abb8a5f8-4b5d-4373-a05d-b4b6b7d2d9771.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 44 */
+{
+    "_id" : NumberLong(400000000032001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 45 */
+{
+    "_id" : NumberLong(400000000033001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 46 */
+{
+    "_id" : NumberLong(400000000036001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 47 */
+{
+    "_id" : NumberLong(400000000037001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "物流/运输",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e5f3424c-002d-4d8b-afae-2ec00e778d87.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/e5f3424c-002d-4d8b-afae-2ec00e778d87.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e5f3424c-002d-4d8b-afae-2ec00e778d87.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 48 */
+{
+    "_id" : NumberLong(400000000037002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://nos.netease.com/edu-image/f7926871-df5a-4e7d-b491-e961c01e0b20.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/c06c1cbb-787f-4ce2-bcb6-056467fc7d36.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/f7926871-df5a-4e7d-b491-e961c01e0b20.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 49 */
+{
+    "_id" : NumberLong(400000000041001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e5f436da-f22c-427b-b8bb-fb75852cf0f9.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/e5f436da-f22c-427b-b8bb-fb75852cf0f9.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e5f436da-f22c-427b-b8bb-fb75852cf0f9.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 50 */
+{
+    "_id" : NumberLong(400000000042001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/fc76b4cb-473e-4ea0-9a6f-01af520aa771.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/a40e9bbf-effc-4944-be2e-81caf6bdfa61.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/8813024d-f73e-4b65-98b2-c7258d13d1bf.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+
+/* 1 */
+{
+    "_id" : NumberLong(400000000042003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "物流/运输",
+    "logoUrl" : "http://nos.netease.com/edu-image/5678d663-1baa-4f61-a23d-612a90f62a06.jpg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/7899d567-1fdd-432f-9b3e-7cbf092e0e0e.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/37553823-129c-4bbd-a658-72d8e7fae66a.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000043001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000043004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d2e365f5-4ccb-4f88-bf0e-1643d349ca5d.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/d4bc8037-e995-49d4-9e91-a95760a4de1a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/dcd6be7f-0ed1-4869-8f4b-acb63251f95b.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000046001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/abf43d33-abbd-468b-af12-5b969aca3d7b.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/562bed05-c9f7-47e6-b5cb-7413d7c86a04.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/7a6c5c02-06c5-40b9-900c-61e1d97c9366.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/27301093-d163-458e-83b9-7ca4c6048297.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/a70f2d81-02f4-464b-ae7b-905666bf06b2.jpeg?imageView&quality=100"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000047001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000048001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/9a9cadb9-a36c-48e4-9c02-a0e15d2c0be8.jpg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/0aab9caf-118c-489d-8143-5fe3f1f03cba.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/c70c1300-bf80-4c2d-bfa0-b62aee50874f.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000049001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000050001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://nos.netease.com/edu-image/e209946b-6c5d-40d1-a3fc-b7f03f623ed8.jpg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/e209946b-6c5d-40d1-a3fc-b7f03f623ed8.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/e209946b-6c5d-40d1-a3fc-b7f03f623ed8.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000050008),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "国企",
+    "siteCategory" : "物流/运输",
+    "logoUrl" : "http://nos.netease.com/edu-image/6cd85aef-b6c3-4d8a-81e0-1700c4019962.gif?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/6e0646db-f61a-448d-802e-7189ee6edced.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/f54aa8ee-3e61-4960-90dc-cace6cb573cf.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000051001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://nos.netease.com/edu-image/6b3c922a-eec4-4c38-a8b3-a9b9198a0f10.jpg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/6b3c922a-eec4-4c38-a8b3-a9b9198a0f10.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/6b3c922a-eec4-4c38-a8b3-a9b9198a0f10.jpg?imageView&quality=100"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000051005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://nos.netease.com/edu-image/94b0978d-37e8-4aa9-a83f-d63f3bfe7b4d.jpg?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/479957f0-6d26-4cec-8d61-866cc20707eb.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/94b0978d-37e8-4aa9-a83f-d63f3bfe7b4d.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000051009),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://nos.netease.com/edu-image/ae975623-409c-4780-9d88-9c5819806680.bmp?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/b65e68e3-081b-472a-b13c-32d1abeaa319.bmp?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/1115b673-5f9a-4173-ad93-e581ecc080ae.bmp?imageView&quality=100",
+    "pwdResetHint" : "请联系蒋姝（QQ:2776084232）进行密码重置！"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000051010),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000052002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000052004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000053003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/3b624942-fcc2-4b73-8df0-45c2cbe1b852.JPG?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/3b624942-fcc2-4b73-8df0-45c2cbe1b852.JPG?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000054001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://nos.netease.com/edu-image/731215c6-ef79-4445-b350-9be17ee661b4.png?imageView&quality=100",
+    "iconUrl" : "http://nos.netease.com/edu-image/731215c6-ef79-4445-b350-9be17ee661b4.png?imageView&quality=100",
+    "logoNavUrl" : "http://nos.netease.com/edu-image/731215c6-ef79-4445-b350-9be17ee661b4.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000054002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/03bd2f26-5012-48d0-80bd-799e25c4add6.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/03bd2f26-5012-48d0-80bd-799e25c4add6.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000055001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000056001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000056003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/5a5cdca4-b35b-4f29-adad-fe17feaebfa4.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/5d49d91d-b104-426c-bbc4-68052f6833fc.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5a5cdca4-b35b-4f29-adad-fe17feaebfa4.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000057001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "pwdResetHint" : "请联系管理员（苏明文）进行密码重置！"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000059001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 24 */
+{
+    "_id" : NumberLong(400000000059002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 25 */
+{
+    "_id" : NumberLong(400000000060001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 26 */
+{
+    "_id" : NumberLong(400000000061001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 27 */
+{
+    "_id" : NumberLong(400000000062001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 28 */
+{
+    "_id" : NumberLong(400000000062002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 29 */
+{
+    "_id" : NumberLong(400000000062003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 30 */
+{
+    "_id" : NumberLong(400000000063001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/94ec0d55-2af3-4e14-906b-b343416c76ee.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/9fcb8164-f2a7-4f60-982b-30399fa78c9e.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/31d1052b-2dd4-49d5-8bb4-2c9cc9853fc8.png?imageView&quality=100"
+}
+
+/* 31 */
+{
+    "_id" : NumberLong(400000000065001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 32 */
+{
+    "_id" : NumberLong(400000000066001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 33 */
+{
+    "_id" : NumberLong(400000000067001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "广告/媒体",
+    "logoUrl" : "http://edu-image.nosdn.127.net/eebdc084-a140-47a6-9270-3075598ce1a7.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/eebdc084-a140-47a6-9270-3075598ce1a7.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/eebdc084-a140-47a6-9270-3075598ce1a7.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 34 */
+{
+    "_id" : NumberLong(400000000068001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/5b5fd5a1-c969-4d57-814a-e5e4a75cd5cf.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5b5fd5a1-c969-4d57-814a-e5e4a75cd5cf.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 35 */
+{
+    "_id" : NumberLong(400000000069001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 36 */
+{
+    "_id" : NumberLong(400000000070001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/3fc6ca05-d2ce-47e8-9286-236320cdf19e.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/3fc6ca05-d2ce-47e8-9286-236320cdf19e.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/c45eb25f-13bf-4c3b-b86e-e9dc5fdba5e4.png?imageView&quality=100"
+}
+
+/* 37 */
+{
+    "_id" : NumberLong(400000000070002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0572d5f3-6c39-410e-b789-bf5865381ed4.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/0e6b6c19-8d89-4f18-a078-e42acb964a25.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/72f94d49-3dff-441b-bd17-d87ee2e8ea21.jpg?imageView&quality=100",
+    "pwdResetHint" : "请钉钉联系史秀军进行密码重置！"
+}
+
+/* 38 */
+{
+    "_id" : NumberLong(400000000070003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2853d902-d58f-401f-8334-91723350a77a.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/1eeef18d-d70c-47a1-a108-b336519feeae.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/c0e87140-0d6f-4931-833a-16aac20823e9.png?imageView&quality=100",
+    "loginBgUrl" : ""
+}
+
+/* 39 */
+{
+    "_id" : NumberLong(400000000071001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b57cfd38-cc93-42fb-9cad-668e293384aa.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/b57cfd38-cc93-42fb-9cad-668e293384aa.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b57cfd38-cc93-42fb-9cad-668e293384aa.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/30a568ff-9925-4e73-94ca-0e71c2e3dad6.jpg?imageView&quality=100"
+}
+
+/* 40 */
+{
+    "_id" : NumberLong(400000000072001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/59d357e9-f1c6-45e4-8472-3ac5c78c543d.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/dc6dbeff-8a0d-432f-b75b-171e44ac3906.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 41 */
+{
+    "_id" : NumberLong(400000000072002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/ec19b5b2-c173-4d9f-a794-8f61321afa88.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/e6cbe48e-1c2c-4bac-a704-02d296628acb.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/ec19b5b2-c173-4d9f-a794-8f61321afa88.png?imageView&quality=100"
+}
+
+/* 42 */
+{
+    "_id" : NumberLong(400000000073002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c08539da-b6c8-465b-bb9a-a064bd2f8a36.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/c08539da-b6c8-465b-bb9a-a064bd2f8a36.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/c08539da-b6c8-465b-bb9a-a064bd2f8a36.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 43 */
+{
+    "_id" : NumberLong(400000000075002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f273d125-2ba3-4c09-b89d-28679319e315.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/34764c62-efb1-4ccf-9369-7d52a120cecd.JPG?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f273d125-2ba3-4c09-b89d-28679319e315.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 44 */
+{
+    "_id" : NumberLong(400000000075003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/8691dc96-c5b5-4725-b22b-9839b7ad3b3e.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/c1e2e6d8-6d20-4192-86ff-7f2b15fe3baa.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/8691dc96-c5b5-4725-b22b-9839b7ad3b3e.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 45 */
+{
+    "_id" : NumberLong(400000000076002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/ed6aec59-d6a7-49df-a89d-0f0fcc2a0aa1.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/239db898-33b8-4caa-8887-388c9edc486b.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a5b3222e-c5e6-4955-943b-3f3e3222e106.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 46 */
+{
+    "_id" : NumberLong(400000000076003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/8a756824-37f4-4322-8a5c-a8fe4810976e.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 47 */
+{
+    "_id" : NumberLong(400000000076004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1d002487-9bce-4947-9d38-3e6342de4636.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/3f895745-1d71-474e-a32e-c1bee0b7b62f.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/83235be5-7378-4a5b-b623-f9cb2bd26c68.jpg?imageView&quality=100"
+}
+
+/* 48 */
+{
+    "_id" : NumberLong(400000000077001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/58bdc960-ba9e-4ae0-a4ca-e709faf4a7e2.gif?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/7e36a3a2-8498-4320-a2af-399a625f1c42.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/58bdc960-ba9e-4ae0-a4ca-e709faf4a7e2.gif?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 49 */
+{
+    "_id" : NumberLong(400000000077002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/32c407e5-300f-4bba-ac5a-d4e2db9d9f56.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8221fc01-1463-4833-be0f-a6fa9fc0a16a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/32c407e5-300f-4bba-ac5a-d4e2db9d9f56.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 50 */
+{
+    "_id" : NumberLong(400000000078001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/141bbc6a-5857-427b-8395-912c315baf71.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/9657c516-ccb9-4260-9564-1f5b07de60c7.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1bec8b7f-41e2-4155-94c3-719f3724f80b.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 1 */
+{
+    "_id" : NumberLong(400000000078002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "非盈利机构",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/3f76a747-6aaa-416f-8fa8-49655381da70.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5a0f5802-fccd-42c7-8ebd-d88ddf762b4d.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000078003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/cea0d17b-2b31-41f1-b37c-7ce08d1a8897.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/cea0d17b-2b31-41f1-b37c-7ce08d1a8897.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000079001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/437309b8-c929-4820-bd04-010eb5427fb6.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/437309b8-c929-4820-bd04-010eb5427fb6.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/437309b8-c929-4820-bd04-010eb5427fb6.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000080001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/4be9c657-8918-4c51-be0d-77f8cdb89e40.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/4be9c657-8918-4c51-be0d-77f8cdb89e40.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000080002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/a0ee379c-7717-40ab-9ab6-fcd056eea0f0.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a0ee379c-7717-40ab-9ab6-fcd056eea0f0.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a0ee379c-7717-40ab-9ab6-fcd056eea0f0.png?imageView&quality=100"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000081001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000082001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/fc97d6bc-4449-46e6-883c-68f9044f8424.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/fc97d6bc-4449-46e6-883c-68f9044f8424.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000083001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料",
+    "logoUrl" : "http://edu-image.nosdn.127.net/4e9a8e5c-6cf7-4b1a-9eb8-33196b873f92.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8c62236f-4e7a-4cf8-ae6d-fa96193b8243.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/4e9a8e5c-6cf7-4b1a-9eb8-33196b873f92.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000084001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2e240e3e-e61b-4af6-88b4-7f5dadab01da.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/c90a3dbc-1bd3-49c2-b6d3-457cd6c37eef.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/37a16ba6-bccd-4c2f-90d3-c00bdb1564e6.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/6c65c620-91df-4a1a-8e31-21f3cddbc5bc.jpg?imageView&quality=100"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000085001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "广告/媒体",
+    "logoUrl" : "http://edu-image.nosdn.127.net/681d5153-63f1-4289-bb66-6192cf176a5c.gif?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/681d5153-63f1-4289-bb66-6192cf176a5c.gif?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000085002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "会计/金融/银行/保险"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000086001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000087001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/30399019-3e3e-452b-b0db-6bb27e918253.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/3df4ae50-8a02-4392-99c5-31a717d871e2.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/10897ed4-480f-45cd-93a4-1592c976c0de.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000087002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/88ab7855-134b-4f21-a984-d530a8f600d5.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8f97bcd3-3a3e-4dfd-9fcb-677550385afb.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/ac286442-418c-497c-9eb4-fff68c03b004.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/bd087dfc-6249-494f-b610-85bd407fb133.jpg?imageView&quality=100"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000087003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000088001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/bf5bfa55-0b40-4d9c-8ff1-44b1a060338e.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/bf5bfa55-0b40-4d9c-8ff1-44b1a060338e.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/77f8761c-2217-4aeb-a1ae-d5d97027732c.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000088002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000088003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "事业单位",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c354f47c-51d7-4546-bcf5-0972356dc36f.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/c354f47c-51d7-4546-bcf5-0972356dc36f.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e6f0d356-dd55-4fbe-ad52-17eb1353d45d.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000089001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000089002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "非盈利机构",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000089003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/17942be3-860d-4f62-b5d3-9ba47fd96424.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/63408b72-1793-4ed2-a2cc-a39b8e64f25e.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/99cc4866-408a-4b3e-8db1-4bddb75f44a6.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/8b07cb79-95ff-4389-919c-019b94d64f4a.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : ""
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000090001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000091001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 24 */
+{
+    "_id" : NumberLong(400000000092001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 25 */
+{
+    "_id" : NumberLong(400000000093001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/4fb8d9d0-9575-46a9-bf10-e0e4630d244a.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/4fb8d9d0-9575-46a9-bf10-e0e4630d244a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/173d9663-ef50-4d0f-a69a-98ef54ec77fb.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 26 */
+{
+    "_id" : NumberLong(400000000093002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0d1bdeb2-ddfc-48cf-80aa-8e11794b0fa2.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/0d1bdeb2-ddfc-48cf-80aa-8e11794b0fa2.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/0d1bdeb2-ddfc-48cf-80aa-8e11794b0fa2.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 27 */
+{
+    "_id" : NumberLong(400000000093003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f8b7aec8-ace8-4e10-a16d-62e0b9cdf759.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/f8b7aec8-ace8-4e10-a16d-62e0b9cdf759.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f8b7aec8-ace8-4e10-a16d-62e0b9cdf759.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 28 */
+{
+    "_id" : NumberLong(400000000093004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c7a0452f-87d7-46b5-a955-b3018a346098.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/c7a0452f-87d7-46b5-a955-b3018a346098.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 29 */
+{
+    "_id" : NumberLong(400000000093005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "合资",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/602ee364-6299-46ef-9b53-edc86d182751.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/602ee364-6299-46ef-9b53-edc86d182751.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/602ee364-6299-46ef-9b53-edc86d182751.jpg?imageView&quality=100"
+}
+
+/* 30 */
+{
+    "_id" : NumberLong(400000000093006),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训"
+}
+
+/* 31 */
+{
+    "_id" : NumberLong(400000000094001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "国企",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/8b942903-0b36-4bf3-832b-e03819789430.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8b942903-0b36-4bf3-832b-e03819789430.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/8b942903-0b36-4bf3-832b-e03819789430.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 32 */
+{
+    "_id" : NumberLong(400000000094002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业"
+}
+
+/* 33 */
+{
+    "_id" : NumberLong(400000000094003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/612583ec-b874-425b-b6b1-2395497ed69d.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/612583ec-b874-425b-b6b1-2395497ed69d.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 34 */
+{
+    "_id" : NumberLong(400000000094004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/dff5c2f4-0b8a-4aa0-b350-00451c1c4025.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/dff5c2f4-0b8a-4aa0-b350-00451c1c4025.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/dff5c2f4-0b8a-4aa0-b350-00451c1c4025.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 35 */
+{
+    "_id" : NumberLong(400000000095001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 36 */
+{
+    "_id" : NumberLong(400000000096001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/704dec2b-d198-4c36-a805-f2b258440431.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/6478137f-e5eb-47a5-986e-7b08740ee6fa.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/9988db19-8810-4e87-ba95-ffd64613bbca.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/88cf3672-d848-466c-ac44-a2a26591ec73.jpg?imageView&quality=100"
+}
+
+/* 37 */
+{
+    "_id" : NumberLong(400000000097001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "pwdResetHint" : "请联系杨妍进行密码重置。"
+}
+
+/* 38 */
+{
+    "_id" : NumberLong(400000000098001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e4d59dc1-ce4b-47ba-b82e-b81fc2640802.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e4d59dc1-ce4b-47ba-b82e-b81fc2640802.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 39 */
+{
+    "_id" : NumberLong(400000000098002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/abc0d425-8281-432a-9ff1-d09e2d60f09c.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/712d164f-c225-4445-8205-97e7298b8744.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/abc0d425-8281-432a-9ff1-d09e2d60f09c.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 40 */
+{
+    "_id" : NumberLong(400000000098003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 41 */
+{
+    "_id" : NumberLong(400000000098004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c497111d-8f17-478f-bd5f-4204b99d4861.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/c3bbabdf-15b7-4142-8329-1c719dc3816e.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a3924a1d-f03f-49f8-a476-7f97a8bc091d.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 42 */
+{
+    "_id" : NumberLong(400000000099001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/25d93af0-eadd-4875-adc5-be9a2e76837a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/25d93af0-eadd-4875-adc5-be9a2e76837a.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 43 */
+{
+    "_id" : NumberLong(400000000100001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 44 */
+{
+    "_id" : NumberLong(400000000101001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "制药/医疗",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 45 */
+{
+    "_id" : NumberLong(400000000102001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "政府机关",
+    "siteCategory" : "政府/非盈利机构/其他",
+    "logoUrl" : "http://edu-image.nosdn.127.net/fb2a9e2f-d331-4154-a08e-0cfeade08e50.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/eca91ef9-aaf0-4438-b65f-c71f5788e815.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 46 */
+{
+    "_id" : NumberLong(400000000102002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 47 */
+{
+    "_id" : NumberLong(400000000103001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/86e78e99-9128-4eed-af48-ef45ec7c7b5a.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/b2238558-7674-444c-99cb-7fc639705f8c.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/86e78e99-9128-4eed-af48-ef45ec7c7b5a.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 48 */
+{
+    "_id" : NumberLong(400000000103002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "国企",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e18a4a89-23d9-4783-8931-e79f80b41943.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/21b0f5c5-12ae-45d4-94f2-03be180edb68.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 49 */
+{
+    "_id" : NumberLong(400000000104001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f99a21a8-8a74-41e0-bf45-c6006bc970c7.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/ec0e2083-9d53-4f71-8f17-997f8e5fba0b.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/7fcfdfd8-1bb4-477a-8c50-28bc1d34851a.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 50 */
+{
+    "_id" : NumberLong(400000000105001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+
+/* 1 */
+{
+    "_id" : NumberLong(400000000105002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000106001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "服务业"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000107001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000108001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000108002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b9037a76-a954-416a-899a-73b5125c266c.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/b1151664-7053-49d9-a737-667ce76cdc8c.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e7ca3e7a-e9fc-4cd0-80bc-9e9abd7b07a5.png?imageView&quality=100",
+    "pwdResetHint" : "请联系培训中心进行密码重置！"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000108003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "国企",
+    "siteCategory" : "会计/金融/银行/保险"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000108004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/97b2f1d4-95d3-4bb4-b969-d77bf80806a8.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5ef8de85-783e-4d60-8785-e3060d5e71d8.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000108005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000109001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "政府/非盈利机构/其他",
+    "logoUrl" : "http://edu-image.nosdn.127.net/ff7610ba-bda8-467b-aa69-ebf2159652dd.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/ff7610ba-bda8-467b-aa69-ebf2159652dd.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000109002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e931319b-566f-48ee-b1a4-114b091da13a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e931319b-566f-48ee-b1a4-114b091da13a.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000109003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/4a4089e6-69b6-4eeb-804a-ff42ed6b9941.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/4b372231-fc33-4725-a43d-ff88637c1eb9.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b73ad9f5-50f0-4cce-9de9-aaee3d2e8a8e.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000109004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/bdbfed41-10a5-430c-a19d-06f1c43c07ba.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/bdbfed41-10a5-430c-a19d-06f1c43c07ba.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000109005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000110001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "事业单位",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/983fd246-cef9-4f16-91ca-00622e9f29ac.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/f49ed556-ac7e-4885-839d-e4d28db54c70.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/3e1757fa-b5d4-4ed2-8a47-3673be596d81.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/fc9aa765-7c71-49eb-8942-df683a6c966c.jpeg?imageView&quality=100"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000110002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000110003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c877ddb2-7251-4a5b-b044-f6f12ab491b6.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1578b193-c5a1-4176-a4c4-2bdaebe8e88a.jpg?imageView&quality=100"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000110004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "服务业"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000110005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/17f18ea1-164e-4c0c-ab39-490b1faf624f.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1b0da33f-23f7-4fee-8cac-e7e2776f5217.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000111001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/57a3d4e6-4ce1-4e34-857a-71e6a91b1af8.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/72d29a28-6827-4ac4-a022-352b9e77ec0f.jpg?imageView&quality=100"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000111002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000112001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b9af03ea-b217-429d-ab0a-fa7955e5f22a.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/63f2535c-ce49-49ec-8dc4-eb3a42d08851.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000112002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000112003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料",
+    "logoUrl" : "http://edu-image.nosdn.127.net/5c06e6ff-a6d8-4338-b51e-886edf1deb1b.JPG?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/233b43ef-a8c8-40ec-acee-0a4c41d87b91.JPG?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f3994511-5ab7-4847-a93b-4419f6645fc0.JPG?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 24 */
+{
+    "_id" : NumberLong(400000000112004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "政府/非盈利机构/其他",
+    "logoUrl" : "http://edu-image.nosdn.127.net/4240d7e9-ace5-477f-809b-84b659e70b1a.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/4240d7e9-ace5-477f-809b-84b659e70b1a.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/4240d7e9-ace5-477f-809b-84b659e70b1a.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 25 */
+{
+    "_id" : NumberLong(400000000113001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0fdacdb8-d2b7-480d-9605-1079973cee84.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f0a75e88-923e-4eb6-b209-746c64ca2356.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 26 */
+{
+    "_id" : NumberLong(400000000113002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1c54af47-1b33-4a4a-8802-8523f6c433ee.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/634acd91-ae78-4255-b793-df8076f213e2.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 27 */
+{
+    "_id" : NumberLong(400000000114001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/058e0d54-6bb0-4667-945c-8e477b46f848.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/058e0d54-6bb0-4667-945c-8e477b46f848.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 28 */
+{
+    "_id" : NumberLong(400000000115001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0f26bdb4-51db-4224-a3ab-ef6ec835c6b0.gif?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/0f26bdb4-51db-4224-a3ab-ef6ec835c6b0.gif?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/0f26bdb4-51db-4224-a3ab-ef6ec835c6b0.gif?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 29 */
+{
+    "_id" : NumberLong(400000000115002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/28a077e0-2f36-467a-83ed-80cd72255c31.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/3698aa9a-c12e-41aa-bce9-2d0164c3a52f.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 30 */
+{
+    "_id" : NumberLong(400000000115003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/9f8ef97c-1eaa-4429-840a-2dc56bd7000f.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/3fd036eb-0793-485d-9ba0-5dfc7f143265.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 31 */
+{
+    "_id" : NumberLong(400000000116001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e5167337-64ff-4c79-be38-3f7d976f825c.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/49aa947a-8087-4776-8587-3c765333c588.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 32 */
+{
+    "_id" : NumberLong(400000000117001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 33 */
+{
+    "_id" : NumberLong(400000000118001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 34 */
+{
+    "_id" : NumberLong(400000000118002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 35 */
+{
+    "_id" : NumberLong(400000000118003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/ab3f8716-fe97-4a84-bbcb-ba5671705691.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1cc4a0ce-e09a-415e-adfb-7a7eb6f88571.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 36 */
+{
+    "_id" : NumberLong(400000000118004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 37 */
+{
+    "_id" : NumberLong(400000000118005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/59b60097-b9f4-449d-a376-1330b73b4d35.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/eb9fea7f-2477-4bf1-887a-a0a3844a3540.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/96abc358-a770-4eca-bcec-9c5cb92a73e7.png?imageView&quality=100",
+    "loginBgUrl" : ""
+}
+
+/* 38 */
+{
+    "_id" : NumberLong(400000000119001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 39 */
+{
+    "_id" : NumberLong(400000000120001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 40 */
+{
+    "_id" : NumberLong(400000000121001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d17b4e2a-0a67-49ee-a044-e6df34d730b8.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/d17b4e2a-0a67-49ee-a044-e6df34d730b8.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/64a6c98e-e5c2-47c2-a85c-c3f473ce27a1.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 41 */
+{
+    "_id" : NumberLong(400000000122001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 42 */
+{
+    "_id" : NumberLong(400000000122002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 43 */
+{
+    "_id" : NumberLong(400000000123001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 44 */
+{
+    "_id" : NumberLong(400000000124001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "政府/非盈利机构/其他",
+    "logoUrl" : "http://edu-image.nosdn.127.net/46da7991-5198-425a-a5d4-bcb7c2a689e1.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/1e8a1d8d-5f7d-4ead-b747-4a448a362f8f.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a270c5f9-691f-4117-bb97-e806a7ce990f.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/416d43d0-623c-460c-a932-612af47b5296.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/4feec9cd-f0bb-4aa8-a105-93fcb41467e8.png?imageView&quality=100"
+}
+
+/* 45 */
+{
+    "_id" : NumberLong(400000000125001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2d0c14df-77bb-42b1-9be8-5e118b5e73a3.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/2d0c14df-77bb-42b1-9be8-5e118b5e73a3.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/2d0c14df-77bb-42b1-9be8-5e118b5e73a3.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 46 */
+{
+    "_id" : NumberLong(400000000125002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/01dc51b5-35aa-4830-86b1-bf1efb117548.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/0875c2dd-0afd-4c07-8a2f-346edd89de03.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 47 */
+{
+    "_id" : NumberLong(400000000126001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d6c7b3e4-aa96-4a33-8f1e-e91777069555.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/702f034e-2bbc-4470-9d64-08c42417549f.jpg?imageView&quality=100"
+}
+
+/* 48 */
+{
+    "_id" : NumberLong(400000000126002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 49 */
+{
+    "_id" : NumberLong(400000000126003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "制药/医疗",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c9d9f302-fc71-47f7-90bf-b8c9ab15b392.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b041be38-4219-4f4d-af0c-e4247ae5e12b.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 50 */
+{
+    "_id" : NumberLong(400000000126004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+
+/* 1 */
+{
+    "_id" : NumberLong(400000000127001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000127002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/385b3274-cc7d-41ce-b22a-21325ff8cd7d.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/7136374f-def6-4d5a-8559-b1cd80720783.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/385b3274-cc7d-41ce-b22a-21325ff8cd7d.jpg?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000128001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000128002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e84ff27e-d166-4b38-a208-31147f94b2b5.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/2c97d2a3-be6b-4215-b709-1887a66c3b15.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e1e51362-c425-4571-9aba-93ff992e0e75.png?imageView&quality=100"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000128003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000129001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000130001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "国企",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/6bec6db6-3f01-4685-962e-efeac5431050.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/ab3def2d-9052-40c8-ab9c-374de7426cf9.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/6bec6db6-3f01-4685-962e-efeac5431050.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000131001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/6f0850e5-c07e-4817-aefd-fe702343fe5c.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/6f0850e5-c07e-4817-aefd-fe702343fe5c.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/6f0850e5-c07e-4817-aefd-fe702343fe5c.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000131002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/9706ecc0-734c-4839-bb1e-4294cbb10bc7.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/10a15df3-134d-4c42-9688-3db97eca3309.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/074c27d0-d07b-4881-85ab-34177536c2b3.png?imageView&quality=100",
+    "pwdResetHint" : "请联系劳卡培训部管理员进行密码重置！"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000132001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000133001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/68ab84d2-25cd-4a4b-8ff1-6fd7c487254e.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/ac1e5479-dfdf-4e66-8b7b-c92f435d1b40.png?imageView&quality=100"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000134001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/6bb05fa7-7e9f-446f-85f3-1e091c14bfb3.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/abe0fa95-dbea-46c7-90f3-5eccbb36b783.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/abe0fa95-dbea-46c7-90f3-5eccbb36b783.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000135001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2f6edfe0-4cad-4289-baa0-b6670d486178.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/e71d1e9b-74cb-405a-a51f-afa632a0d7c5.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/7fa693a8-1160-44b1-9e37-7e1f01685dd2.png?imageView&quality=100",
+    "pwdResetHint" : "请联系管理员进行密码重置！"
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000135002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000136001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d06a2884-e169-4837-933f-bb2c9f9c30c3.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/d06a2884-e169-4837-933f-bb2c9f9c30c3.png?imageView&quality=100"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000137002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000138001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/7a60b235-aa24-47ea-ad05-75f1ace60373.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/467aedb3-37ba-4cf3-a2ec-a1529c127cc9.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/c3acd22e-34b2-45f3-a737-4958b7bfe06c.png?imageView&quality=100"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000139002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "合资",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/847b4816-d39a-4696-98a4-bffc74a761ff.gif?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/847b4816-d39a-4696-98a4-bffc74a761ff.gif?imageView&quality=100"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000139003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0d8bc96e-2cad-4ab5-a919-36b59b64bb55.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/0d8bc96e-2cad-4ab5-a919-36b59b64bb55.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a3bac3fc-65a7-4fdc-96db-a69e59bad6bd.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/e35a4298-b8c4-4667-aba4-031863bec4ab.jpg?imageView&quality=100"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000142001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d5ef8e3c-98a1-4b36-8271-10714ac60d0e.JPG?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/d5ef8e3c-98a1-4b36-8271-10714ac60d0e.JPG?imageView&quality=100"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000143001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训"
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000144001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2cb080f2-9163-4e1e-b1c0-798e81379531.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/2cb080f2-9163-4e1e-b1c0-798e81379531.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/2cb080f2-9163-4e1e-b1c0-798e81379531.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/aaebd8f4-a90f-4343-b775-78afab3c505c.jpg?imageView&quality=100"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000145001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/5ca3e9b5-8343-4052-9700-7b2111b53024.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1283f45b-a5d1-4a8c-a38a-0119372ef22a.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/89f73a81-bec1-4d3c-b6ab-cd6e41d28e85.jpg?imageView&quality=100"
+}
+
+/* 24 */
+{
+    "_id" : NumberLong(400000000146001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 25 */
+{
+    "_id" : NumberLong(400000000147001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "合资",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b95d6d5c-2b5d-4361-a45f-03df9b134110.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/9b0afcd8-3ccc-4ecf-8402-941e7c7802b8.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/a07d50d3-c7ad-4d81-8884-2dd8fc13e951.jpg?imageView&quality=100"
+}
+
+/* 26 */
+{
+    "_id" : NumberLong(400000000148001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/6a249525-708c-4b4d-9cb4-385b7ec89ef5.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/6a249525-708c-4b4d-9cb4-385b7ec89ef5.png?imageView&quality=100"
+}
+
+/* 27 */
+{
+    "_id" : NumberLong(400000000149001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f5039dd4-0240-43e0-b10a-e9571bd6087c.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8c2eac76-d781-4b72-abfd-7ed2c60236d5.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/869d79ed-42a7-4764-bdde-14ea2c2672b4.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/33196bcc-605d-4fce-9104-262f24bce303.jpg?imageView&quality=100"
+}
+
+/* 28 */
+{
+    "_id" : NumberLong(400000000150001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1fa67edd-4e62-4a51-bd25-b34182675e8c.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/eb36c0ac-c9eb-4c8e-b888-c93778cc7147.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/a07d50d3-c7ad-4d81-8884-2dd8fc13e951.jpg?imageView&quality=100"
+}
+
+/* 29 */
+{
+    "_id" : NumberLong(400000000151001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 30 */
+{
+    "_id" : NumberLong(400000000152001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d369e8aa-fb6d-400f-8885-2a2f8d3eff20.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/2bdd5685-02a9-41a4-93ef-903cba76951e.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/09fc682f-fcd8-4cb9-8cd2-c0e211c12cc1.jpg?imageView&quality=100"
+}
+
+/* 31 */
+{
+    "_id" : NumberLong(400000000153001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/63be25da-cafc-4027-8336-310ae5c7fa86.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8fdbe9ac-feef-45bc-ba8e-26b2c28b94fc.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/57cc1709-81e1-4c3e-b2d8-2a5372231643.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/0a4f6e63-ed21-44eb-8f4a-3da06fe5f02c.jpg?imageView&quality=100"
+}
+
+/* 32 */
+{
+    "_id" : NumberLong(400000000154001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "政府/非盈利机构/其他",
+    "logoUrl" : "http://edu-image.nosdn.127.net/96c1f344-28c7-48a4-928a-33bac427aa1d.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a55c9a3e-946a-4023-89f2-75ea3bf426fb.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/6b3a470c-f098-4d61-b3c6-16c4fcbc1507.png?imageView&quality=100",
+    "loginBgUrl" : ""
+}
+
+/* 33 */
+{
+    "_id" : NumberLong(400000000154002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b0f08eb1-eb26-47ed-aee2-e91a370fc969.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/16de37e2-f577-41bb-8779-794dcea83317.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/09fc682f-fcd8-4cb9-8cd2-c0e211c12cc1.jpg?imageView&quality=100"
+}
+
+/* 34 */
+{
+    "_id" : NumberLong(400000000155001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 35 */
+{
+    "_id" : NumberLong(400000000156001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 36 */
+{
+    "_id" : NumberLong(400000000157001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料",
+    "logoUrl" : "http://edu-image.nosdn.127.net/7207c5f3-88fe-4a85-aea4-51f1c252be40.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/7207c5f3-88fe-4a85-aea4-51f1c252be40.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/7207c5f3-88fe-4a85-aea4-51f1c252be40.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/7207c5f3-88fe-4a85-aea4-51f1c252be40.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/a43f636f-dbce-40fe-8d0d-8a08a0a00e12.png?imageView&quality=100"
+}
+
+/* 37 */
+{
+    "_id" : NumberLong(400000000158001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b4bbedc1-9f80-4056-8786-3f9ef078505a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b4bbedc1-9f80-4056-8786-3f9ef078505a.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/99463c50-7c32-45e0-86d4-21615662b731.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/237088cc-d25a-424f-9e9e-9612dc4ec0c4.jpg?imageView&quality=100"
+}
+
+/* 38 */
+{
+    "_id" : NumberLong(400000000159001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c87fccfa-5ab7-48c8-9d10-088d5d27e360.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/637ba9a4-b88e-41d5-9034-a10363cab2bc.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/768d4000-ff4c-4fb7-a467-5662cb68624b.jpg?imageView&quality=100"
+}
+
+/* 39 */
+{
+    "_id" : NumberLong(400000000159002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 40 */
+{
+    "_id" : NumberLong(400000000160001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/31165b68-c89f-44b9-9ca0-8180a5728a42.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/31165b68-c89f-44b9-9ca0-8180a5728a42.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/768d4000-ff4c-4fb7-a467-5662cb68624b.jpg?imageView&quality=100"
+}
+
+/* 41 */
+{
+    "_id" : NumberLong(400000000161001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 42 */
+{
+    "_id" : NumberLong(400000000161002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 43 */
+{
+    "_id" : NumberLong(400000000162001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f44d367d-28d1-409d-8b37-7d4d585037f9.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/f44d367d-28d1-409d-8b37-7d4d585037f9.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f44d367d-28d1-409d-8b37-7d4d585037f9.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/d0c60efa-febb-4364-9bf8-90b5b3f3e274.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/e1459fd9-9b5c-4741-908f-8ab79d25459e.jpg?imageView&quality=100"
+}
+
+/* 44 */
+{
+    "_id" : NumberLong(400000000162002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 45 */
+{
+    "_id" : NumberLong(400000000163001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/74776afd-8508-4db0-9073-24f2cc690d0f.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/fa8eddfa-7062-459a-8786-9c5307292c51.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/63f2288f-7445-4234-917b-bc683631ffe5.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/84a2927c-70ff-4f7a-8a73-43097ac07444.jpg?imageView&quality=100"
+}
+
+/* 46 */
+{
+    "_id" : NumberLong(400000000163002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 47 */
+{
+    "_id" : NumberLong(400000000163003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/cbfb1cb7-ba5f-4d4f-a109-9ce2fdd5813a.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/294144db-6408-491c-a23c-2ee822551d26.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f8305f1b-2248-4750-8c04-5b224c8e71c4.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/2d3012e9-6850-45ac-a65c-d29e9e3ae923.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/3610c2cf-5664-4f6b-9e2d-30b311c4d4b5.jpg?imageView&quality=100"
+}
+
+/* 48 */
+{
+    "_id" : NumberLong(400000000164001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 49 */
+{
+    "_id" : NumberLong(400000000165001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业"
+}
+
+/* 50 */
+{
+    "_id" : NumberLong(400000000166001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 1 */
+{
+    "_id" : NumberLong(400000000166002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1f7104b9-818a-4e46-b171-e379a109d143.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/1f7104b9-818a-4e46-b171-e379a109d143.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1f7104b9-818a-4e46-b171-e379a109d143.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/7786791c-574d-41c3-bc72-bcafd373f46d.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/7786791c-574d-41c3-bc72-bcafd373f46d.jpg?imageView&quality=100"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000166003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/9f42341e-2418-47d1-bd05-f0ee7732b407.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/5051dbb7-b772-465a-a6da-9a32ac791b44.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a281aabb-8ee6-4b3b-bebd-29633c33f34c.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/257132b0-292f-44ce-8471-14dd8b6324c3.jpg?imageView&quality=100"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000166004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/ce729e15-6ebc-4403-8236-387378b6ea34.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/31252b9c-b300-46fa-a221-9e9a257a8e3e.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e5053db5-5caa-44f9-85f9-faaff8c9c48b.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/3a0c6994-a803-49f4-acdf-7aa767357926.jpg?imageView&quality=100"
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000167001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "创业公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/a3873593-4fee-41b8-b41d-27016ebd92e0.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/9b2378ea-3c9e-4b0c-9c2c-4e82ded00007.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/bbdec67e-b2d0-4b82-b384-fd6787ee2a1c.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/c1532508-bf01-4140-9aa7-e7973c8093db.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/68ad8077-a210-489c-bbcf-a86df9cf7b99.png?imageView&quality=100"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000168001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/74776afd-8508-4db0-9073-24f2cc690d0f.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/fa8eddfa-7062-459a-8786-9c5307292c51.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/63f2288f-7445-4234-917b-bc683631ffe5.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/9aff3280-4441-4d04-9a7a-46953b235590.jpg?imageView&quality=100"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000169001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2563665b-6b58-42a2-8e55-b477d81c86a4.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/6b83b6a5-0f56-484d-99ca-ad249991e3ed.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/6b83b6a5-0f56-484d-99ca-ad249991e3ed.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/2cededc8-933d-4430-8ee6-85da83468956.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/f8581d76-4d5c-4878-b641-2c725617de4e.jpg?imageView&quality=100"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000169002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/97938419-38b5-4f1f-be6a-d64515b36778.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/df1eab28-bf14-4363-b0fc-39736528cc48.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5af5a9a2-bb15-45cd-832f-3d9ebefcc361.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/d8867c69-54d9-4f28-a1aa-838aba06b8d9.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/42bbd68a-eb36-4b6c-8c7c-f5d3482a9e25.jpg?imageView&quality=100"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000170001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000171001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/8b171df3-1364-4b47-b073-90ae1cd29ac6.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8b171df3-1364-4b47-b073-90ae1cd29ac6.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/8b171df3-1364-4b47-b073-90ae1cd29ac6.png?imageView&quality=100"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000172001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "国企",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/eb7cd70e-9ce6-4e51-9b41-7a25959488a5.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/0866907c-ccb2-4bed-812c-99250a0aac24.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/bbd8f9e2-7160-4bcf-b84e-96ae13b0016a.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/7d4d8a5b-4748-4224-8889-053b0947435e.jpg?imageView&quality=100"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000173001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/cdb7d073-5ff8-40f1-b252-dfc2cf6ba67f.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/4c62e141-8a94-4ceb-b513-2234ec9884aa.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/4c62e141-8a94-4ceb-b513-2234ec9884aa.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/d6a30d79-50ba-46c2-92a8-d741490dfcec.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/c83f286c-bac2-4f16-b13c-37828a440d79.jpg?imageView&quality=100"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000174001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/63dfee0d-7cc7-4ab7-b01b-f38c0f56d89b.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8697febf-4685-4229-9a79-a9d3a2ff81a0.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/63dfee0d-7cc7-4ab7-b01b-f38c0f56d89b.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/c28096f9-202f-4cf1-9148-0ac0861001e2.jpg?imageView&quality=100"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000175001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/17694fa1-8b42-4b67-96ea-63043aa83343.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/4b7993bd-61d3-416d-b70c-72a0d465ae66.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/c7dc68eb-b4ce-4e5e-83e8-258c8f1855bd.jpg?imageView&quality=100"
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000176001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000177001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c1a6e6dc-6246-40f1-ac7a-40232d57b5bc.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/39fe3a31-ebb9-44ce-a996-8160820fe9d7.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/16a20888-dc43-4aa7-a739-f8bafcd4ed5e.png?imageView&quality=100"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000178001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料",
+    "logoUrl" : "http://edu-image.nosdn.127.net/7696be1c-9387-47d0-aa4f-19f4730e011e.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/84be5967-a391-42c8-a0a8-545ede5feeab.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/0d33f484-a2a4-4e48-861f-0af6b2f1e8a6.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/3eb47724-40e1-4773-8328-71fb4be446da.jpg?imageView&quality=100"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000178002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b3a3a47c-e754-4b77-b121-66d69876129d.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/38268a29-482c-48b9-9fdc-13c774e7f3ba.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/929e295b-8601-40c3-a614-7d67bbaa3899.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/d385e4a6-e77b-4142-a15b-8287e7e64d69.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/c535f7cc-ba47-4b42-8c9a-787bf3db77e8.jpg?imageView&quality=100"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000179001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/918068c7-fdcd-495f-85a9-9ed69590878d.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/38268a29-482c-48b9-9fdc-13c774e7f3ba.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/8d30ced1-8c2c-4136-bebf-98c2dbe24414.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/6e5bfe90-43a6-4c46-89da-479cd4cd46be.jpg?imageView&quality=100"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000180001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/13d5c159-bad0-46c4-b6e8-ec9053693c4e.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/38268a29-482c-48b9-9fdc-13c774e7f3ba.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e8c8a880-4e23-4ad6-9d1c-a45f0bcd30f5.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/6e5bfe90-43a6-4c46-89da-479cd4cd46be.jpg?imageView&quality=100"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000181001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/23389af4-5a28-4f5d-905c-5eca435d0212.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/64731f07-41eb-4435-8c01-65e9d7e14033.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/17863e7f-b573-46e9-9109-ddb88df5d720.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/248dbaad-6818-4cbc-96f8-88ee7dd460ab.jpg?imageView&quality=100"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000182001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1da6ef8f-6e54-4913-be45-87312d894d2f.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/64731f07-41eb-4435-8c01-65e9d7e14033.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5ef7edb8-b9c9-4c46-8988-ba097dff0d8a.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/1db37697-fa2a-4ada-8b9e-2360278c936f.jpeg?imageView&quality=100"
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000183001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000183002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 24 */
+{
+    "_id" : NumberLong(400000000184001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f41a2975-92c7-4c48-baa8-635c022d6a9a.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/654196ee-c5de-4175-9b3a-9269a34284f9.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/654196ee-c5de-4175-9b3a-9269a34284f9.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/8c2ce5bb-2d1e-42cc-84fb-4f24adbeeffe.png?imageView&quality=100"
+}
+
+/* 25 */
+{
+    "_id" : NumberLong(400000000185001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 26 */
+{
+    "_id" : NumberLong(400000000186001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 27 */
+{
+    "_id" : NumberLong(400000000187001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/ed5760fb-c86c-4784-874b-e1298ddfe721.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/f8599876-c6eb-4681-8416-1f726e06ed87.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e340c4b4-3e05-4c8a-b0b9-440f47ece455.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/2b8928c5-a65f-49a6-a124-592d4df583bb.jpg?imageView&quality=100"
+}
+
+/* 28 */
+{
+    "_id" : NumberLong(400000000188001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 29 */
+{
+    "_id" : NumberLong(400000000188002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 30 */
+{
+    "_id" : NumberLong(400000000188003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 31 */
+{
+    "_id" : NumberLong(400000000189001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 32 */
+{
+    "_id" : NumberLong(400000000190001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c71f7dc2-fb6d-4609-a506-fd9bcbb5692e.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f2dbaee3-3db2-422a-ad97-9578cabd4865.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/b26ad3c5-5ada-4109-8183-1a45aa3a7ba6.jpg?imageView&quality=100"
+}
+
+/* 33 */
+{
+    "_id" : NumberLong(400000000191001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f198cb1d-3a2c-44db-b4e6-f01f2191514b.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/f198cb1d-3a2c-44db-b4e6-f01f2191514b.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f198cb1d-3a2c-44db-b4e6-f01f2191514b.png?imageView&quality=100"
+}
+
+/* 34 */
+{
+    "_id" : NumberLong(400000000192001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/c094d2e6-c645-4851-a6fb-5bbab4c83ef5.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/be074640-5156-43ce-84e6-d1e071a21e06.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/551412cd-a19f-4dce-a795-fe0c35c74410.png?imageView&quality=100"
+}
+
+/* 35 */
+{
+    "_id" : NumberLong(400000000193001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 36 */
+{
+    "_id" : NumberLong(400000000194001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "房地产/建筑"
+}
+
+/* 37 */
+{
+    "_id" : NumberLong(400000000194002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 38 */
+{
+    "_id" : NumberLong(400000000194003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/9173a185-8999-458f-8cb9-3ca040e22b3b.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/9173a185-8999-458f-8cb9-3ca040e22b3b.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/9173a185-8999-458f-8cb9-3ca040e22b3b.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/133be7d0-1216-4940-8cfe-7d0baefbaaac.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : ""
+}
+
+/* 39 */
+{
+    "_id" : NumberLong(400000000195001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1a393944-f7ae-4718-8e78-59c0fbb186ee.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/89b43a0d-da9c-4edc-a8e0-91ee36913754.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/06de9fab-a0a5-4668-8c84-473fe5870e74.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/22e7f725-886f-40d0-8c3c-b4b38f2148fa.jpg?imageView&quality=100"
+}
+
+/* 40 */
+{
+    "_id" : NumberLong(400000000196001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f00f722e-6ccb-470e-aafe-369e919c2030.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/fb8ab3ed-0428-4d6d-80aa-dc0047cafb19.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/7695ba11-9932-4c29-b57b-4213c9c2824d.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/4e147a3a-0b31-4d7a-bd2f-b6ba081b0b18.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/e6d6b810-390f-4b79-93bc-a1a0fd1ef9a2.png?imageView&quality=100"
+}
+
+/* 41 */
+{
+    "_id" : NumberLong(400000000196002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1cb022e0-1bbb-414c-9ea7-f95f448397ac.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/89b43a0d-da9c-4edc-a8e0-91ee36913754.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1cb022e0-1bbb-414c-9ea7-f95f448397ac.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/293ccb03-7144-416a-bc19-d83edc8c8c05.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/e499db08-ddf8-44f5-abae-bd568270d920.png?imageView&quality=100"
+}
+
+/* 42 */
+{
+    "_id" : NumberLong(400000000197001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/927f2977-038f-46c4-8807-cc6940fae56c.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/89b43a0d-da9c-4edc-a8e0-91ee36913754.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/06de9fab-a0a5-4668-8c84-473fe5870e74.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/22e7f725-886f-40d0-8c3c-b4b38f2148fa.jpg?imageView&quality=100"
+}
+
+/* 43 */
+{
+    "_id" : NumberLong(400000000197002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "国企",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/5816d46b-ae6e-4f8b-bc71-2b1bc195315d.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/3bbcb460-7eda-4915-9b6a-4cfcc0d7f78b.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/d4d04c72-324f-4ba1-92c9-7538b5ac793b.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/326e1e75-edfe-4b06-9530-233409175c0b.jpg?imageView&quality=100"
+}
+
+/* 44 */
+{
+    "_id" : NumberLong(400000000198001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 45 */
+{
+    "_id" : NumberLong(400000000199001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "iconUrl" : "http://edu-image.nosdn.127.net/c806526c-b0a1-41ba-8bb4-18f9766a985d.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/a7f42044-385b-4605-a7b7-db345b8d9ab8.png?imageView&quality=100",
+    "mobLoginBgUrl" : ""
+}
+
+/* 46 */
+{
+    "_id" : NumberLong(400000000200001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/84356a97-6b97-4bba-8a7d-49d884d69099.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/84356a97-6b97-4bba-8a7d-49d884d69099.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/84356a97-6b97-4bba-8a7d-49d884d69099.png?imageView&quality=100"
+}
+
+/* 47 */
+{
+    "_id" : NumberLong(400000000201001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 48 */
+{
+    "_id" : NumberLong(400000000202001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 49 */
+{
+    "_id" : NumberLong(400000000203001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "政府机关",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/731ec64e-798c-4d4f-a476-69f58ce924f5.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a3293af8-4d01-40f8-9df1-b6d9b754b4f7.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/57c220b9-7ebe-4658-a646-0536eb25694c.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/88cf3672-d848-466c-ac44-a2a26591ec73.jpg?imageView&quality=100"
+}
+
+/* 50 */
+{
+    "_id" : NumberLong(400000000203002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "事业单位",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2e240e3e-e61b-4af6-88b4-7f5dadab01da.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/c90a3dbc-1bd3-49c2-b6d3-457cd6c37eef.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/37a16ba6-bccd-4c2f-90d3-c00bdb1564e6.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/6c65c620-91df-4a1a-8e31-21f3cddbc5bc.jpg?imageView&quality=100"
+}
+
+
+/* 1 */
+{
+    "_id" : NumberLong(400000000204001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/731ec64e-798c-4d4f-a476-69f58ce924f5.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a3293af8-4d01-40f8-9df1-b6d9b754b4f7.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/57c220b9-7ebe-4658-a646-0536eb25694c.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/24f6230e-0443-42d1-a711-ab7217439dc8.jpg?imageView&quality=100"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000204002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/bed0388f-5d61-47b6-a7d9-ef9fd446ba92.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a3293af8-4d01-40f8-9df1-b6d9b754b4f7.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/bed0388f-5d61-47b6-a7d9-ef9fd446ba92.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/24f6230e-0443-42d1-a711-ab7217439dc8.jpg?imageView&quality=100"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000205001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/4b801609-8a86-4206-805b-bd116fe6322f.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/b383a3d4-9324-4684-882c-6c931887587a.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/ccfdc13e-10ea-4cbb-b972-e4cd8ac62a4f.JPG?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/e4ca5bcc-575e-4c90-95c0-7bc55ce72fc9.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/0934f97e-bdd6-4182-bcc1-56b93ce7767a.jpg?imageView&quality=100"
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000206001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "事业单位",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/ee44b8ab-6ac4-4810-b80e-a1582dac0230.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/8a7ed55f-f980-4d46-abbc-fa885862f573.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/d0a8227f-bf31-4570-be98-2f0b950550a9.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/2b8afb36-7512-4d04-b8b3-96c352bb4142.jpg?imageView&quality=100"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000207001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000208001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000208002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/515daff9-4386-4c1a-b133-8f4c1449dae1.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/515daff9-4386-4c1a-b133-8f4c1449dae1.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/0c03cdad-691d-401d-8fc8-6818d73c078f.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/34aef999-8a19-445b-a877-268a9c26442d.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/f3705e22-a789-43ae-b0b7-c2c440681bbb.jpg?imageView&quality=100"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000209001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000210001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "外资（非欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e19c62ab-46e4-49c0-8ea8-6bf35fb9292a.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/2a3a0e1f-e48b-4e13-b249-a6f0e80bf693.PNG?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/43fcdccb-7cf7-4091-bac0-0ad61a0eb40b.PNG?imageView&quality=100"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000211001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d70ac1c3-dc1c-4974-9884-e0209f082ef3.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/18fc2d56-db44-480d-b7c5-c219b0b21fa2.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/38c0d76f-8926-4c18-bb3a-aff445cc5d99.jpg?imageView&quality=100"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000212001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/bd85b7dc-1da8-49ba-b910-cef8e053ddfc.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a72ef539-dd56-403a-bc83-b23ffafa6549.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a523c590-e8bf-411c-b530-5e42f432b84d.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/d4f2653a-236a-47f1-b107-e0d26b515f99.jpg?imageView&quality=100"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000213001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "制药/医疗",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1d437956-8f59-459f-8f7d-eccc2f8fccca.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a72ef539-dd56-403a-bc83-b23ffafa6549.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a523c590-e8bf-411c-b530-5e42f432b84d.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/d4f2653a-236a-47f1-b107-e0d26b515f99.jpg?imageView&quality=100"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000214001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "专业服务/教育/培训",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1d437956-8f59-459f-8f7d-eccc2f8fccca.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a72ef539-dd56-403a-bc83-b23ffafa6549.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/a523c590-e8bf-411c-b530-5e42f432b84d.png?imageView&quality=100",
+    "loginBgUrl" : ""
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000215001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000216001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000217001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000218001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000219001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000220001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2e06d87c-0203-4973-acba-369420326914.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/2e06d87c-0203-4973-acba-369420326914.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/9df0e2b0-a003-40b3-abe6-213552672668.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/c876b8ac-e0a6-457c-a60c-7cd883561e21.jpeg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/c876b8ac-e0a6-457c-a60c-7cd883561e21.jpeg?imageView&quality=100"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000221001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0fd3cd32-a012-4255-b3f3-5a52cd093bcb.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/9e0ec19b-f776-4519-8736-61f5c4465358.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/2c5a086f-9e07-4b5c-b633-ad84fd9c411f.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/0b3d37a7-5557-4643-b430-2a7c557ed3aa.jpg?imageView&quality=100"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000221002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0fd3cd32-a012-4255-b3f3-5a52cd093bcb.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/9e0ec19b-f776-4519-8736-61f5c4465358.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/2c5a086f-9e07-4b5c-b633-ad84fd9c411f.png?imageView&quality=100"
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000222001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000223001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/8f9e2fb7-25fe-4b4c-9219-916d98dc9fe4.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/9e0ec19b-f776-4519-8736-61f5c4465358.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/e920e328-726b-4464-aeac-792b21377215.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/49d42c1b-23f2-4576-bb0e-4baf9e145904.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/e726fc44-293a-4479-bd54-938c4e2a2a9a.png?imageView&quality=100"
+}
+
+/* 24 */
+{
+    "_id" : NumberLong(400000000224001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 25 */
+{
+    "_id" : NumberLong(400000000225001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 26 */
+{
+    "_id" : NumberLong(400000000226001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/a10543e7-9713-4dd3-90db-8888b4b97d1e.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/f76751bc-8e6e-45c6-a782-d03ac85f6607.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/958bc15a-c455-49eb-999f-518d61527779.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/a01c1ab5-6ac1-485b-942c-06b1539f65c4.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/7a6a800a-8fe9-4658-8c32-d18044d0d1f0.jpg?imageView&quality=100"
+}
+
+/* 27 */
+{
+    "_id" : NumberLong(400000000226002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/a134a126-4257-46ae-b4cb-5be0830c085b.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/476e578f-2c70-49f4-a650-857d7a2b1fd5.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5526e8a9-17cc-45d2-8276-45010bdb1d87.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/eed0d42a-fda5-4d9d-bc45-122befcc687f.jpg?imageView&quality=100"
+}
+
+/* 28 */
+{
+    "_id" : NumberLong(400000000227001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 29 */
+{
+    "_id" : NumberLong(400000000227002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 30 */
+{
+    "_id" : NumberLong(400000000228001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1a194118-1ff4-437c-8001-9a40bf80ce43.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/46bad884-7c32-481b-8cef-cf407ae24b06.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/46bad884-7c32-481b-8cef-cf407ae24b06.png?imageView&quality=100"
+}
+
+/* 31 */
+{
+    "_id" : NumberLong(400000000228002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 32 */
+{
+    "_id" : NumberLong(400000000228003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "制药/医疗",
+    "logoUrl" : "http://edu-image.nosdn.127.net/9a852268-9066-446d-9035-169eeacde9fc.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/fa3fcaa6-bd17-48e1-99b6-9f201ccc098f.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/cdad2fd6-84bc-4c40-9785-d455fee9a722.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/e551c524-2a68-495e-bec1-0d048bdee582.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/e551c524-2a68-495e-bec1-0d048bdee582.png?imageView&quality=100"
+}
+
+/* 33 */
+{
+    "_id" : NumberLong(400000000229001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "国企",
+    "siteCategory" : "服务业",
+    "logoUrl" : "http://edu-image.nosdn.127.net/eb487e60-ff04-448f-bab2-13547a9e9568.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/29ae2002-7e4e-4d09-8ba9-b9850008d993.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/f0ed8a68-9650-48cc-a8de-88f35840b2ef.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/f8865f37-3851-4676-a265-48f8719aa278.jpg?imageView&quality=100"
+}
+
+/* 34 */
+{
+    "_id" : NumberLong(400000000230001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 35 */
+{
+    "_id" : NumberLong(400000000231001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/83d22396-8b0b-4783-b453-cc9e468e6bb6.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a16f2211-7793-49b5-ad21-768a78fb1c1f.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/77fdc095-2971-4e67-b480-afc7c5f8bac8.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/e6005035-7e05-4e94-ae7d-224eed1079dd.png?imageView&quality=100"
+}
+
+/* 36 */
+{
+    "_id" : NumberLong(400000000232001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1de86683-b520-4d7c-9a2c-45ff55c5aff0.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/379fadc9-3af2-46b0-b28c-1709073dccb0.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/40dea4e1-2991-4b05-9201-fa28912748e2.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/193d3e6d-4b63-4e28-a087-415a79b31a77.jpg?imageView&quality=100"
+}
+
+/* 37 */
+{
+    "_id" : NumberLong(400000000233001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 38 */
+{
+    "_id" : NumberLong(400000000234001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/5a389bd0-8657-4335-8dcc-7d1861df95a0.PNG?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/d9509439-3130-4f8c-9724-6802e1ae54a5.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/d56d4296-10fb-444b-bd80-3d3b4268dba1.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/c1d09644-82f6-422e-9841-676adc7a2bb4.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/f752d607-f8bc-42e6-851d-edb2d2cbb9b0.bmp?imageView&quality=100"
+}
+
+/* 39 */
+{
+    "_id" : NumberLong(400000000235001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "合资",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/313196b8-5e96-4d26-8e6a-7481ce1c62d1.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/0430cd76-e51a-4c5b-a86d-d460fded1610.gif?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/313196b8-5e96-4d26-8e6a-7481ce1c62d1.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/f0771b21-36a5-48cd-8a74-0267e174954c.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/5c8b39c8-950b-4a34-8482-780267bb25bc.jpg?imageView&quality=100"
+}
+
+/* 40 */
+{
+    "_id" : NumberLong(400000000235002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/f41a04a6-1d9e-4b02-8624-94c0bf5237e3.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b947a960-af51-4d78-9812-79342a3c6d2d.jpg?imageView&quality=100"
+}
+
+/* 41 */
+{
+    "_id" : NumberLong(400000000235003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/e94adeee-2267-4f44-b150-d6576fa8b65c.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a3ad1ae1-915c-4592-b1b7-ef68a0d4049d.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b471fb23-13ff-4622-8e3a-f3d32b7c9db7.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/3bc659b5-89b4-4f16-b740-37cade600df7.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/d02a6fd5-d6cb-4088-85c1-9a3731d41710.jpg?imageView&quality=100"
+}
+
+/* 42 */
+{
+    "_id" : NumberLong(400000000236001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/024140c9-9ae5-404e-9089-88b2276e7735.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/b595a022-e949-4c29-b2a8-4f0166fe9c12.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/033deb07-0e4e-443d-aef6-2fb024adbb22.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/61217131-140d-4ecb-9745-a854be920eb3.jpg?imageView&quality=100"
+}
+
+/* 43 */
+{
+    "_id" : NumberLong(400000000237001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 44 */
+{
+    "_id" : NumberLong(400000000238001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "国企",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/09d14dea-d142-4c3e-b704-265570931a05.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/09d14dea-d142-4c3e-b704-265570931a05.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/09d14dea-d142-4c3e-b704-265570931a05.jpg?imageView&quality=100"
+}
+
+/* 45 */
+{
+    "_id" : NumberLong(400000000239001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/6ad2045a-dbcf-4659-83f2-7a4453e1ead6.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/6b8f40fb-f2f1-4000-baba-a76880943a39.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5f8a137b-617f-4d40-89b4-165995fd722f.png?imageView&quality=100"
+}
+
+/* 46 */
+{
+    "_id" : NumberLong(400000000239002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/0b45236c-208b-4a54-8af9-87e85edcc374.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/b1fa89c3-b324-40d7-a4ea-c068512fe211.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/5d5ce0bf-4500-4624-b140-ffce398e4a0e.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/36bfd936-d701-46b5-93c4-9e4fd1df58c9.jpg?imageView&quality=100"
+}
+
+/* 47 */
+{
+    "_id" : NumberLong(400000000239003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 48 */
+{
+    "_id" : NumberLong(400000000239004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "国企",
+    "siteCategory" : "物流/运输"
+}
+
+/* 49 */
+{
+    "_id" : NumberLong(400000000239005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/afda2cff-3a4a-40b4-947f-e0bf0341b28e.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/afda2cff-3a4a-40b4-947f-e0bf0341b28e.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/afda2cff-3a4a-40b4-947f-e0bf0341b28e.jpg?imageView&quality=100",
+    "loginBgUrl" : ""
+}
+
+/* 50 */
+{
+    "_id" : NumberLong(400000000240001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d81d6f58-cb94-4148-8bc9-b1480458ba78.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/a1ec64d7-b9ec-4b80-a6bb-2a974be05653.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/4e801093-0ce9-420e-b454-656ac3f9ff46.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/c3be4745-ae6c-4ff5-ac45-86e1df9893c6.png?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/82ce954b-e770-4bf2-9848-ecd268d229e2.png?imageView&quality=100"
+}
+
+
+/* 1 */
+{
+    "_id" : NumberLong(400000000240002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/abdd56ac-af1d-4d83-aaa9-c2c93df38b86.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/abdd56ac-af1d-4d83-aaa9-c2c93df38b86.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/abdd56ac-af1d-4d83-aaa9-c2c93df38b86.jpg?imageView&quality=100"
+}
+
+/* 2 */
+{
+    "_id" : NumberLong(400000000241001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "国企",
+    "siteCategory" : "会计/金融/银行/保险",
+    "logoUrl" : "http://edu-image.nosdn.127.net/4013f658-d522-4247-b3c1-1b4db1b67eda.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/4013f658-d522-4247-b3c1-1b4db1b67eda.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/4013f658-d522-4247-b3c1-1b4db1b67eda.jpg?imageView&quality=100"
+}
+
+/* 3 */
+{
+    "_id" : NumberLong(400000000241002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 4 */
+{
+    "_id" : NumberLong(400000000242001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1a358324-eaa2-4998-8d1e-3e409f4c5b56.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/01b94e7c-0030-4d51-924e-58355644ac3a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1a358324-eaa2-4998-8d1e-3e409f4c5b56.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/51bcd70b-65b4-4b26-a55e-1e8461084af4.png?imageView&quality=100"
+}
+
+/* 5 */
+{
+    "_id" : NumberLong(400000000242002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 6,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "贸易/消费/制造/营运",
+    "logoUrl" : "http://edu-image.nosdn.127.net/2b2aa5a8-b789-4b46-817b-e36f2c2be643.jpg?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/2b2aa5a8-b789-4b46-817b-e36f2c2be643.jpg?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/2b2aa5a8-b789-4b46-817b-e36f2c2be643.jpg?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/7115ea5f-5d9f-45f1-bff9-fb1bf27d29a8.jpg?imageView&quality=100"
+}
+
+/* 6 */
+{
+    "_id" : NumberLong(400000000243001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 7 */
+{
+    "_id" : NumberLong(400000000243002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 3,
+    "siteProperty" : "民营公司",
+    "siteCategory" : "贸易/消费/制造/营运"
+}
+
+/* 8 */
+{
+    "_id" : NumberLong(400000000243003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "国企",
+    "siteCategory" : "物流/运输"
+}
+
+/* 9 */
+{
+    "_id" : NumberLong(400000000243004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "国企",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/b5b23733-8304-4688-b259-4ea33fcc1657.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/b5b23733-8304-4688-b259-4ea33fcc1657.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/b5b23733-8304-4688-b259-4ea33fcc1657.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/65552e54-0c9a-4795-9482-f7e5a9bbb63c.png?imageView&quality=100"
+}
+
+/* 10 */
+{
+    "_id" : NumberLong(400000000243005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 5,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子",
+    "logoUrl" : "http://edu-image.nosdn.127.net/1a358324-eaa2-4998-8d1e-3e409f4c5b56.png?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/01b94e7c-0030-4d51-924e-58355644ac3a.png?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/1a358324-eaa2-4998-8d1e-3e409f4c5b56.png?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/51bcd70b-65b4-4b26-a55e-1e8461084af4.png?imageView&quality=100"
+}
+
+/* 11 */
+{
+    "_id" : NumberLong(400000000244001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 12 */
+{
+    "_id" : NumberLong(400000000244002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 13 */
+{
+    "_id" : NumberLong(400000000244003),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 14 */
+{
+    "_id" : NumberLong(400000000244004),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 15 */
+{
+    "_id" : NumberLong(400000000244005),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 16 */
+{
+    "_id" : NumberLong(400000000245001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 17 */
+{
+    "_id" : NumberLong(400000000246001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 18 */
+{
+    "_id" : NumberLong(400000000247001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 4,
+    "siteProperty" : "上市公司",
+    "siteCategory" : "房地产/建筑"
+}
+
+/* 19 */
+{
+    "_id" : NumberLong(400000000247002),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 1,
+    "siteProperty" : "国企",
+    "siteCategory" : "房地产/建筑",
+    "logoUrl" : "http://edu-image.nosdn.127.net/d7434c7b-544d-4362-9bc3-272ae36f640b.JPG?imageView&quality=100",
+    "iconUrl" : "http://edu-image.nosdn.127.net/d7434c7b-544d-4362-9bc3-272ae36f640b.JPG?imageView&quality=100",
+    "logoNavUrl" : "http://edu-image.nosdn.127.net/d7434c7b-544d-4362-9bc3-272ae36f640b.JPG?imageView&quality=100",
+    "loginBgUrl" : "http://edu-image.nosdn.127.net/4ffa2240-e523-4a37-b0ee-9094e9cb2d91.jpg?imageView&quality=100",
+    "mobLoginBgUrl" : "http://edu-image.nosdn.127.net/7a2889fc-241c-4aa4-a3be-ce000d33d175.jpg?imageView&quality=100"
+}
+
+/* 20 */
+{
+    "_id" : NumberLong(400000000248001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 21 */
+{
+    "_id" : NumberLong(400000000249001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "外资（欧美）",
+    "siteCategory" : "计算机/互联网/通信/电子"
+}
+
+/* 22 */
+{
+    "_id" : NumberLong(400000000250001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 2,
+    "siteProperty" : "国企",
+    "siteCategory" : "物流/运输"
+}
+
+/* 23 */
+{
+    "_id" : NumberLong(400000000251001),
+    "className" : "com.netease.edu.site.dao.doc.domain.SiteExtInfoDoc",
+    "siteSize" : 0,
+    "siteProperty" : "国企",
+    "siteCategory" : "能源/原材料"
+}
+

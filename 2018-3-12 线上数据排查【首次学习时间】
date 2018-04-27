@@ -1,0 +1,123 @@
+
+一、错误数据一： 
+首次学习时间： 1970-01-01 08:00
+
+provider_id = 400000000115001 and id_num =72309009
+term_id = 400000002714075
+
+孙明月
+72309009
+memberId : 1027061500
+
+
+
+select * from qyy_mid_online.term_learn_progress_stat where day="2018-03-11" and member_id=1027061500 and term_id = 400000002714075;
+1027061500	400000002714075	400000006761974	400000000115001	0	1	1	1	NULL	NULL	1519652873383	NULL	0	1519574400000	NULL	0	1520494325961	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL	1	1	NULL	NULL	NULL	NULL	0	0	0	1	NULL	NULL	NULL	NULL	2018-03-11
+
+
+select * from qyy_mid_online.term_learn_progress_stat_kv where member_id=1027061500 and term_id = 400000002714075 and category='first_learn_time' order by day;
+
+term_learn_progress_stat_kv.member_id	term_learn_progress_stat_kv.term_id	term_learn_progress_stat_kv.type	term_learn_progress_stat_kv.value	term_learn_progress_stat_kv.day	term_learn_progress_stat_kv.category
+1027061500	400000002714075	first_learn_time	0	2018-03-08	first_learn_time
+1027061500	400000002714075	first_learn_time	0	2018-03-09	first_learn_time
+1027061500	400000002714075	first_learn_time	0	2018-03-10	first_learn_time
+1027061500	400000002714075	first_learn_time	0	2018-03-11	first_learn_time
+
+
+
+
+select * from qyy_mid_online.user_behavior where day="2018-03-08" and user_id=1027061500 and biz_dat['term_id'] = 400000002714075;
+
+user_behavior.active_name	user_behavior.time_tag	user_behavior.biz_dat	user_behavior.device_type	user_behavior.device_id	user_behavior.app_version	user_behavior.ip	user_behavior.nt_sid	user_behavior.ref_url	user_behavior.req_url	user_behavior.st_info	user_behavior.ua	user_behavior.user_id	user_behavior.ua_id	user_behavior.browser	user_behavior.browser_version	user_behavior.os	user_behavior.brand	user_behavior.is_edu_app	user_behavior.app_name	user_behavior.address	user_behavior.day
+user_learn_end	1520494325962	{"course_id":"400000002659040","term_id":"400000002714075","provider_id":"400000000115001","start_time":"0","end_time":"1520494325961","uid":"1027061500","learn_type":"101","site_type":"0"}	AndroidPhone	865305034073079_bb33bdfe770fd96e	NULL	fe80::44c4:31ff:fea4:44dd%dummy0	NULL	NULL	NULL	NULL	NULL	1027061500	NULL	NULL	NULL	NULL	NULL	NULL	study_enterprise	NULL	2018-03-08
+
+【原因】移动端 日志 startTime 为 0；
+
+
+
+
+二、错误数据二：  
+首次学习时间：   2009-01-06 04:47
+
+朱文华 	24101035 	
+provider_id = 400000000115001 and id_num =24101035
+memberId ： 1027056249
+
+{"course_id":"400000002659040","term_id":"400000002714075","provider_id":"400000000115001","start_time":"1231185502614","end_time":"1231185502614","uid":"1027056249","learn_type":"101","site_type":"0"}	web	150611e2462c48ab853f44f87e1571eb	NULL	59.52.200.172	NULL	http://cacy.study.163.com/courses/400000002714075/learning	http://log.study.163.com/__utm.gif?p=qyy&dt=7b22616374696f6e223a22757365725f6c6561726e5f7265636f7264222c226c6561726e54797065223a3130312c227369746554797065223a302c2270726f76696465724964223a3430303030303030303131353030312c22756964223a313032373035363234392c22636f757273654964223a22343030303030303032363539303430222c227465726d4964223a22343030303030303032373134303735222c22737461727454696d65223a313233313138353530323631342c22656e6454696d65223a313233313138353530323631347d00	NULL	Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36	1027056249	NULL	Chrome	55.0.2883.87	Windows XP	NULL	NULL	NULL	NULL	2018-02-27
+【原因】web端 用户修改了本地时间，导致 时间不对；
+
+
+
+三、数据修复
+
+select min(day) from qyy_mid_online.term_learn_progress_stat_kv where category='first_learn_time' and value = 0;
+2018-01-01
+
+数据修复时间 ： 【2018-01-01， 至今】
+
+
+
+appops@hzadg-study-da02:~$ hadoop fs -ls qyy/online/middle/user_behavior
+Found 547 items
+drwxr-x---   - study study          0 2017-05-22 12:53 qyy/online/middle/user_behavior/day=2016-09-11
+drwxr-x---   - study study          0 2017-05-22 12:54 qyy/online/middle/user_behavior/day=2016-09-12
+
+
+
+数据重跑 只能从 2016-09-11 开始重算；
+
+2016-09-10 :	1473436800000
+
+
+
+
+
+2018-03-12 17:15:50.090  INFO [provider-service,,,] 4961 --- [8071-thread-357] service_perform_log                      : {"consuming":1776,"sql":"calling sql:select * from  s2_department where provider_id = ? and parent_id = ?  limit 1 params: [400000000037001, -1]"}
+2018-03-12 17:15:50.093  INFO [provider-service,,,] 4961 --- [8071-thread-484] service_perform_log
+
+
+2018-03-12 17:16:26.869  INFO [provider-service,,,] 4961 --- [8071-thread-335] service_perform_log                      : {"consuming":212,"sql":"calling sql:select * from  s2_department where provider_id = ? and parent_id = ?  limit 1 params: [400000000115001, -1]"}
+2018-03-12 17:16:26.874  INFO [provider-service,,,] 4961 --- [8071-thread-448] service_perform_log                      : {"consuming":211,"sql":"calling sql:select * from  s2_department where provider_id = ? and parent_id = ?  limit 1 params: [400000000115001, -1]"}
+2018-03-12 17:16:26.888  INFO [provider-service,,,] 4961 --- [8071-thread-482] service_perform_log                      : {"consuming":212,"sql":"calling sql:select * from  s2_department where provider_id = ? and parent_id = ?  limit 1 params: [400000000115001, -1]"}
+2018-03-12 17:16:26.898  INFO [provider-service,,,] 4961 --- [8071-thread-497] service_perform_log                      : {"consuming":208,"sql":"calling sql:select * from  s2_department where provider_id = ? and parent_id = ?  limit 1 params: [400000000115001, -1]"}
+2018-03-12 17:16:26.914  INFO [provider-service,,,] 4961 --- [8071-thread-115] service_perform_log                      : {"consuming":205,"sql":"calling sql:select * from  s2_department where provider_id = ? and parent_id = ?  limit 1 params: [400000000037001, -1]"}
+2018-03-12 17:16:27.182  INFO [provider-service,,,] 4961 --- [8071-thread-482] service_perform_log                      : {"consuming":204,"sql":"calling sql:select * from  s2_department where provider_id = ? and parent_id = ?  limit 1 params: [400000000115001, -1]"}
+2018-03-12 17:16:27.191  INFO [provider-service,,,] 4961 --- [8071-thread-304] service_perform_log
+
+
+
+ 
+    
+
+cat edu.log | grep -E '2018-03-13 02:0[0-57]|2018-03-13 04:0[0-57]' > edu_tmp.log
+
+
+sed -n '/2018-03-13 02:00:00/,/2018-03-13 04:00:00/p' edu.log
+
+
+
+
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003
+
+%20AND%20departmentIds:82001
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

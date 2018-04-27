@@ -1,0 +1,267 @@
+
+create table s2_member_credit_detail(
+  id bigint(20) ,
+  provider_id bigint(20),
+  target_id bigint(20),
+  target_type bigint(20),
+  credit int,
+  credit_hours int,
+  member_id bigint(20),
+  obatain_time bigint(20)
+)
+
+新增 基础中间表：【天维度的 增量表】					
+user_id + provider_id + 天总学分 + 天总学分 + 天总学时 + 天总学时 + date		8h
+
+一、我的学习		【 8 + 6 = 14 】
+学分、学时详情：		
+（1）周累计（近7日）: 
+（2）月累计（近30日）
+
+BI 部分：				8h
+	sum（...）
+	一周前 < obatain_time < 一周后
+
+	新增 基础中间表：【天维度的 增量表】					
+	user_id + provider_id + 天总学分 + 天总学分 + 天总学时 + 天总学时 + date
+
+	新增output 表：【1.1】		
+	user_id + provider_id + 最近周总学分 + 最近周总学分 
+	user_id + provider_id + 最近月总学时 + 最近月总学时 	
+	user_id + provider_id + 最近季总学时 + 最近季总学时 	
+	user_id + provider_id + 最近年总学时 + 最近年总学时 
+业务接口： 				6h
+
+
+二、首页排行榜：			6h
+（1）学分排行榜：		
+（2）学分排行榜：
+
+增加 周、月、季、年 排行榜表：	对应 provider_id 下 倒序就好；		
+
+2.1、BI 部分： 
+	一中已算出，直接复用结果表即可；	
+2.2、业务接口：  								6h
+
+
+三、统计分析 		【 6 + 50 + 4 + 12 + 10 = 82 】
+3.1、学习概况统计				【 6h 】
+总获得学分、总获得学时：
+
+	BI部分：
+		按照 provider_id sum 即可；		4h
+	业务部分：							2h
+
+
+3.2、课程学习统计			【 34 + 12 + 4 = 50 】
+（1）组织学习情况							【 16 + 6 + 6 + 6 = 34 】
+	部门、岗位、分组			
+	 增加 学分 和 学时的 增量计算；
+
+	BI 部分：
+		1、数据修正，按照所有已有数据 按天修补 学分 和 学时 增量数据（部门、岗位、分组 3个维度）；		16h
+		2、学分、学时 按天增量计算写入；									2 * 3 = 6h
+	业务部分：
+		1、业务查询db 修改、接口修改：	2 * 3 = 6h
+		2、Excel 导出：				2 * 3 = 6h
+
+
+（2）个人学习情况 - 总览		【 12h 】 
+维度： 个人 在 时间段内 所有学分和学时；
+	BI 部分：		
+			增量表： 				8h
+				member_id   target_id 	target_type 	指派类型		学分 	学时 		获得时间    date
+			修数据：（3.2 已做） 		
+	业务部分：					4h
+	
+（3）个人学习情况 - 明细		【 4h 】
+维度： 个人 每门课 的 学分 和学时		
+	BI 部分：	2h
+	业务部分：	2h
+
+
+3.3、课程资源统计			4h
+	BI 部分：	2h
+	业务部分：	2h
+
+
+3.4、项目学习统计	【 8 + 4 = 12 】
+维度： 个人 时间段内 所有 项目的 学分和学时
+（1）总览						8h
+	BI 部分：			4h
+	业务部分：			4h
+
+（2）明细						4h
+维度：个人 每个项目 的 学分 和学时
+	BI 部分：			2h
+	业务部分：			2h
+
+3.5、个人学习档案	【 10 】
+BI 部分：
+	（头部）					4h	
+	（课程列表）				1h
+	（项目列表）				1h
+业务部分：					4h
+
+
+总计： 14 + 6 + 6 + 82 = 108 / 8 = 13.5 d
+	BI 部分： 8d	
+	业务部分： 6 + 6 + 2 + 30 = 44 / 8 = 5.5d
+
+
+
+
+************************************************************** wbs
+
+一、基础中间表修改 以供复用：【 20h 】
+1、term_learn_progress_stat_kv ： 增加 课程学分 和 学时 字段【课程 基本信息】		4h
+结果：member_id + term_id + provider_id + term_learn_finish_status  + 学分 + 学时 + 结课时间
+
+2、user_project_learn_stat_kv ：	  增加 项目学分 和 学时 字段【项目 基本信息】		4h
+结果：member_id + project_id + provider_id + learn_status  + 学分 + 学时 + 项目结业时间
+
+3、用户 和 考试 的关联关系	user_exam_learn_stat【8h】
+（1）user_id + exam_id + provider_id + 学分/学时  + 提交时间		4h
+（2）爱多思 数据库表 导表权限 + 导表 								4h
+
+4、edu-bis-store 数据导表：			4h
+
+二、我的学习:	【12h】
+学分、学时详情：
+（1）周累计（近7日）: 
+（2）月累计（近30日）
+
+新增 基础中间表：【天维度的 增量表】					
+user_id + provider_id + 天总学分 + 天总学分 + 天总学时 + 天总学时 + date		8h
+	select sum（课程学时，项目学时，考试学时）
+			sum(课程学分，项目学分，考试学分)
+	from
+	课程学时，课程学分 where 昨天 <= 结课时间 <= 明天
+	join
+	项目学时，项目学分 where 昨天 <= 结课时间 <= 明天
+	join
+	考试学时，考试学分 where 昨天 <= 结课时间 <= 明天
+
+新增output 表：【2.1】
+user_id + provider_id + 最近周总学分 + 最近周总学分 + 最近月总学时 + 最近月总学时		4h
+	sum(...)
+	倒数7天
+	join
+	sum(...)
+	倒数30天
+
+
+三、首页排行榜：		4h
+（1）学分排行榜：		
+（2）学分排行榜：
+
+增加 周排行榜 、月排行榜表 output表； 
+
+
+四、统计分析 【 6 + 18 + 1 + 8 + 6 = 39 】
+3.1、学习概况统计		6h
+	term_learn_progress_stat
+	join
+	user_project_learn_stat
+	join
+	user_exam_learn_stat
+	where provider_id = ?
+
+3.2、课程学习统计		【12 + 4 + 2 = 18h 】
+（1）组织学习情况		
+	部门、岗位、分组			12h
+
+（2）个人学习情况 - 总览		4h
+	
+（3）个人学习情况 - 明细		2h
+
+
+3.3、课程资源统计			1h
+
+3.4、项目学习统计	【 8h 】
+（1）总览					6h
+（2）明细					2h
+
+3.5、个人学习档案	【 6h 】
+（头部）					4h	
+（课程列表）				1h
+（项目列表）				1h
+
+
+
+总计：20 + 12 + 4 + 39 = 75		【 9.5d 】
+
+
+
+
+
+
+
+
+
+一、基础中间表修改 以供复用：【 20h 】
+1、term_learn_progress_stat_kv ： 增加 课程学分 和 学时 字段【课程 基本信息】		4h
+结果：member_id + term_id + provider_id + term_learn_finish_status  + 学分 + 学时 + 结课时间
+
+2、user_project_learn_stat_kv ：	  增加 项目学分 和 学时 字段【项目 基本信息】		4h
+结果：member_id + project_id + provider_id + learn_status  + 学分 + 学时 + 项目结业时间
+
+3、用户 和 考试 的关联关系	user_exam_learn_stat【8h】
+（1）user_id + exam_id + provider_id + 学分/学时  + 提交时间		4h
+（2）爱多思 数据库表 导表权限 + 导表 								4h
+
+4、edu-bis-store 数据导表：			4h
+
+二、我的学习:	【12h】
+学分、学时详情：
+（1）周累计（近7日）: 
+（2）月累计（近30日）
+
+新增 基础中间表：【天维度的 增量表】					
+user_id + provider_id + 天总学分 + 天总学分 + 天总学时 + 天总学时 + date		8h
+
+新增output 表：【2.1】
+user_id + provider_id + 最近周总学分 + 最近周总学分 + 最近月总学时 + 最近月总学时		4h
+
+三、首页排行榜：		4h
+（1）学分排行榜：		
+（2）学分排行榜：
+
+增加 周排行榜 、月排行榜表 output表； 
+
+
+四、统计分析 【 6 + 20 + 2 + 10 + 6 = 44 】
+3.1、学习概况统计		6h
+	term_learn_progress_stat
+	join
+	user_project_learn_stat
+	join
+	user_exam_learn_stat
+	where provider_id = ?
+
+3.2、课程学习统计		【12 + 4 + 4 = 20h 】
+（1）组织学习情况		
+	部门、岗位、分组			12h
+
+（2）个人学习情况 - 总览		4h
+	
+（3）个人学习情况 - 明细		4h
+
+
+3.3、课程资源统计			2h
+
+3.4、项目学习统计	【 10h 】
+（1）总览					8h
+（2）明细					2h
+
+3.5、个人学习档案	【 6h 】
+（头部）					4h	
+（课程列表）				1h
+（项目列表）				1h
+
+
+总计：20 + 12 + 4 + 44 = 75		【 9.5d 】
+
+
+
+

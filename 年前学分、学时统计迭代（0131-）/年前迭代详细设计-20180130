@@ -1,0 +1,1731 @@
+一、需求分析
+1、学习概况统计
+	provider_id 	total_credit 		total_credit_hours
+	s2_user_learn_total_duration_stat 增加 总学分、总学时 统计指标；
+
+
+2、课程学习统计
+2.1、组织学习情况
+	获指派课学分  	获自选课学分  	获指派课学时  		获自选课学时
+	assign_credit	enroll_credit 	assign_credit_hours		enroll_credit_hours	
+
+2.2、个人学习情况
+2.2.1、总览
+	增加 个人 + 所有参加单课 维度的 总学分（指派、参加）、总学时（指派、参加）；
+	assign_credit	enroll_credit 	assign_credit_hours		enroll_credit_hours		date 【全量表一次性计算出每天】
+
+	${output}.s2_user_term_select_record_stat_date
+
+2.2.2 明细
+	增加 个人 + 单课 维度的 学分、学时；
+	credit 	credit_hours 
+
+
+
+3、课程资源统计
+	单课程 + 课程所有参加学员  维度的 总学分、总学时；
+	${output}.s2_term_learn_stat_total 增加 total_credit total_credit_hours ；
+
+
+4、项目学习统计
+4.1、总览
+	维度： 个人 + 所有参加项目 聚合
+	获指派项目学分  	获自选项目学分  	获指派项目学时  		获自选项目学时
+	assign_credit	enroll_credit 	assign_credit_hours		enroll_credit_hours	
+	s2_user_project_select_record_date 增加字段；
+
+4.2、明细
+	member_id + target_id 维度 增加 学分 和 学时 指标： credit 	credit_hours 
+	${mid}.user_project_learn_stat 增加字段；
+
+
+5、个人学习档案
+头部：
+	增加 个人+所有期次与项目 维度的 总学分、总学时；
+	s2_user_platform_learn_overview 增加字段： total_credit total_credit_hours ；
+
+列表：
+	增加 个人+ 单期次（项目） 维度的 学分、学时；
+	增加 学分 和 学时 指标： 	credit 	credit_hours 
+	${output}.s2_term_learn_progress_stat
+	${output}.s2_user_project_learn_stat
+
+
+
+三、统计变更
+
+1、db_load 表变更
+（1.1）新增 hive db_load表： s2_member_credit_detail
+s2_member_credit_detail 【用户学分明细表】
+provider_id		target_id		target_type		credit 		credit_hours 		member_id 		obtain_time
+
+
+2、中间表修改
+
+
+（2.1）部门统计
+s2_department_learn_term_date	【全量表，每天计算所有数据】
+	增加 学分、学时指标；
+	assign_credit	enroll_credit 	assign_credit_hours		enroll_credit_hours	
+计算：
+
+
+
+s2_department_learn_duration_date	【时长计算，增量表】
+	member 可以根据状态 来过滤，但是 时长计算 维持增量表，历史数据怎么处理？需要做诗句修复？【天数很多，数据量蛮大】
+
+（2.2）标签
+s2_group_learn_term_date	【全量表，每天计算所有数据】
+	增加 学分、学时指标；
+
+s2_group_learn_duration_date	【时长计算，增量表】
+
+（2.3）岗位
+同上
+
+（）个人学习情况
+
+
+(2.4) 个人明细 表变更 
+${mid}.term_learn_progress_stat 	【全量表， member_id + target_id 维度】【期次】
+	增加 学分 和 学时 指标： 	credit 	credit_hours 
+
+${mid}.user_project_learn_stat 		【全量表， member_id + target_id 维度】【项目】
+	增加 学分 和 学时 指标： 	credit 	credit_hours 
+
+
+（2.5）项目学习统计 -总览
+s2_user_project_select_record_date   【全量表，一次计算出 所有天】 
+	增加： assign_credit	enroll_credit 	assign_credit_hours		enroll_credit_hours	 字段；
+	select 
+		...
+		sum(if(enroll_type= '1',credit,0)) as assign_credit,
+		sum(if(enroll_type= '1',credit_hours,0)) as assign_credit_hours,
+		sum(if(enroll_type= '2',credit,0)) as enroll_credit,
+		sum(if(enroll_type= '2',credit_hours,0)) as enroll_credit_hours,
+		...
+	from ${mid}.user_project_learn_stat
+	...  
+
+
+3、output 表变更
+
+3.1、学习概况统计（增加 机构总学分、总学时）
+s2_user_learn_total_duration_stat 【全量表】 		增加 总学分、总学时 统计指标；
+	total_credit 		total_credit_hours
+
+计算：
+	select provider_id,
+		sum(credit) as total_credit,
+		sum(credit_hours) as total_credit_hours
+	from 
+		qyy_dbload_online.s2_member_credit_detail
+	where ...
+	group by provider_id
+
+
+3.2、个人学习档案 
+3.2.1、总学分、学时
+s2_user_platform_learn_overview 增加字段： total_credit total_credit_hours ；
+
+	sum(credit) as total_credit,
+	sum(credit_hours) as total_credit_hours
+	from
+		${db_load}.s2_member_credit_detail
+	group by member_id, provider_id
+
+
+3.2.2、列表
+课程、项目 增加 个人+期次（项目） 维度的 学分和学时字段；
+	增加 学分 和 学时 指标： 	credit 	credit_hours 
+	${output}.s2_term_learn_progress_stat
+	${output}.s2_user_project_learn_stat
+
+
+3.3、课程资源统计
+${output}.s2_term_learn_stat_total 增加 total_credit total_credit_hours ；
+	
+	sum(credit) as total_credit,
+	sum(credit_hours) as total_credit_hours
+	from
+		${db_load}.s2_member_credit_detail
+	group by member_id, target_id
+
+
+
+
+支持 “已激活” 筛选：
+增加 output 表：	【 1.5 】
+	${output}.s2_department_learn_term_active_date
+	${output}.s2_department_learn_duration_active_date
+
+	${output}.s2_group_learn_term_active_date
+	${output}.s2_group_learn_duration_active_date
+
+	${output}.s2_position_learn_term_active_date
+	${output}.s2_position_learn_duration_active_date
+
+业务查询：
+	底层数据结构 + mapper查询 ： 	1
+	业务接口查询变更：				1
+	数据导出：					1
+
+历史时长数据修正：
+	RDS 数据导入脚本开发；					1
+	统计 数据修复job + 数据订正操作验证：	1
+
+	修复日期： 【 2017-05-10， 至今 】
+
+
+
+
+
+1、总学分、学时 是否计算 期次+项目+独立考试 ？		是的
+2、 课程资源统计		计算期次指定的总的学分和学时；	s2_resource_credit_setting
+
+
+
+****************************************************************************************** 设计评审之后 细估
+
+一、公共部分变更：									1
+s2_member_credit_detail hive表建表 + sqoop 		0.5
+2张中间表：										0.5
+
+
+二、具体业务部分：		
+1、学习概况统计 		1
+业务接口 ： 	0.5
+统计： 		0.5
+
+2、课程学习统计 		11 + 2.5 = 13.5
+
+2.1、组织学习情况			3.5 + 2.5 + 2.5 + 2.5 = 11
+
+（1）部门：			3.5
+	业务接口： 
+		旧数据扩展： 0.5
+		人员筛选 + 新表查询mapper等 业务列表 ： 1
+		数据导出：	0.5
+	统计： 
+		“全部” 扩展字段			0.5
+		2张新建表 + 计算逻辑 		1
+
+（2）岗位  			2
+业务接口（0.5 + 0.5 + 0.5）+ 统计（0.5 + 0.5） = 2.5
+
+ (3) 标签 ：   		2
+业务接口（0.5 + 0.5 + 0.5）+ 统计（0.5 + 0.5） = 2.5
+
+（4）修数据 			2.5
+	增量时长数据 修复job编写、测试（1） + 可修复数据导入RDS 脚本编写（0.5）+ RDS旧数据迁移（0.5） +  订正（0.5）
+
+2.2、个人学习情况 		2.5
+（1）总览：		1.5
+	业务接口： 	列表（0.5） + 导出 （0.5）
+	统计： 		0.5
+
+（2）明细：		1
+	业务接口 + 导出 		0.5
+	统计： 				0.5
+
+
+3、课程资源统计 		1
+业务接口： 	0.5
+统计：		0.5 
+
+
+4、项目学习统计 		3
+（1）总览：		2
+	业务接口： 	列表（0.5） + 导出 （0.5） + 联调（0.5）
+	统计： 		0.5
+
+（2）明细：		1
+	业务接口 + 导出 		0.5
+	统计： 				0.5
+
+
+5、个人学习档案 		1.5
+	头部 	0.5
+	列表		课程（0.5） + 项目（0.5） = 1.5
+
+
+总计： 1 + 1 + 13.5 + 1 + 3 + 1.5 = 21
+
+
+************************************************************************ 20180201
+
+hive 表分区目录下小文件太多，做合并：
+
+每一张 hive 表 增加一个修复任务，设置该 hive job任务 的 reduce数量为1；这样循环跑每一天 即可；
+set mapred.reduce.tasks=10;  -- 设置reduce的数量
+
+修复job语句：
+
+set mapred.reduce.tasks = 1;
+insert overwrite table ${mid}.term_learn_progress_stat partition(day='$curEtlDay')
+select member_id, term_id, aggregation_learn_id, provider_id, term_type, enroll_type, online_flag,
+    term_unit_total_count, term_offline_total_duration, signin_total_count, enroll_time, term_end_time,
+    term_learn_finish_status, enroll_date_time, score, first_learn_time, last_learn_time, signed_count,
+    leave_count, not_signed_count, online_learn_total_time, offline_learn_total_time, term_unit_learn_count,
+    term_unit_finished_count, term_unit_learn_time, post_count, post_reply_count, post_comment_count, post_top_count,
+    term_web_unit_total_count, term_app_unit_total_count, term_web_unit_learn_count, term_app_unit_learn_count,
+    term_web_unit_finished_count, term_app_unit_finished_count, user_web_learn_progress, user_app_learn_progress,
+    term_user_learn_progress, target_type
+from ${mid}.term_learn_progress_stat
+where day = '$curEtlDay';
+
+问题：结果文件未压缩；
+
+
+
+************************************************************************ 20180202 
+1、运营需求：
+
+每个月 开通的账号数：
+	select count(*) from s2_provider_team where provider_id = ? and gmt_create >= start and gmt_create < end ;
+
+每个与 禁用的账号数：
+	select count(*) from s2_provider_staff_invite where provider_id = ? and status=2 and gmt_modified >= start and gmt_modified < end ;
+
+
+2017-1-24 1485187200000
+
+1月： 1483200000000 + 1485878400000
+2月： 1485878400000 + 1488297600000
+3月： 1488297600000 + 1490976000000
+4月： 1490976000000 + 1493568000000
+5月： 1493568000000 + 1496246400000
+6月： 1496246400000 + 1498838400000
+7月： 1498838400000 + 1501516800000
+8月： 1501516800000 + 1504195200000
+9月： 1504195200000 + 1506787200000
+10月： 1506787200000 + 1509465600000
+11月： 1509465600000 + 1512057600000
+12月： 1512057600000 + 1514736000000
+2018.02.1  1517414400000
+
+
+本地头条  | bdtt
+provider_id = 400000000073001;
+
+
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1485187200000 and gmt_create < 1485878400000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1485878400000 and gmt_create < 1488297600000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1488297600000 and gmt_create < 1490976000000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1490976000000 and gmt_create < 1493568000000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1493568000000 and gmt_create < 1496246400000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1496246400000 and gmt_create < 1498838400000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1498838400000 and gmt_create < 1501516800000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1501516800000 and gmt_create < 1504195200000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1504195200000 and gmt_create < 1506787200000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1506787200000 and gmt_create < 1509465600000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1509465600000 and gmt_create < 1512057600000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1512057600000 and gmt_create < 1514736000000;
+select count(*) from s2_provider_team where provider_id = 400000000073001 and gmt_create >= 1514736000000 and gmt_create < 1517414400000;
+
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1485187200000 and gmt_modified < 1485878400000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1485878400000 and gmt_modified < 1488297600000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1488297600000 and gmt_modified < 1490976000000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1490976000000 and gmt_modified < 1493568000000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1493568000000 and gmt_modified < 1496246400000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1496246400000 and gmt_modified < 1498838400000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1498838400000 and gmt_modified < 1501516800000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1501516800000 and gmt_modified < 1504195200000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1504195200000 and gmt_modified < 1506787200000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1506787200000 and gmt_modified < 1509465600000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1509465600000 and gmt_modified < 1512057600000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1512057600000 and gmt_modified < 1514736000000;
+select count(*) from s2_provider_staff_invite where provider_id = 400000000073001 and status=2 and gmt_modified >= 1514736000000 and gmt_modified < 1517414400000;
+
+
+
+
+月份 开通账号数  禁用账号数
+2017-1   1 		0
+2017-2 	77		15
+2017-3	40		4
+2017-4	206		4
+2017-5	55		2
+2017-6	105		3
+2017-7	132		4	
+2017-8	100		5
+2017-9	117		11
+2017-10	38		0
+2017-11	35		9
+2017-12	27		37
+2018-1	29		23
+
+
+
+2、Hive 表变更
+
+CREATE EXTERNAL TABLE `qyy_dbload_test.s2_resource_credit_setting`(
+  `id` string COMMENT '',
+  `gmt_create` string COMMENT '',
+  `provider_id` string COMMENT '机构id',
+  `target_id` string COMMENT '各种教学活动id',
+  `target_type` string COMMENT '1:课程 2：项目 3：独立考试',
+  `credit` string COMMENT '学分',
+  `credit_hours` string COMMENT '学时')
+PARTITIONED BY (
+  `day` string)
+ROW FORMAT SERDE
+  'org.openx.data.jsonserde.JsonSerDe'
+STORED AS INPUTFORMAT
+  'com.hadoop.mapred.DeprecatedLzoTextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/db_load/s2_resource_credit_setting';
+
+
+
+CREATE EXTERNAL TABLE `qyy_dbload_test.s2_member_credit_detail`(
+  `id` string COMMENT '',
+  `gmt_create` string COMMENT '',
+  `provider_id` string COMMENT '机构id',
+  `target_id` string COMMENT '各种教学活动id',
+  `target_type` string COMMENT '1:课程 2：项目 3：独立考试',
+  `credit` string COMMENT '学分',
+  `credit_hours` string COMMENT '学时',
+  `member_id` string COMMENT '学习者id',
+  `obtain_time` string COMMENT '得到学分时间')
+PARTITIONED BY (
+  `day` string)
+ROW FORMAT SERDE
+  'org.openx.data.jsonserde.JsonSerDe'
+STORED AS INPUTFORMAT
+  'com.hadoop.mapred.DeprecatedLzoTextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/db_load/s2_member_credit_detail';
+
+
+
+
+
+
+************************************************************************ 20180205
+
+
+insert overwrite table ${mid}.term_learn_progress_stat_kv  partition(day='$etlDay',category='common_property')
+select member_id, term_id, mp['type'] as type, mp['value'] as value
+from (
+	select member_id, term_id, mp 
+	from (
+	    select t1.member_id , t1.target_id as term_id,
+		    array(
+		        map('type','credit', 'value', t3.credit ),
+		        map('type','credit_hours', 'value', t3.credit_hours ),
+		        map('type','obtain_time', 'value',t3.obtain_time)
+		        map('type','obtain_date_time', 'value', unix_timestamp(from_unixtime(cast(t3.obtain_time / 1000 as bigint), 'yyyy-MM-dd' ), 'yyyy-MM-dd' ) * 1000 )
+		    ) as arr
+	    from
+		    (select member_id, target_id, target_type from ${db_load}.s2_aggregation_learn where day = '$etlDay' ) t1
+		    join
+		    (select id from ${db_load}.s2_term where day = '$etlDay' ) t2
+		    on t1.target_id = t2.id
+		    left join
+		    (select member_id, target_id, target_type, credit, credit_hours, obtain_time from ${db_load}.s2_member_credit_detail where day = '$etlDay' ) t3
+		    on (t1.member_id = t3.member_id and t1.target_id = t3.target_id and t1.targets_type = t3.target_type) 
+	) tt1  lateral view explode(arr) arr as mp
+) ttt1
+where mp['value'] is not null
+
+
+
+
+alter table qyy_mid_test.term_learn_progress_stat add columns(
+`credit` string COMMENT '学分',
+`credit_hours` string COMMENT '学时',
+`obtain_time` string COMMENT '得到学分时间',
+`obtain_date_time` string COMMENT '得到学分日期，yyyy-MM-dd');
+
+
+alter table qyy_mid_test.user_project_learn_stat add columns(
+`credit` string COMMENT '学分',
+`credit_hours` string COMMENT '学时',
+`obtain_time` string COMMENT '得到学分时间',
+`obtain_date_time` string COMMENT '得到学分日期，yyyy-MM-dd');
+
+
+# 部门统计
+alter table qyy_output_test.s2_department_learn_term_date add columns(
+`assign_credit` string COMMENT '获指派课学分',
+`assign_credit_hours` string COMMENT '获指派课学时',
+`enroll_credit` string COMMENT '获自选课学分',
+`enroll_credit_hours` string COMMENT '获自选课学时');
+
+alter table qyy_output_test.s2_department_learn_duration_date add columns(
+`active_online_learn_duration` string COMMENT '激活状态下部门员工在线学习时长');
+
+
+CREATE EXTERNAL TABLE `qyy_output_test.s2_department_learn_term_active_date`(
+  `department_id` string COMMENT '部门ID', 
+  `date_tag` string COMMENT '日期', 
+  `staff_num` string COMMENT '部门员工数，包括所有子节点的员工', 
+  `assign_staff_count` string COMMENT '当日部门课程指派人次', 
+  `enroll_staff_count` string COMMENT '当日部门课程自选人次', 
+  `assign_staff_finished_count` string COMMENT 'assign_staff_count范围中截止目前完课数', 
+  `enroll_staff_finished_count` string COMMENT 'enroll_staff_count范围中截止目前完课数', 
+  `provider_id` string COMMENT '企业ID',
+  `assign_credit` string COMMENT '获指派课学分',
+  `assign_credit_hours` string COMMENT '获指派课学时',
+  `enroll_credit` string COMMENT '获自选课学分',
+  `enroll_credit_hours` string COMMENT '获自选课学时')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/s2_department_learn_term_active_date';
+
+
+
+alter table qyy_output_test.s2_position_learn_term_date add columns(
+`assign_credit` string COMMENT '获指派课学分',
+`assign_credit_hours` string COMMENT '获指派课学时',
+`enroll_credit` string COMMENT '获自选课学分',
+`enroll_credit_hours` string COMMENT '获自选课学时');
+
+alter table qyy_output_test.s2_position_learn_duration_date add columns(
+	`active_online_learn_duration` string COMMENT '激活状态下部门员工在线学习时长');
+
+
+
+CREATE EXTERNAL TABLE `qyy_output_test.s2_position_learn_term_active_date`(
+  `position_id` string COMMENT '岗位ID', 
+  `date_tag` string COMMENT '日期', 
+  `staff_num` string COMMENT '岗位员工数，包括所有子节点的员工', 
+  `assign_staff_count` string COMMENT '当日岗位 课程指派人次', 
+  `enroll_staff_count` string COMMENT '当日岗位 课程自选人次', 
+  `assign_staff_finished_count` string COMMENT 'assign_staff_count范围中截止目前完课数', 
+  `enroll_staff_finished_count` string COMMENT 'enroll_staff_count范围中截止目前完课数', 
+  `provider_id` string COMMENT '企业ID',
+  `assign_credit` string COMMENT '获指派课学分',
+  `assign_credit_hours` string COMMENT '获指派课学时',
+  `enroll_credit` string COMMENT '获自选课学分',
+  `enroll_credit_hours` string COMMENT '获自选课学时')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/s2_position_learn_term_active_date';
+
+
+
+alter table qyy_output_test.s2_group_learn_term_date add columns(
+`assign_credit` string COMMENT '获指派课学分',
+`assign_credit_hours` string COMMENT '获指派课学时',
+`enroll_credit` string COMMENT '获自选课学分',
+`enroll_credit_hours` string COMMENT '获自选课学时');
+
+alter table qyy_output_test.s2_group_learn_duration_date add columns(
+`active_online_learn_duration` string COMMENT '激活状态下部门员工在线学习时长');
+
+
+
+
+
+
+
+
+
+
+# 部门 统计
+select t4.department_id,
+    tt1.date_tag,
+    t4.staff_num,
+    tt1.assign_staff_count,
+    tt1.enroll_staff_count,
+    tt1.assign_staff_finished_count,
+    tt1.enroll_staff_finished_count,
+    t4.provider_id,
+    tt1.assign_credit,
+    tt1.enroll_credit,
+    tt1.assign_credit_hours,
+    tt1.enroll_credit_hours
+from
+	(select if(t3.department is null, q3.department, t3.department) as department,
+		  if(if(t3.date_tag is null, q3.date_tag, t3.date_tag) is null,
+		      unix_timestamp('2018-02-06','yyyy-MM-dd')*1000,
+		      if(t3.date_tag is null, q3.date_tag, t3.date_tag)) as date_tag,
+		  t3.assign_staff_count,
+		  t3.enroll_staff_count,
+		  t3.assign_staff_finished_count,
+		  t3.enroll_staff_finished_count,
+		  if(t3.provider is null, q3.provider, t3.provider) as provider,
+		  q3.assign_credit,
+		  q3.enroll_credit,
+		  q3.assign_credit_hours,
+		  q3.enroll_credit_hours
+	from
+	  (select t1.provider_id as provider, t1.department_id as department,
+	       t2.enroll_date_time as date_tag,
+	       sum(if(enroll_type = 1,1,0)) as assign_staff_count,
+	       sum(if(enroll_type = 2,1,0)) as enroll_staff_count,
+	       sum(if(enroll_type = 1 and term_learn_finish_status = 1,1,0)) as assign_staff_finished_count,
+	       sum(if(enroll_type = 2 and term_learn_finish_status = 1,1,0)) as enroll_staff_finished_count
+	  from
+	      (select provider_id, department_id, member_id, staff_id
+	       from ${mid}.department_member
+	       where department_id is not null and provider_id is not null ) t1
+	      join
+	      (select provider_id, member_id, enroll_date_time, enroll_type, term_learn_finish_status
+	       from ${mid}.term_learn_progress_stat
+	       where day = '$etlDay' and target_type = '1') t2
+	      on t1.provider_id = t2.provider_id and t1.member_id = t2.member_id
+	  group by t1.provider_id, t1.department_id, t2.enroll_date_time
+	  ) t3
+
+	  full outer join
+
+	  (select q1.provider_id as provider, q1.department_id as department,
+	       q2.obtain_date_time as date_tag,
+	       sum(if(enroll_type = 1, credit, 0)) as assign_credit,
+	       sum(if(enroll_type = 2, credit, 0)) as enroll_credit,
+	       sum(if(enroll_type = 1, credit_hours, 0)) as assign_credit_hours,
+	       sum(if(enroll_type = 2, credit_hours, 0)) as enroll_credit_hours
+	  from
+	      (select provider_id, department_id, member_id
+	       from ${mid}.department_member
+	       where department_id is not null and provider_id is not null ) q1
+	      join
+	      (select provider_id, member_id, enroll_type, credit, credit_hours, obtain_date_time
+	      from ${mid}.term_learn_progress_stat where day = '$etlDay' and target_type = '1') q2
+	      on q1.provider_id = q2.provider_id and q1.member_id = q2.member_id
+	  group by q1.provider_id, q1.department_id, q2.obtain_date_time
+	  ) q3
+	  on (t3.provider = q3.provider and t3.department = q3.department and t3.date_tag = q3.date_tag)
+	) tt1
+
+	right outer join
+
+	(select provider_id, department_id, count(distinct staff_id) as staff_num
+	from ${mid}.department_member
+	where department_id is not null and provider_id is not null
+	group by provider_id, department_id
+	) t4
+	on (tt1.provider = t4.provider_id and tt1.department = t4.department_id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE EXTERNAL TABLE `qyy_output_test.s2_group_learn_term_active_date`(
+  `group_id` string COMMENT '标签ID', 
+  `date_tag` string COMMENT '日期', 
+  `staff_num` string COMMENT '标签绑定的员工数', 
+  `assign_staff_count` string COMMENT '今日课程指派人次', 
+  `enroll_staff_count` string COMMENT '今日课程自选人次', 
+  `assign_staff_finished_count` string COMMENT 'assign_staff_count范围中截止目前完课数', 
+  `enroll_staff_finished_count` string COMMENT 'enroll_staff_count范围中截止目前完课数', 
+  `provider_id` string COMMENT '企业ID')
+PARTITIONED BY ( 
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/s2_group_learn_term_active_date';
+
+
+
+
+
+flink / storm + kafka
+
+
+
+
+
+
+
+
+
+select t4.position_id,
+	   if(t3.enroll_date is null, unix_timestamp('$etlDay','yyyy-MM-dd')*1000, t3.enroll_date ),
+   	   t4.staff_num,
+	   t3.assign_staff_count,
+	   t3.enroll_staff_count,
+	   t3.assign_staff_finished_count,
+	   t3.enroll_staff_finished_count,
+	   t4.provider_id
+from
+(select t1.provider_id as provider, t1.position_id as position,
+     t2.enroll_date_time as enroll_date,
+     sum(if(enroll_type = 1,1,0)) as assign_staff_count,
+	 sum(if(enroll_type = 2,1,0)) as enroll_staff_count,
+	 sum(if(enroll_type = 1 and term_learn_finish_status = 1,1,0)) as assign_staff_finished_count,
+	 sum(if(enroll_type = 2 and term_learn_finish_status = 1,1,0)) as enroll_staff_finished_count
+from
+	(select provider_id, position_id, member_id, staff_id 
+	 from ${mid}.position_member 
+	 where position_id is not null and provider_id is not null ) t1
+     join
+    (select provider_id, member_id, enroll_date_time,
+       enroll_type, term_learn_finish_status
+     from ${mid}.term_learn_progress_stat 
+     where day = '$etlDay' and target_type = '1') t2
+     on t1.provider_id = t2.provider_id and t1.member_id = t2.member_id
+group by t1.provider_id, t1.position_id, t2.enroll_date_time 
+) t3
+right outer join
+(select provider_id, position_id, count(distinct staff_id) as staff_num 
+ from ${mid}.position_member 
+ where position_id is not null and provider_id is not null
+ group by provider_id, position_id
+) t4
+on t3.provider = t4.provider_id and t3.position = t4.position_id
+
+
+
+
+
+
+
+
+
+insert overwrite table ${output}.s2_position_learn_duration_date partition(day='$etlDay')
+select t1.position_id as position_id,
+       unix_timestamp( '$etlDay','yyyy-MM-dd')*1000,
+       cast(sum(t23.duration) as bigint ) as online_learn_duration,
+       cast(sum(if(t1.status = 1, t23.duration, 0)) as bigint) as active_online_learn_duration
+from
+    ( select provider_id, position_id, member_id, staff_id, status
+      from ${mid}.position_member
+      where position_id is not null and provider_id is not null
+    ) t1
+  	join
+  	( select t2.member_id as member_id, t2.term_id as term_id, t3.provider_id as provider_id, 
+  			t2.duration as duration, t2.day as day 
+  	  from
+			(select member_id, term_id, duration, day 
+         	 from ${mid}.user_term_learn_duration
+          	 where type = '1d' and tag = 'all_learn' and day = '$etlDay' ) t2
+        	join
+        	(select id,provider_id from ${db_load}.s2_term where day = '$etlDay' and composite_type != '15') t3
+        	on t2.term_id = t3.id  
+    ) t23
+    on t1.member_id = t23.member_id and t1.provider_id = t23.provider_id
+group by t1.position_id, t23.day
+
+            
+
+CREATE EXTERNAL TABLE `qyy_output_test.s2_group_learn_term_active_date`(
+  `group_id` string COMMENT '标签ID',
+  `date_tag` string COMMENT '日期',
+  `staff_num` string COMMENT '标签员工数，包括所有子节点的员工',
+  `assign_staff_count` string COMMENT '当日标签 课程指派人次',
+  `enroll_staff_count` string COMMENT '当日标签 课程自选人次',
+  `assign_staff_finished_count` string COMMENT 'assign_staff_count范围中截止目前完课数',
+  `enroll_staff_finished_count` string COMMENT 'enroll_staff_count范围中截止目前完课数',
+  `provider_id` string COMMENT '企业ID',
+  `assign_credit` string COMMENT '获指派课学分',
+  `assign_credit_hours` string COMMENT '获指派课学时',
+  `enroll_credit` string COMMENT '获自选课学分',
+  `enroll_credit_hours` string COMMENT '获自选课学时')
+PARTITIONED BY (
+  `day` string COMMENT '统计日期')
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ','
+STORED AS INPUTFORMAT
+  'org.apache.hadoop.mapred.TextInputFormat'
+OUTPUTFORMAT
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/output/s2_group_learn_term_active_date';
+
+
+
+
+********************************************************************** 2018-02-11
+1、RDS表 变更
+
+
+alter table s2_department_learn_term_date_master add column `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分';
+alter table s2_department_learn_term_date_master add column `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时';
+alter table s2_department_learn_term_date_master add column `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分';
+alter table s2_department_learn_term_date_master add column `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时';
+
+
+alter table s2_department_learn_term_date_slave add column `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分';
+alter table s2_department_learn_term_date_slave add column `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时';
+alter table s2_department_learn_term_date_slave add column `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分';
+alter table s2_department_learn_term_date_slave add column `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时';
+
+
+CREATE TABLE `s2_department_learn_term_active_date_master` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `department_id` bigint(20) NOT NULL COMMENT '部门ID',
+  `date` bigint(20) NOT NULL COMMENT '日期',
+  `staff_num` int(11) DEFAULT NULL COMMENT '部门员工数，包括所有子节点的员工',
+  `assign_staff_count` int(11) DEFAULT NULL COMMENT '当日部门课程指派人次',
+  `enroll_staff_count` int(11) DEFAULT NULL COMMENT '当日部门课程自选人次',
+  `assign_staff_finished_count` int(11) DEFAULT NULL COMMENT 'assign_staff_count范围中截止目前完课数',
+  `enroll_staff_finished_count` int(11) DEFAULT NULL COMMENT 'enroll_staff_count范围中截止目前完课数',
+  `provider_id` bigint(20) NOT NULL COMMENT '企业ID',
+  `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分',
+  `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时',
+  `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分',
+  `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时',
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_departmentid_date` (`department_id`,`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=131071 DEFAULT CHARSET=utf8 COMMENT='部门(激活状态下员工)课程学习表（按天统计）';
+
+
+CREATE TABLE `s2_department_learn_term_active_date_slave` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `department_id` bigint(20) NOT NULL COMMENT '部门ID',
+  `date` bigint(20) NOT NULL COMMENT '日期',
+  `staff_num` int(11) DEFAULT NULL COMMENT '部门员工数，包括所有子节点的员工',
+  `assign_staff_count` int(11) DEFAULT NULL COMMENT '当日部门课程指派人次',
+  `enroll_staff_count` int(11) DEFAULT NULL COMMENT '当日部门课程自选人次',
+  `assign_staff_finished_count` int(11) DEFAULT NULL COMMENT 'assign_staff_count范围中截止目前完课数',
+  `enroll_staff_finished_count` int(11) DEFAULT NULL COMMENT 'enroll_staff_count范围中截止目前完课数',
+  `provider_id` bigint(20) NOT NULL COMMENT '企业ID',
+  `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分',
+  `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时',
+  `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分',
+  `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时',
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_departmentid_date` (`department_id`,`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=131071 DEFAULT CHARSET=utf8 COMMENT='部门(激活状态下员工)课程学习表（按天统计）';
+
+
+alter table s2_department_learn_duration_date_master add column `active_online_learn_duration` bigint(20) DEFAULT NULL COMMENT '部门下(激活状态下)员工目前线上学习总时长(毫秒)';
+alter table s2_department_learn_duration_date_slave add column `active_online_learn_duration` bigint(20) DEFAULT NULL COMMENT '部门下(激活状态下)员工目前线上学习总时长(毫秒)';
+
+
+# 岗位统计
+alter table s2_position_learn_term_date_master add column `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分';
+alter table s2_position_learn_term_date_master add column `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时';
+alter table s2_position_learn_term_date_master add column `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分';
+alter table s2_position_learn_term_date_master add column `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时';
+
+
+alter table s2_position_learn_term_date_slave add column `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分';
+alter table s2_position_learn_term_date_slave add column `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时';
+alter table s2_position_learn_term_date_slave add column `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分';
+alter table s2_position_learn_term_date_slave add column `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时';
+
+
+CREATE TABLE `s2_position_learn_term_active_date_master` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_id` bigint(20) NOT NULL COMMENT '岗位ID',
+  `date` bigint(20) NOT NULL COMMENT '日期',
+  `staff_num` int(11) DEFAULT NULL COMMENT '岗位员工数，包括所有子节点的员工',
+  `assign_staff_count` int(11) DEFAULT NULL COMMENT '当日岗位课程指派人次',
+  `enroll_staff_count` int(11) DEFAULT NULL COMMENT '当日岗位课程自选人次',
+  `assign_staff_finished_count` int(11) DEFAULT NULL COMMENT 'assign_staff_count范围中截止目前完课数',
+  `enroll_staff_finished_count` int(11) DEFAULT NULL COMMENT 'enroll_staff_count范围中截止目前完课数',
+  `provider_id` bigint(20) NOT NULL COMMENT '企业ID',
+  `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分',
+  `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时',
+  `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分',
+  `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时',
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_positionid_date` (`position_id`,`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=131071 DEFAULT CHARSET=utf8 COMMENT='岗位(激活状态下员工)课程学习表（按天统计）';
+
+
+CREATE TABLE `s2_position_learn_term_active_date_slave` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_id` bigint(20) NOT NULL COMMENT '岗位ID',
+  `date` bigint(20) NOT NULL COMMENT '日期',
+  `staff_num` int(11) DEFAULT NULL COMMENT '岗位员工数，包括所有子节点的员工',
+  `assign_staff_count` int(11) DEFAULT NULL COMMENT '当日岗位课程指派人次',
+  `enroll_staff_count` int(11) DEFAULT NULL COMMENT '当日岗位课程自选人次',
+  `assign_staff_finished_count` int(11) DEFAULT NULL COMMENT 'assign_staff_count范围中截止目前完课数',
+  `enroll_staff_finished_count` int(11) DEFAULT NULL COMMENT 'enroll_staff_count范围中截止目前完课数',
+  `provider_id` bigint(20) NOT NULL COMMENT '企业ID',
+  `assign_credit` int(11) DEFAULT NULL COMMENT '获指派课学分',
+  `assign_credit_hours` int(11) DEFAULT NULL COMMENT '获指派课学时',
+  `enroll_credit` int(11) DEFAULT NULL COMMENT '获自选课学分',
+  `enroll_credit_hours` int(11) DEFAULT NULL COMMENT '获自选课学时',
+  `db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_positionid_date` (`position_id`,`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=131071 DEFAULT CHARSET=utf8 COMMENT='岗位(激活状态下员工)课程学习表（按天统计）';
+
+
+alter table s2_position_learn_duration_date_master add column `active_online_learn_duration` bigint(20) DEFAULT NULL COMMENT '岗位下(激活状态下)员工目前线上学习总时长(毫秒)';
+alter table s2_position_learn_duration_date_slave add column `active_online_learn_duration` bigint(20) DEFAULT NULL COMMENT '岗位下(激活状态下)员工目前线上学习总时长(毫秒)';
+
+
+
+
+
+
+10000 * 100000 
+
+
+
+ 
+400000000003003 	146005 		1017232410 		1
+
+
+
+400000000003003 	146005 		1017232410 		2			f0001 [手动修改]
+
+
+
+
+
+/home/appops/ndp/source/front-enterprise-web_test-web4/deploy/com/core.js
+
+
+
+
+scp hzweiwei2015@hzayq-study-ndp-builder2.server.163.org:/home/appops/ndp/source/front-enterprise-web_test-web4/deploy/com/core.js  
+
+
+
+
+
+
+scp -P 1046 df.zip hzyanghaihan@10.171.160.147:/home/hzyanghaihan/df.zip
+
+
+成功执行:
+scp -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -P 1046 hzweiwei2015@10.171.163.109:/home/hzweiwei2015/core.js /Users/weiwei/work/
+
+
+0 6 * * * /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/online/edu-bi-store-1.0-snapshot-uberjar.jar learnStatistics online
+
+
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/test/edu-bi-store-1.0-snapshot-uberjar.jar learnStatistics test 2018-02-24
+
+
+
+
+
+*********************************************************** 2018-02-26
+一、数据修复
+1、现状
+db_load 	[2017-05-11, 至今]
+middle
+	qyy/online/middle/user_term_learn_duration/day=2016-09-11
+
+2、具体分析
+
+2.1、部门数据修复：
+${mid}.department_member 	【全量表】
+	${db_load}.s2_provider_staff_invite
+	${db_load}.s2_provider_team
+	${db_load}.s2_provider_team
+	${db_load}.s2_staff_department_position_rel
+	${mid}.department
+		${db_load}.s2_department
+${mid}.user_term_learn_duration
+${db_load}.s2_term
+
+
+Hive: s2_department_learn_duration_date/day=2016-09-10 	至今		
+		2016-09-22 才开始有数据；
+RDS:  s2_department_learn_duration_date 	2016/9/22 0:0:0		 至今
+
+
+2.2、实现方案：
+
+[2016-09-22, 2017-05-11] 		走default， 取 全部时长字段 作为 激活时长字段；
+		和 现有字段保持一致	[~,2017-05-11]
+
+[2017-05-12, 至今] 				走redo， 重跑任务计算；
+		department ——> department_member ——> s2_department_learn_duration_date 		[2017-05-12, 至今]
+
+edu-bi-store:		s2_department_learn_duration_date
+
+
+2.2、岗位数据修复：
+
+position ——> position_member ——> s2_position_learn_duration_date
+
+Hive: 	qyy/online/output/s2_position_learn_duration_date/day=2016-09-10  至今
+		2016/9/13 0:0:0  开始有数据；
+
+RDS:  s2_department_learn_duration_date 	2016/9/13 0:0:0	至今
+
+
+
+2.3、标签数据修复：
+
+${db_load}.s2_provider_group_rel
+	qyy/online/db_load/s2_provider_group_rel/day=2017-05-10
+${db_load}.s2_provider_team
+	qyy/online/db_load/s2_provider_team/day=2017-05-10
+${db_load}.s2_provider_staff_invite
+	qyy/online/db_load/s2_provider_staff_invite/day=2017-05-10
+${mid}.user_term_learn_duration
+${db_load}.s2_term
+	qyy/online/db_load/s2_term/day=2017-05-10
+
+
+和 现有字段保持一致	[~,2017-05-11]
+s2_group_learn_duration_date 	[2017-05-11, 至今]
+
+
+Hive: 	qyy/online/output/s2_group_learn_duration_date/day=2016-09-10
+RDS:  s2_group_learn_duration_date 		2016/9/11 0:0:0 至今；
+
+
+
+新增表 增加 master/slave 切换：
+https://op.hz.netease.com/main/#!/order/detail/110112
+insert into study_stat_switch (db_create_time, k, v) VALUES (CURRENT_TIMESTAMP, 's2_department_learn_term_active_date', 'master');
+insert into study_stat_switch (db_create_time, k, v) VALUES (CURRENT_TIMESTAMP, 's2_position_learn_term_active_date', 'master');
+insert into study_stat_switch (db_create_time, k, v) VALUES (CURRENT_TIMESTAMP, 's2_group_learn_term_active_date', 'master');
+
+
+
+
+alter table study_stat_switch change id id bigint(20) NOT NULL AUTO_INCREMENT primary key;
+
+
+
+insert overwrite table qyy_output_test.s2_group_learn_term_active_date partition(day = '2018-02-26')
+select group_id,
+    if(date_tag is null, unix_timestamp('2018-02-26','yyyy-MM-dd')*1000, date_tag),
+    staff_num,
+    assign_staff_count,
+    enroll_staff_count,
+    assign_staff_finished_count,
+    enroll_staff_finished_count,
+    provider_id,
+    assign_credit,
+    assign_credit_hours,
+    enroll_credit,
+    enroll_credit_hours
+from
+	qyy_output_test.s2_group_learn_term_active_date
+where day="2018-02-26";
+
+
+
+*********************************************************** 2018-02-27
+
+id
+gmt_create
+gmt_modified
+db_update_time
+member_id
+provider_id
+id_num
+validate
+1097003	1472647564664	1472647564664	2016-08-31 20:46:04	7735049	400000000003003	1234	0
+1082004	1472191630773	1472191630773	2016-08-26 14:07:10	1019177004	400000000003003	WY003	0
+
+
+
+学分统计专用测试1（部门） 177001
+
+
+select user_id as uid, day, sum(cast((biz_dat['end_time']  - biz_dat['start_time']) as bigint)), active_name
+from qyy_mid_test.user_behavior
+where day = "2018-02-27" and  biz_dat['term_id'] is not null and user_id is not null 
+and user_id = 7735049 and biz_dat['term_id'] = 400000003346001 group by user_id,day,active_name;
+
+
+
+
+二、部门统计 异常数据：
+select * from qyy_output_test.s2_department_learn_duration_date where day="2018-02-27" and department_id =  177001 order by date_tag desc;
+
+
+select * from qyy_output_test.s2_department_learn_term_date 
+where day="2018-02-27" and department_id =  177001 order by date_tag desc;
+
+177001	1519660800000	2	NULL	NULL	NULL	NULL	400000000003003	0.0	0.0	0.0	0.0	2018-02-27
+177001	1519660800000	2	0	3	0	2	400000000003003	1.0	1.0	118.0	122.0	2018-02-27
+177001	1519574400000	2	3	2	0	1	400000000003003	NULL	NULL	NULL	NULL	2018-02-27
+177001	1515686400000	2	4	0	1	0	400000000003003	NULL	NULL	NULL	NULL	2018-02-27
+
+
+2.1、排查：
+
+select * from qyy_mid_test.department_member where department_id=177001;
+
+400000000003003	177001	1020732008	1691001	Hqqqqq	1
+400000000003003	177001	7735049		1062004	1234	1
+
+
+
+select provider_id, member_id,obtain_date_time,sum(credit),sum(credit_hours) 
+from qyy_mid_test.term_learn_progress_stat 
+where day="2018-02-27" and member_id in (1020732008,7735049) and provider_id=400000000003003 
+group by provider_id, member_id,obtain_date_time 
+order by obtain_date_time desc;
+
+provider_id	member_id		obtain_date_time	_c3	_c4
+400000000003003	7735049		1519660800000	8.0		6.0
+400000000003003	1020732008	1519660800000	111.0	117.0
+400000000003003	7735049		1514908800000	135.0	270.0
+400000000003003	7735049		1513699200000	339.0	490.0
+400000000003003	1020732008	1513699200000	102.0	110.0
+400000000003003	7735049		NULL	NULL	NULL
+400000000003003	1020732008	NULL	NULL	NULL
+
+
+
+
+LOG.info("exporter = " + JSON.toJSONString(this));
+
+LOG.info("creditView = " + this.creditView);
+LOG.info("creditHoursView = " + this.creditHoursView);
+
+
+
+
+
+
+new DepartmentExcelExporter(orgLearnStatRequestVo, totalPageCnt, providerId, orgLearnStatManager, creditView, creditHoursView);
+	// 1
+	super(orgLearnStatRequestVo, totalPageCnt, providerId, gen, creditView, creditHoursView);
+	TreeOrgExcelExporter(OrgLearnStatRequestVo orgLearnStatRequestVo, int totalPageCnt, Long providerId, OrgLearnStatManager gen,
+                                       Boolean creditView, Boolean creditHoursView)
+		// 1.1
+		super(null, orgLearnStatRequestVo.getDeep(), gen);
+		DynamicColumnsPageExporter(List<String> columnNames, long dynamicCount, GENERATOR gen)
+			// 1.1.1
+			super(gen, null);
+			DataPageExporterImpl(GENERATOR gen, List<String> columnNames)
+				this.gen = gen;
+				setColumnNames(columnNames);
+
+			// 1.1.2 实际计算；
+			setColumnNames(genDynamicColumnNames(dynamicCount));
+
+		// 1.2
+		this.orgLearnStatRequestVo = orgLearnStatRequestVo;
+        this.totalPageCnt = totalPageCnt;
+        this.providerId = providerId;
+        this.creditView = creditView;
+        this.creditHoursView = creditHoursView;
+
+	// 2
+    this.gen = gen;
+
+
+
+*********************************************************** 2018-02-28
+
+一、验证部门、岗位数据
+
+1.1、 DB数据
+
+学分统计专用测试1（177001）
+2	3	0	0	--	3	2	66%	119	1	118	123	1	122	2.3	1.2
+ww的学分测试部门（勿动）（178001）
+0	2	0	0	--	0	0	--	0	0	0	0	0	0	0	0
+
+
+0228 : 1519747200000
+0227 : 1519660800000
+
+400000003350006，报名
+400000003350005, 指派
+400000003350004, 报名
+400000003350003, 指派
+400000003346001, 报名
+
+
+
+
+27号学分获取：
+member_id in ( 7735049, 1019177004) and obtain_time >= 1519660800000 and obtain_time <= 1519747200000;
+
+provider_id: 400000000003003 
+						学分 学时	   
+400000003350003		1	77	77 		指派
+400000003346001		1	8	6 		报名
+
+
+			总学分 					总学时
+178001 		77 * 2 + 8 * 2 = 170 	77*2+6*2=166
+		指派学分： 77*2 = 154			报名学分：	8*2 = 16
+		指派学时： 77*2 = 154			报名学时：	6*2 = 12
+	
+
+27 号参加课程：
+member_id in (7735049,1019177004) and gmt_create >= 1519660800000 and gmt_create <= 1519747200000
+
+7735049 		400000003350006，400000003350005,400000003350004,400000003350003,400000003346001 	
+	[指派结课： 1 ， 选课 2] 【报名 结课： 1， 选课 3】
+1019177004 		400000003350005，400000003350004,400000003350003,400000003346001
+	[指派结课： 1 ， 选课 2] 【报名 结课： 2， 选课 2】
+
+指派选课人次： 4		
+	指派完课人次：	2    50%
+自选课人次： 	5
+	完课人次：3 		60%
+
+总时长：660059 + 1920194 + 1380288 = 3960541
+
+
+
+1019177004 禁用后：
+指派选课人次： 2	
+	指派完课人次：	1   50%
+自选课人次： 	3
+	完课人次：1 		33%
+
+课程总学分： 85
+指派学分：77
+报名学分： 8
+
+课程总学时： 83
+指派学时：77
+报名学时： 6
+
+总时长：660059 + 1920194  = 2580253
+
+
+
+
+1.2、Hive:
+
+select * from qyy_mid_test.department_member where department_id in  (177001,178001) ;
+
+400000000003003	177001	1019177004	8012	WY003	1
+400000000003003	177001	1020732008	1691001	Hqqqqq	1
+400000000003003	177001	7735049		1062004	1234	1
+400000000003003	178001	1019177004	8012	WY003	1
+400000000003003	178001	7735049		1062004	1234	1
+
+
+
+select provider_id, member_id,obtain_date_time,sum(credit),sum(credit_hours) 
+from qyy_mid_test.term_learn_progress_stat 
+where day="2018-02-28" and member_id in (1019177004,7735049) and provider_id=400000000003003 
+group by provider_id, member_id,obtain_date_time 
+order by obtain_date_time desc;
+
+
+
+
+select member_id,term_id,provider_id,enroll_type,enroll_date_time,credit,credit_hours,obtain_date_time  
+from qyy_mid_test.term_learn_progress_stat 
+where day="2018-02-28" and member_id in  (7735049,1019177004) and provider_id=400000000003003;
+
+
+
+
+
+178001	1519660800000	2	4	5	2	3	400000000003003	154.0	154.0	16.0	12.0	2018-02-28
+
+
+岗位：
+173001
+
+
+
+
+select
+        *  
+    from
+        qyy_output_test.s2_department_learn_duration_date 
+    where
+        day="2018-02-28" 
+        and department_id=178001 and date_tag = 1519660800000;
+
+NULL
+
+
+select provider_id, department_id, member_id, staff_id, status from qyy_mid_test.department_member
+where department_id is not null and provider_id is not null and department_id = 178001
+
+provider_id	department_id	member_id	staff_id	status
+400000000003003	178001	1019177004	8012	1
+400000000003003	178001	7735049		1062004	1
+
+
+select member_id, term_id, duration, day from qyy_mid_test.user_term_learn_duration
+where type = '1d' and tag = 'all_learn' and day = '2018-02-27' and member_id in (7735049,1019177004)
+
+member_id	term_id	duration	day
+7735049	400000003329001	660059	2018-02-27
+7735049	400000003346001	1920194	2018-02-27
+1019177004	400000003346001	1380288	2018-02-27
+
+
+
+
+select * from qyy_output_test.s2_department_learn_duration_date
+where day = '2018-02-27' and department_id = 178001
+
+178001	1519660800000	3960541	3960541	2018-02-27
+
+
+
+二、禁用之后
+
+全部：
+	2	2	4	2	50%		5	3	60%	170	154	16	166	154	12	1.2	0.6
+
+已激活：
+	1 	1	2	1	50%		3	1	33%	85	77	8	83	77	6	0.72	0.72
+
+
+2.1、部门
+select * from qyy_mid_test.department_member where department_id = 178001;
+
+400000000003003	178001	1019177004	8012	WY003	2
+400000000003003	178001	7735049		1062004	1234	1
+
+
+2.2、岗位
+select * from qyy_mid_test.position_member where position_id = 173001;
+
+400000000003003	173001	1019177004	8012	WY003	2
+400000000003003	173001	7735049	1062004	1234	1
+
+
+select * from qyy_output_test.s2_department_learn_duration_date
+where day = '2018-02-27' and department_id = 178001
+
+
+
+select * from qyy_output_test.s2_department_learn_term_active_date
+where day = '2018-02-27' and department_id = 178001 and date_tag = 1519660800000
+
+178001	1519660800000	1	2	3	1	1	400000000003003	77.0	77.0	8.0	6.0	2018-02-27
+178001	1519660800000	1	NULL	NULL	NULL	NULL	400000000003003	0.0	0.0	0.0	0.0	2018-02-27
+
+select * from qyy_output_test.s2_department_learn_term_date
+where day = '2018-02-27' and department_id = 178001 and date_tag = 1519660800000
+178001	1519660800000	2	NULL	NULL	NULL	NULL	400000000003003	0.0	0.0	0.0	0.0	2018-02-27
+178001	1519660800000	2	4	5	2	3	400000000003003	154.0	154.0	16.0	12.0	2018-02-27
+
+
+select * from qyy_output_test.s2_department_learn_duration_date
+where day = '2018-02-27' and department_id = 178001 and date_tag = 1519660800000
+178001	1519660800000	3960541	2580253	2018-02-27
+
+
+
+
+insert overwrite table ...
+select t4.department_id,
+      t4.staff_num,
+      ...
+from
+	(select provider_id, department_id, member_id, staff_id
+		stuf_sum,
+		...
+	 from ${mid}.department_member
+     where department_id is not null and provider_id is not null and status = 1 ) t1
+	join
+    (select provider_id, member_id, enroll_date_time, enroll_type, term_learn_finish_status
+     from ${mid}.term_learn_progress_stat
+     where day = '$etlDay' and target_type = '1') t2
+    on (t1.provider_id = t2.provider_id and t1.member_id = t2.member_id) 
+    ...	
+
+
+
+*********************************************************** 2018-03-02
+
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=name+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=memberId:1019177004
+
+%20AND%20memberId:1033053646
+
+
+
+线上索引：
+http://10.171.160.191/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=id+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=aggregationLearnId:400000006575250
+
+
+http://cp.study.163.com/cp/terms/400000002600012#/m/term/assessment/list/  HTML课程
+
+
+二、jstat 查看：
+
+appops@hzbxs-study-edu006:~$ jstat -gc 9219
+ S0C    S1C    S0U    S1U      EC       EU        OC         OU       PC     PU    YGC     YGCT    FGC    FGCT     GCT
+9728.0 9216.0 517.1   0.0   68608.0  61198.9   175104.0   127168.8  131072.0 90511.6    175    1.762  23      8.392   10.154
+
+
+appops@hzbxs-study-edu006:~$ jstat -gccapacity 9219
+ NGCMN    NGCMX     NGC     S0C   S1C       EC      OGCMN      OGCMX       OGC         OC      PGCMN    PGCMX     PGC       PC     YGC    FGC
+ 87552.0  87552.0  87552.0 9728.0 9216.0  68608.0   175104.0   175104.0   175104.0   175104.0 131072.0 131072.0 131072.0 131072.0    175    23
+
+
+
+-Xms256m -Xmx256m -XX:MaxPermSize=128m
+
+eden: 67
+from : 9.5
+to : 9
+
+old : 171
+
+perm : 128
+
+
+
+三、
+
+
+
+http://cp.study.163.com/cp/terms/400000002596007#/m/term/microAssessment/list/ 
+
+
+target_id =400000002596007 and member_id= 1033053646
+
+
+
+
+
+
+select * from qyy_mid_test.user_project_learn_stat where day="2018-03-05" and member_id = 1019177004 and project_id=400000002922001;
+
+
+
+
+
+
+insert overwrite table ${output}.s2_user_project_select_record_date partition(day = '$etlDay')
+select if(tt1.member_id is null, tt2.member_id, tt1.member_id) as member_id,
+	if(tt1.provider_id is null, tt2.provider_id, tt1.provider_id) as provider_id,
+	if(if(tt1.date_tag is null, tt2.date_tag, tt1.date_tag) is null,
+		unix_timestamp('$etlDay','yyyy-MM-dd')*1000,
+		if(tt1.date_tag is null, tt2.date_tag, tt1.date_tag)) as date_tag,
+	tt1.assigned_count,
+	tt1.assigned_finished_count,
+	tt1.enroll_count,
+	tt1.enroll_finished_count,
+	tt2.assign_credit,
+	tt2.assign_credit_hours,
+	tt2.enroll_credit,
+	tt2.enroll_credit_hours
+from
+	(select member_id, provider_id,
+		sum(if(enroll_type= '1',1,0)) as assigned_count,
+		sum(if(enroll_type= '1' and learn_status=2,1,0)) as assigned_finished_count,
+		sum(if(enroll_type= '2',1,0)) as enroll_count,
+		sum(if(enroll_type= '2' and learn_status=2,1,0)) as enroll_finished_count,
+		enroll_date_time as date_tag 
+	from ${mid}.user_project_learn_stat 
+	where day='$etlDay' 
+	group by member_id, provider_id, enroll_date_time) tt1
+
+	full outer join
+
+	select member_id, provider_id,
+		obtain_date_time as date_tag,
+		sum(if(enroll_type= '1',credit,0)) as assign_credit,
+    	sum(if(enroll_type= '1',credit_hours,0)) as assign_credit_hours,
+    	sum(if(enroll_type= '2',credit,0)) as enroll_credit,
+    	sum(if(enroll_type= '2',credit_hours,0)) as enroll_credit_hours
+    from ${mid}.user_project_learn_stat 
+    where day='$etlDay' 
+	group by member_id, provider_id, obtain_date_time) tt2
+	on(tt1.member_id = tt2.member_id and tt1.provider_id = tt2.provider_id and tt1.date_tag = tt2.date_tag)
+
+
+
+
+
+1019177004	400000000003003	1514908800000
+
+
+
+
+*********************************************************** 2018-03-06
+
+
+merge 远程HDFS 统计结果数据：
+
+bash /home/appops/edu-bi-store/script/Learn_statistics_record_storage.sh /user/study/qyy/online/output/s2_department_learn_duration_date/day=2016-09-22 /home/appops/edu-bi-stat/LearnStatisticsRecord/data/online/s2_department_learn_duration_date/2016-09-22.txt
+
+
+
+添加分区：
+
+alter table qyy_output_online.s2_department_learn_duration_date drop partition(day='2016-09-22');
+alter table qyy_output_online.s2_department_learn_duration_date add partition(day='2016-09-22');
+
+alter table qyy_output_online.s2_department_learn_duration_date add if not exists partition(day='2016-09-22') location '${db_load_path}/s2_aggregation_learn/day=${job.etl_date}';
+
+
+
+
+二、数据修复
+
+
+CREATE EXTERNAL TABLE `qyy_mid_test.department`(
+  `id` string COMMENT '部门ID', 
+  `name` string COMMENT '部门名称', 
+  `parent_id` string COMMENT '父节点ID', 
+  `parent_name` string COMMENT '父节点名称', 
+  `id_path` array<string> COMMENT '从根部门到当前部门的ID路径', 
+  `name_path` array<string> COMMENT '从根部门到当前部门的名称路径', 
+  `provider_id` string COMMENT '发布者ID')
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/middle/department';
+
+
+
+CREATE EXTERNAL TABLE `qyy_mid_test.department_member`(
+  `provider_id` string COMMENT '机构ID', 
+  `department_id` string COMMENT '部门ID', 
+  `member_id` string COMMENT '用户ID', 
+  `staff_id` string COMMENT '员工ID', 
+  `id_num` string COMMENT '员工号', 
+  `status` string COMMENT '激活状态')
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/middle/department_member';
+
+
+
+
+CREATE EXTERNAL TABLE `qyy_mid_test.position`(
+  `id` string COMMENT '职位ID', 
+  `name` string COMMENT '职位名称', 
+  `parent_id` string COMMENT '父节点ID', 
+  `parent_name` string COMMENT '父节点名称', 
+  `id_path` array<string> COMMENT '从根职位到当前职位的ID路径', 
+  `name_path` array<string> COMMENT '从根职位到当前职位的名称路径', 
+  `provider_id` string COMMENT '发布者ID')
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/middle/position';
+
+
+CREATE EXTERNAL TABLE `qyy_mid_test.position_member`(
+  `provider_id` string COMMENT '机构ID', 
+  `position_id` string COMMENT '职位ID', 
+  `member_id` string COMMENT '用户ID', 
+  `staff_id` string COMMENT '员工ID', 
+  `id_num` string COMMENT '员工号', 
+  `status` string COMMENT '激活状态')
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION
+  'hdfs://hz-cluster3/user/study/qyy/test/middle/position_member';
+
+
+
+
+
+
+
+
+
+
+
+department_id : 
+DEFAULT [2016-09-22, 2017-05-10]
+			2017-05-11 dbload 数据不存在；
+ redo  [2017-05-12 , 2018-03-05]
+
+
+
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/pre/edu-bi-store-1.0-snapshot-uberjar.jar learnStatistics online 2018-03-05
+
+
+
+
+
+
+15:30,20:10】【5.12，9.01】
+
+100天
+
+4个半小时，   270分钟
+
+
+3分钟一天，  一个月  90分钟， 一个半小时；
+
+
+
+
+
+
+
+
+
+hadoop fs -ls /user/study/qyy/online/output/s2_group_learn_duration_date/day=2017-12-22
+
+
+
+
+*********************************************************** 2018-03-07
+
+一、数据修复进度：
+
+
+1.1、修复进度情况
+
+group ： 数据修复完毕；
+		【2016-09-11， 2017-05-11】	default方式；
+		【2017-05-12， 2018-03-05】  redo 方式；
+		【2018-03-06， ~】 线上任务更新；
+
+department :
+		【2016-09-22， 2017-05-10] 	default方式； （其中，2017-05-11 dbload 数据不存在；）
+		【 2017-05-11 ， 2017-05-30 】 第一次 修数据；【不知道天数会差一天，不过 5-11 本来db表 就没数据】
+		【2017-05-31， 2018-03-05】 第二次 修数据；
+
+【注意】 猛犸平台 修数据，起始天数 和 实际开始执行的起始天数 向前差一天；比如：
+	[2017-05-12 00：00 ，2017-05-31 00：00 ]
+	实际天数： 【 2017-05-11 ， 2017-05-30 】
+
+	06/01/2017 , 03/06/2018
+	实际天数：【 2017-05-31， 】
+
+position ：
+		【2016-09-13， 2017-05-11】 default方式；
+		【 2017-05-11 ， 2017-05-30 】 第一次 修数据；
+		【2017-05-31， 2018-03-05】 第二次 修数据；
+
+
+
+1.2 任务执行：
+
+（1）default 方式部分数据：
+	DepartmentActiveDurationDefaultFix
+	GroupActiveDurationDefaultFix
+	PositionActiveDurationDefaultFix
+
+（2）redo 方式部分数据：
+
+任务依赖：
+	Department2 【临时新增 department 分区表，按day 分区】
+		DepartmentMemberDate 【临时新增 DepartmentMember 分区表，按day 分区】
+			S2DepartmentLearnTermDateRedo	
+
+	Position2	【同理，新增分区表】
+		PositionMemberDate	【同理，新增分区表】
+			S2PositionLearnTermDateRedo
+
+任务执行：
+	猛犸 > “修数据” 
+	【开始时间， 结束时间】 ——> 【2017-05-13， 2018-03-06】，由于相差一天，实际任务执行起始日期是【2017-05-12， 2018-03-05】
+
+
+
+二、线上问题排查
+
+页面架构课程，助教老师已经批改并评分作业有43份，但是在成绩统计中可以看到得分的只有30份，麻烦看看怎么回事？
+课程链接：http://cp.study.163.com/cp/terms/400000002613001#/m/exam/statistics/score?paperId=410000000301016&examType=13
+
+
+账号：15355458175  密码：18409272805Ln
+
+
+
+
+*********************************************************** 2018-03-08
+
+一、数据修复
+1、逐步 load 表数据到 结果表
+执行脚本命令：
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/userIncrementFix/edu-bi-store-1.0-snapshot-uberjar.jar CreditUserDayIncrementDurationFix20180228 online 2016-08-28 2018-01-09 > /home/appops/credit_duration_fix_20180308_ww/0911-0912.txt
+
+计划：
+（1）应该 先跑1天 看看数据的；！！！
+
+
+1.1、目前结果表：[2016-09-11 , 09-12 测试]
+
+select * from s2_group_learn_duration_date_master where date = 1473523200000;
+12283	8010	1473523200000	136437	2017-06-29 10:19:11	
+12284	9005	1473523200000	136437	2017-06-29 10:19:11	
+12285	9007	1473523200000	136437	2017-06-29 10:19:11	
+select * from s2_group_learn_duration_date_slave where date = 1473523200000;
+12283	8010	1473523200000	136437	2017-06-29 10:19:12	
+12284	9005	1473523200000	136437	2017-06-29 10:19:12	
+12285	9007	1473523200000	136437	2017-06-29 10:19:12	
+
+
+select * from s2_position_learn_duration_date_master where date = 1473609600000;
+12286	12006	1473609600000	7961	2017-06-29 10:19:24	
+12287	13007	1473609600000	603541	2017-06-29 10:19:24	
+select * from s2_group_learn_duration_date_slave where date = 1473609600000;
+12286	12006	1473609600000	7961	2017-06-29 10:19:24	
+12287	13007	1473609600000	603541	2017-06-29 10:19:24	
+
+导表：
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/userIncrementFix/edu-bi-store-1.0-snapshot-uberjar.jar CreditUserDayIncrementDurationFix20180228 online 2016-09-11 2016-09-12 > /home/appops/credit_duration_fix_20180308_ww/0911-0912.txt
+
+校对之后 没问题；
+
+
+1.2、 【2016-09-11， 2017-05-11】阶段导表
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/userIncrementFix/edu-bi-store-1.0-snapshot-uberjar.jar CreditUserDayIncrementDurationFix20180228 online 2016-09-11 2017-05-11 > /home/appops/credit_duration_fix_20180308_ww/160911-170511.txt
+
+【2017-05-12， 2017-10-31】
+
+【2017-11-01， 2017-12-31】
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/userIncrementFix/edu-bi-store-1.0-snapshot-uberjar.jar CreditUserDayIncrementDurationFix20180228 online 2017-11-01 2017-12-31 > /home/appops/credit_duration_fix_20180308_ww/171101-171231.txt
+
+【2018-01-01， 2018-01-31】
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/userIncrementFix/edu-bi-store-1.0-snapshot-uberjar.jar CreditUserDayIncrementDurationFix20180228 online 2018-01-01 2018-01-31 > /home/appops/credit_duration_fix_20180308_ww/180101-180131.txt
+
+[2018-02-01 , 2018-03-05]
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/run_jar/userIncrementFix/edu-bi-store-1.0-snapshot-uberjar.jar CreditUserDayIncrementDurationFix20180228 online 2018-02-01 2018-03-05 > /home/appops/credit_duration_fix_20180308_ww/180201-180305.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,542 @@
+
+【时间粗估】
+1、考试接入
+前台：2.5d
+（1）获取试卷列表
+（2）获取试卷信息
+（3）获取答卷
+（4）获取草稿
+（5）保存草稿
+（6）提交试卷
+（7）轮询
+（8）清除轮询
+后台：3.5d
+（1）获取考试列表：1d
+         需要获取课件下所关联的考试Id，再查询考试列表信息
+（2）试卷编辑：0.5d
+（3）试卷批改：1d
+         试卷批改-成绩列表导出（业务方需重写）
+（4）试卷统计：1d
+         试卷统计-统计报表导出（业务方需重写）
+2、题库接入
+1.5d
+
+3、考核
+后台：
+（1）考核规则设置：1d
+（2）考核列表查询（单课+微专业）：1.5d 
+（3）考核说明：0.5
+
+前台展示
+（4）考核规则展示、考核规则转换：0.5
+（5）试卷已考试列表（课程、微专业） 2
+
+
+4、直播
+用户端
+
+（2）直播相关课件展示：1d
+（3）直播播放页：
+运营后台：
+（1）直播模式支持：1d
+CP后台：
+（1）创建编辑直播：1d
+（2）直播余额：1d
+
+
+
+考试题库（国士为主，我和魏指导辅助）  
+考核 魏指导  
+直播 yhh
+
+******************************************************************************************
+
+
+三、习题考试模块相关调整
+
+3.1、期次创建后台
+3.3.1、期次编辑-教学服务开启模块
+	
+3.3.2、期次编辑-考核
+
+（1）试卷编辑
+	1、最多可创建20个练习和考试（一起算）；
+	2、“隐藏” 的 字段 ，需要赋 合适的默认值；
+	3、“提交后允许重新提交（勾选后，对重新提交的需要重新批改）”  后端功能已有，什么意思？
+		爱多思 页面没有；
+
+（2）试卷批改
+	批改汇总页：
+		1、分页列表 筛选增加 “未提交”
+			问题：eduos_paper_aggre_score（试卷聚合成绩 表）是只有 用户提交 才会有 数据记录， 未提交的 用户 不会有数据记录；
+				“全部”、“未完成评分”、“已完成评分” 根据 表字段 “judge_status” 来过滤；
+			方案： 将 字段 “judge_status” 冗余进 考试和练习 指派记录表中；
+				不合格：1， 合格： 2， 优秀： 3 
+
+		2、“分数可能会重新算分，触发时也需要触发考核结果重新计算” ： 
+			方案：考核结果（优秀、合格、不合格） 不存数据库，实时计算即可；
+
+	具体某个人的批改页	：
+		1、成绩处 显示 考核结果 
+			简单按照规则 计算；
+（3）试卷统计
+	无变动；
+
+（4）接入题库
+	左侧 菜单栏 增加 ”题库“；
+
+
+3.3.3、期次编辑-考核成绩管理（成绩管理）
+	（1）成绩列表
+		1、用户昵称搜索 ： 分页模糊搜索，按昵称首字母排序;
+			走 member_term_rel 索引；
+				增加： nick_name + composite_type（5）；  
+				【termId 对应 enroll 表中的 target_id ;】
+
+		enroll 表：
+			单课参加：	target_type = 1 and target_id = 单课id  and composite_type = 0 ；
+			微专业参加：	target_type = 1 and target_id = 微专业id  and composite_type = 5 ；
+
+		2、 动态列 练习+考试 表
+			排序规则：按照关联到 目录 > 未关联 则先创建在前
+
+	（2）考核规则： json 存储；
+		s2_test_score_setting 增加 新的 setting_key ： SETTING_KEY_PAPER_EVALUATE_STANDARD
+			setting_value ： （定义 json 对象）
+				{
+					"exercise" : {"qualified" : 60, "excellent" : 80},
+					"exam" : {"qualified" : 60, "excellent" : 80}
+				}
+			修改 setting_value 字段长度：
+				alter table s2_test_score_setting modify column `setting_value` varchar(10000) DEFAULT NULL;
+ 
+		赋默认值 时机： 
+			1、期次开启 “考核” 模块的时候，增加 该期次的 考核设置，赋默认值，关联期次；
+			2、创建一个 练习 或者 考试的时候， 增加 改考核规则 设置，关联对应 的 练习 或者 考试id；
+
+	（3）考核说明：
+		s2_test_score_setting 增加 新的 setting_key ： SETTING_KEY_PAPER_EVALUATE_DESC
+			setting_value ："考核说明"
+
+微专业-考核成绩管理
+	（1）成绩列表
+		1、搜索 + 列表项
+		查 member_term_rel 索引搜索，分页，
+			term_id = 微专业id and target_type = 1 and composite_type = 5 and nick_name = ? order by nick_name；
+
+		2、动态列 + 缓存 & 清缓存
+			子课程目录列表
+				单课内 练习列表 （接口通用，复用）
+				单课内 考试列表 （接口通用，复用）
+
+		3、 动态列 参数传递 + 查询数据展示
+
+	（2）考核规则
+			{
+				"self_evalute" : { ...}
+				"overall_evalute" : {...}
+			}
+
+	（3）考核说明
+		同上；
+
+
+考核规则 json 对象：
+class PaperEvaluteStandardDoc {
+	
+	EvaluteStandard termEvalute;			// 自身期次的考核规则
+	//EvaluteStandard overallEvalute;			// 整体考核规则，微专业期次才有，普通单课期次没有
+
+	static class EvaluteStandard {
+		EvaluteStandardContennt exercise;	// 单课，每个练习的考核规则
+		EvaluteStandardContennt exam;		// 单课，每个考试的考核规则
+
+		static class EvaluteStandardContennt {
+			String qualifiedPercent;	// 合格标准
+			String excellentPercent;	// 优秀标准
+		}
+	}
+}
+
+
+
+testAndexamList
+
+	testList
+		{ id, name},{}
+	examList 
+
+
+
+
+userScoreInfoList
+	{ nick_name 
+
+	{id，score， assessment， answerFormId}
+
+
+
+
+
+分支：
+feature/s2_micro_special_kaoshi_yhh_20171226
+
+<project-list>edu-third-party-base;edu-second-party-base;edu-base-framework;member-server;message-server;
+privilege-server;provider-server;course-server;market-server;forum-server;edu-access-control;
+study-navi;study-backend;study-teach;study-platform;study-course-web</project-list
+
+
+
+
+20期次 * 20试卷 = 400 试卷
+
+100 个切分
+
+20人
+
+
+
+
+1、开启 “考核” 仪表盘的时候：	sgs
+	期次 初始化 一条 期次维度的 考核设置记录；
+	com.netease.edu.quiz.service.share.TestShareService#initTermDefaultScoreAssessStandard
+
+2、创建 练习 或者 考试的时候：	sgs
+	创建一条 练习或者考试维度的 考核设置记录；
+	com.netease.edu.quiz.service.share.TestShareService#addPaperScoreAssessStandard
+
+3、修改 期次 维度的考核设置记录的时候： ww
+	修改 期次维度的 考核设置记录 + 同步修改 期次下 所有练习和考试的（不管 自身发布状态） 考核设置记录；
+
+4、删除练习或者考试的时候，删除 练习或者考试维度的 考核设置记录；	sgs
+com.netease.edu.quiz.service.share.TestShareService#deletePaperScoreAssessStandard
+
+
+
+
+
+
+public CatalogDto getEndCatalogDraft(Long termId) {
+        CatalogDto catalogDto = catalogService.getSimpleCatalogDraft(termId);
+
+        if (catalogDto != null) {
+            List<CatalogNodeDto> catalogList = catalogService.getSimpleCatalogDraftList(termId);
+            fixUnitVisible(catalogList);
+            TreeNode<CatalogNodeDto> tree = nodeHelper.convertCatalogList2TreeNode(catalogList);
+
+            nodeHelper.removeNodeIfDeleteStatus(tree);
+
+            checkValidAndSetNodeStatus(tree);
+            checkValidAndSetResourceStatus(termId,tree);
+
+            catalogDto.setCatalogList(catalogList);
+        }
+        return catalogDto;
+    }
+
+
+测试环境
+search_url=http://10.165.125.15/sd/
+search_url2=http://10.165.125.15/sd/
+index_url=http://10.165.125.15/id/
+
+新增列 用户昵称 和 复合类型：
+名称：edu_member_term_rel_v2
+字段        		  值类型    是否主键   是否store  是否index  是否sort   是否analyze  分词
+nickName         String     否          是        是          是         是       后缀分词
+compositeType    Integer    否	  		是		  是	  		 是			否	  		无			
+
+
+
+
+线上环境
+search_url=http://10.172.131.37/sd/
+search_url2=http://10.172.131.37/sd/
+index_url=http://10.172.131.37/id/
+
+新增列 用户昵称 和 复合类型：
+名称：edu_member_term_rel_v2
+字段        		  值类型    是否主键   是否store  是否index  是否sort   是否analyze  分词
+nickName         String     否          是        是          是         是       后缀分词
+compositeType    Integer    否	  		是		  是	  		 是			否	  		无		
+
+
+
+
+********************************************* 2018-01-10
+
+
+1、 || 写成了 &&
+
+2、 参数和 nei 上面定义的不一致；
+
+
+CatalogDto catalogDto = catalogService.getSimpleCatalogDraft(termId);
+
+        if (catalogDto != null) {
+            List<CatalogNodeDto> catalogList = catalogService.getSimpleCatalogDraftList(termId);
+            fixUnitVisible(catalogList);
+            TreeNode<CatalogNodeDto> tree = nodeHelper.convertCatalogList2TreeNode(catalogList);
+
+            nodeHelper.removeNodeIfDeleteStatus(tree);
+
+            checkValidAndSetNodeStatus(tree);
+            checkValidAndSetResourceStatus(termId,tree);
+
+            catalogDto.setCatalogList(catalogList);
+        }
+        return catalogDto;
+
+
+
+
+问题：
+1、保存考核说明：
+	接口 url 有调错（调成了保存考核设置的接口） + 参数 termId 没有传；
+
+
+
+
+http://10.165.125.15/sd/service/query?index=edu_member_term_rel_v2&stype=1&offset=0&length=88&ps=false&sort=id+asc&openExp=false&lenCord=true&queryNorm=true&useQStructure=false&playback=false&q=providerId:400000000003003
+
+
+
+excel:
+测验id(课件id)   term_id   courseId   providerId      
+
+文本：
+课件id   课件name
+courseId     courseName
+termid    termName
+providerid   providerName
+
+
+创建索引：
+http://cp.study.163.com/j/end/statistics/createIndex.json?providerId=1000000000
+
+
+
+
+用户作答试卷：
+http://course.study.163.com/courses/400000003187002/paper/#/m/exam/paper/?paperId=410000103770029
+
+
+用户enroll：
+http://cp.study.163.com/j/cp/enrollTermGet.json?memberIds=1020201008&termId=400000003179001
+
+取消：
+http://course.study.163.com/j/coursedesign/cancleEnroll.do?termId=400000003232002
+
+
+http://cp.study.163.com/j/cp/assessment/getTermRule.json？termId=
+
+
+
+INSERT INTO s2_provider_team(id,gmt_create,gmt_modified,member_id,provider_id,id_num) VALUES(seq,1,1,1035727058,'-1','H45634');
+
+
+
+
+【注意】
+1、索引变更；
+
+2、sql 变更：
+	alter table s2_test_score_setting modify column `setting_value` varchar(10000) DEFAULT NULL;
+
+
+
+
+问题：
+1、考核 未开启，期次 的考核设置 已经被初始化；  【sgs】
+2、创建 目录内练习、考试，独立练习和考试，均未创建 试卷对应的 考核设置记录；		【sgs】
+
+
+3、考核tab下 练习和考试 创建超过了20；
+
+
+
+
+
+
+sqh ：  1030794022
+ww ： 7735049
+yhh ： 1020201008
+gghs： 6171743
+lq：  1020201008
+
+
+400000003187005
+
+
+1030794022,7735049,1020201008,6171743
+
+1020283009,1020228042,1020284001
+
+
+
+
+
+
+
+com.netease.edu.coursedesign.biz.service.impl.TermDraftServiceImpl#isSelectedInDashboard
+
+
+
+
+Integer targetType = AggregationlearnConstants.TARGET_TYPE_TERM;
+if(TermConstants.COMPOSITE_TYPE_PROJECT.equals(term.getCompositeType())){
+    targetType = AggregationlearnConstants.TARGET_TYPE_PROJECT_TERM;
+}
+
+
+
+int result = aggregationlearnDao.deleteByCondition("member_id = ? and target_id = ? and target_type = ?", memberId, targetId, targetType);
+
+
+
+
+
+
+
+期次名称：  什么是损益表？  400000002128003
+
+冯继东   1033320271
+
+期次课件：
+		8个 web端 和 App 均可见课件；（测验）
+		1 个 web端 可见课件（scorm 课件）（用户已学完）
+		22 个 App 可见课件（视频）；
+
+该目前 用户只完成了 1个web端课件 ，22 个 app端课件， 完成了7个 两端都可见课件 ；
+
+用户 进度计算：
+	web端进度：  7 / 8
+	app端进度：  29 / 30
+二者 取大的；
+
+
+
+
+
+{"type":"CLAUSE","clauses":[{"type":"RANGE","range":{"field":"compositeType","from":5,"to":5,"fromInclusive":true,"toInclusive":true},"clarity":-1.0,"occur":"MUST","boost":1.0},{"type":"PHRASE","phrase":{"field":"nickName","clarity":1.0,"phrase":"ee","mustOccur":true,"usePhrase":false,"usePrefix":false,"useFuzzy":false,"similarity":0.5,"prefixLength":0},"clarity":-1.0,"occur":"MUST","boost":1.0},{"type":"RANGE","range":{"field":"providerId","from":1000000000,"to":1000000000,"fromInclusive":true,"toInclusive":true},"clarity":-1.0,"occur":"MUST","boost":1.0},{"type":"RANGE","range":{"field":"targetType","from":1,"to":1,"fromInclusive":true,"toInclusive":true},"clarity":-1.0,"occur":"MUST","boost":1.0},{"type":"RANGE","range":{"field":"termId","from":400000003187005,"to":400000003187005,"fromInclusive":true,"toInclusive":true},"clarity":-1.0,"occur":"MUST","boost":1.0}],"clarity":-1.0}
+
+
+
+
+2018-01-18 14:51:09.078  INFO 372 --- [8011-thread-398] c.n.edu.coursedesign.jms.EnrollProvider  : 开始发送enroll联动消息，消息内容为{"termId":400000003217001,"compositeTermId":-1,"eventSource":1,"isEnroll":false,"memberIds":"[7735049]"}
+2018-01-18 14:51:09.078 |-INFO  [DubboServerHandler-10.165.180.139:18011-thread-398] com.netease.edu.coursedesign.jms.EnrollProvider [48] -| 开始发送enroll联动消息，消息内容为{"termId":400000003217001,"compositeTermId":-1,"eventSource":1,"isEnroll":false,"memberIds":"[7735049]"}
+2018-01-18 14:51:09.080  INFO 372 --- [rContainer#30-4] c.n.e.c.jms.listener.EnrollListener      : 开始处理enroll联动消息，消息内容为{"termId":400000003217001,"compositeTermId":-1,"eventSource":1,"isEnroll":false,"memberIds":"[7735049]"}
+2018-01-18 14:51:09.080 |-INFO  [org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer#30-4] com.netease.edu.coursedesign.jms.listener.EnrollListener [53] -| 开始处理enroll联动消息，消息内容为{"termId":400000003217001,"compositeTermId":-1,"eventSource":1,"isEnroll":false,"memberIds":"[7735049]"}
+2018-01-18 14:51:09.081  INFO 372 --- [rContainer#30-4] .s.i.l.TermStatisticsEnrollEventListener : 更新期次400000003217001 enroll统计记录数
+2018-01-18 14:51:09.081 |-INFO  [org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer#30-4] com.netease.edu.coursedesign.biz.service.impl.listeners.TermStatisticsEnrollEventListener [51] -| 更新期次400000003217001 enroll统计记录数
+2018-01-18 14:51:09.108  INFO 372 --- [rContainer#30-4] c.n.e.c.b.s.i.l.MemberTermRelListener    : ##### [deleteByIds] do index memberTermRels... [count = 1 ,ids = [400000006150001]]
+2018-01-18 14:51:09.108 |-INFO  [org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer#30-4] com.netease.edu.coursedesign.biz.service.impl.listeners.MemberTermRelListener [69] -| ##### [deleteByIds] do index memberTermRels... [count = 1 ,ids = [400000006150001]]
+
+
+
+取消enroll ： 
+http://course.study.163.com/j/coursedesign/cancleEnroll.do
+
+termId:400000003217001
+
+
+
+
+
+
+复合期次 enroll：
+	复合期次自身 ： ENROLL_TYPE_USER ， SINGLE_ENROLL_TYPE_YES  1
+
+	子课程（未被enroll过的） ：  enrollType = ENROLL_TYPE_USER （0） ， SINGLE_ENROLL_TYPE_NO  0
+	已经 enroll 过的 ： 不动
+
+单期次 ：
+	SINGLE_ENROLL_TYPE_YES  1
+
+取消enroll ：
+
+	TARGET_TYPE_TERM
+
+
+
+
+http://course.study.163.com/400000003222001/lecture-400000003292001
+
+S2TermSaveScoreAssessmentRulesRuntimeEduAccessControlFactory
+
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+        <project-list>edu-statistic-server;enterprise-web</project-list>
+        <branch-name>hotfix/qyy-project-stat-export-20180123</branch-name>
+        <version-suffix>qyy-project-stat-export-20180123</version-suffix>
+</root>
+
+
+
+exportExcelHelper.exportExcelPaging(fileName, sheetName,exporter, exportKey); 
+	pool.submit(new ExportExcelPagingTask(downloadFileName, sheetName, exportTaskKey, cacheKey, pageExporter,null));   【task 实现】
+		lineCount = ExcelPagingUtils.exportToExcelPaging(localFilePath, sheetName, pageExporter, progressKey, processRedisHelper);
+			long totalLineCount = addPages(filePath, sheetName, pageExporter, row, key, processReporter);   【工具类 utils】
+				do{
+					PaginationResult<List<Object>> page = exporter.getPage(pageNo);		【抽象类方法实现】
+							PaginationResult<ROW_VO> data = getRawPage(gen, pageNo);   【自定义实现】
+				}while
+
+
+
+
+camsl.study.163.com/p/end/statistics/personalProjectSituationDetailExport.json
+
+
+
+http://camsl.study.163.com
+admin01/QYYdm187
+
+
+机构id： 400000000037001
+
+400000006449623
+
+%20AND%20targetType:2
+
+
+
+
+
+
+
+http://cp.study.163.com/j/end/statistics/createIndex.json?providerId=400000000003003
+
+
+
+curl -s http://10.122.138.125:18042/j/end/statistics/createIndex.json?providerId=400000000003003
+
+http://cp.study.163.com/j/end/statistics/createIndex.json?providerId=400000000003003
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
