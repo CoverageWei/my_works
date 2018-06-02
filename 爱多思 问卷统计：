@@ -1,0 +1,31 @@
+
+
+提交试卷：
+	s2_questionnaire_stat ： 
+		submit_count + 1，  
+		valid_count + 1 / not_stat_count + 1： 根据 问卷答题记录的 StatisticsStatus ；
+
+计入统计：
+	s2_questionnaire_stat ： 
+		valid_count + 1，  
+		not_stat_count - 1 
+
+不计入统计：
+	s2_questionnaire_stat ： 
+		valid_count - 1，  
+		not_stat_count + 1 
+
+
+
+乐观锁机制实现：version
+
+
+
+
+
+
+
+
+
+
+

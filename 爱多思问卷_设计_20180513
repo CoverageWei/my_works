@@ -1,0 +1,1010 @@
+一、问卷列表
+（1）问卷搜索
+（2）已填人数（问卷提交记录数）
+
+
+粗估方案：		
+前台列表查询+搜索		2
+
+
+
+二、问卷创建：  
+
+【粗估方案】
+1、问卷实体表 新增，按照企业云；				1
+2、题库等 复用爱多思；						1
+3、题目存储 复用 爱多思（新增题目类型）；		2
+	可考虑接口复用，必要时需要 绕过不必要代码；
+4、题目 与 问卷 关联，节点顺序等； 			3
+	原题库逻辑复杂，很多特有的逻辑；考虑 新写简化版接口；
+5、问卷发布 								2
+	原题库 很多特有的逻辑；考虑 新写简化版接口；
+6、问卷设置								1
+	存储 问卷实体表 ？ 还是 设置表？ 	
+7、试卷预览 + 前台试卷组装 + 展示			2
+
+
+
+
+1、新增问卷实体表：【复用企业云】
+
+CREATE TABLE `s2_questionnaire` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`name` varchar(128) DEFAULT NULL COMMENT '问卷名称',
+`description` varchar(256) DEFAULT NULL COMMENT '问卷说明',
+`creater_id` bigint(20) NOT NULL COMMENT '创建者',
+`start_time` bigint(20) DEFAULT NULL COMMENT '收集开始时间, -1不限',
+`end_time` bigint(20) DEFAULT NULL COMMENT '收集截止时间, -1不限',
+`stop_collect_num` bigint(20) DEFAULT NULL COMMENT '停止收集份数',
+`stop_collect_flag` smallint(2) DEFAULT NULL COMMENT '收集满停止收集标志 0 不限制收集份数 1 收集满停止收集',
+`anonymity_flag` smallint(2) DEFAULT NULL COMMENT '匿名标志, 0 非匿名, 1 匿名',
+`open_result_flag` smallint(2) DEFAULT NULL COMMENT '公开调查结果标志, 0 非公开, 1 公开',
+`publish_status` smallint(2) DEFAULT NULL COMMENT '问卷发布状态, 1 草稿, 2 已发布, 3 下线',
+`publish_time` bigint(20) DEFAULT NULL COMMENT '问卷发布时间',
+`answer_before_enroll` smallint(2) DEFAULT NULL COMMENT '报名前必答, 0 非必答, 1 必答',
+`scope_type` smallint(2) NOT NULL COMMENT '场景类型, 1 机构, 2 期次',
+`scope_id` bigint(20) NOT NULL COMMENT '场景id',
+`questions_order` varchar(10240) DEFAULT NULL COMMENT '题目顺序 [qid,qid,qid]',
+PRIMARY KEY (`id`),
+KEY `idx_scopeid_scopetype_createrid_name` (`scope_id`,`scope_type`,`creater_id`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='问卷表' /* BF=scope_id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+问卷发布设置：
+	收集开始时间、收集截止时间、停止收集份数、匿名标志、公开调查结果标志
+
+（1）问卷 还是要 创建 新的 问卷实体表: eduos_questionnaire;
+（2）爱多思 试卷创建 ，会对应增加 eduos_scope_source_rel 记录，关联 scope；问卷是否对应 保留？
+（3）爱多思 试卷内创建题目 内部业务逻辑太多，接口不能完全复用，需要抽取，然后部分重写；
+（4）问卷的 题目 复杂度 是否 会和题库一致？ 组合题，子题等；
+（5）问卷设置 是否存储在 问卷 实体表中 还是 新增 eduos_paper_setting_draft + eduos_paper_setting，以 k-v 方式存储；
+
+
+问卷设计：
+eduos_questionnaire +  eduos_questionnaire_draft
++ eduos_question_bank + eduos_scope_source_rel 【增加 题库资源 和 问卷资源】
++ eduos_question + eduos_question_detail + eduos_question_question_bank_rel ；
++ eduos_paper_question_rel_draft 【试卷题目关联关系】【待定，是否复用 该关联关系表 还是 新建 问卷题目关联关系？？】
++ eduos_paper_tree_node_draft【维护试卷内 题目顺序，通过 next_id 字段】
+
+
+
+
+
+【爱多思】创建试卷，添加并保存题目：
+1、创建考试：
+eduos_paper_draft（草稿状态） + eduos_scope_source_rel (试卷资源类型) + 更新索引：EduosPaperDocument
+2.1、创建、保存 题目信息；
+eduos_question + eduos_question_detail + eduos_question_question_bank_rel ；
+2.2、题目和试卷的关联：
+eduos_paper_question_rel_draft 【试卷题目关联关系】+ eduos_paper_tree_node_draft【维护试卷内 题目顺序，通过 next_id 字段】
+2.3、更新题目分数：
+eduos_paper_question_rel_draft
+2.4、试卷设置：
+eduos_paper_setting_draft；
+
+
+
+
+2、编辑问卷题目
+
+2.1、题目实体 存储：
+题目维度存储 复用爱多思表 ：
+	eduos_question + eduos_question_detail + eduos_question_question_bank_rel ；
+
+（1）增加 题型： 量表题；
+（2）题目增加 【必答题】 设置字段；
+（3）多选题 增加 “至多选择XX项” ；
+
+
+2.2、问卷模块的 题库
+题库 爱多思存储：
+eduos_question_bank + eduos_scope_source_rel ；
+
+（1）自动为其 scope 创建题库；【用户暂时不感知】
+
+	
+
+
+三、问卷提交
+
+【粗估方案】
+1、题目维度答题记录 考虑 复用 爱多思表；					1
+eduos_paper_question_answerform
+2、问卷答题记录 是否 复用试卷答题记录？					1
+3、问卷提交接口										2
+	重写 新的简化版接口，题库 试卷提交 特有逻辑 太多，很难复用；
+
+
+
+  
+
+问卷提交：
+eduos_paper_answerform + 
+eduos_paper_question_answerform
+大部分提交逻辑 简化处理，自己写一份简单版提交！！
+
+
+【总结】爱多思 考试提交
+eduos_paper_answerform + eduos_paper_answerform_detail + eduos_paper_question_answerform 【存放答题内容】
+
+
+
+
+四、问卷统计：
+
+【粗估方案】
+题库统计 完全不可复用；
+1、考虑复用 企业云 问卷统计；				2
+
+
+
+
+4.1、统计结果
+
+（1）已填人数 【来源：问卷列表】
+（问卷提交记录数）
+
+（2）收集问卷 + 有效问卷 + 有效率
+每道题目：	答题人数 
+	选项A： 答题人数
+	选项B： ...
+	...
+
+文本题：
+	分页显示 答题记录内容详情；
+
+
+4.2、答卷详情
+
+（1）答题记录列表
+
+（2） 不计入/计入 统计
+
+
+
+
+
+
+
+粗估总结：
+
+一、问卷列表	（2）		
+
+前台列表查询+搜索		2
+
+二、问卷创建：  （13）
+
+1、问卷实体表 新增，按照企业云；				1
+2、题库等 复用爱多思；						1
+3、题目存储 复用 爱多思（新增题目类型）；		3
+	考虑接口部分复用，必要时需要 绕过不必要代码；
+4、题目 与 问卷 关联，节点顺序等； 			3
+	原题库逻辑复杂，很多特有的逻辑；考虑 新写简化版接口；
+5、问卷发布 								2
+	原题库 很多特有的逻辑；考虑 新写简化版接口；
+6、问卷设置								1
+	存储 问卷实体表 ？ 还是 设置表？ 	
+7、试卷预览 + 前台试卷组装 + 展示			2
+
+三、问卷提交 （4）
+
+1、题目维度答题记录 考虑 复用 爱多思表；					1
+eduos_paper_question_answerform
+2、问卷答题记录 是否 复用试卷答题记录？					1
+3、问卷提交接口										2
+	重写 新的简化版接口，题库 试卷提交 特有逻辑 太多，很难复用；
+
+四、问卷统计：（2）
+
+1、考虑复用 企业云 问卷统计；				2
+	题库统计 几乎完全不可复用；
+
+
+总计： 2 + 13 + 4 + 2 = 21
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<project-list>enterprise-web</project-list>
+<branch-name>hotfix/user_learn_progress_20180514</branch-name>
+<version-suffix>user_learn_progress_20180514</version-suffix>
+</root>
+
+
+
+
+
+
+*************************************************************************** 20180515
+
+一、问卷列表：
+
+1、问卷 自身实体：
+1.1、分析
+问卷实体数据：
+	问卷名称、创建者id、状态（1:草稿，2:已发布，收集中，已结束，3:已撤回）
+问卷设置数据：
+	是否发布后立即开始收集； 0：否，1：是
+	收集开始时间
+	收集结束时间； -1 不限时间
+	停止收集份数
+	匿名标志； 0：否，1：是
+	公开调查结果标志； 0：否，1：是
+
+1.2、表设计：
+CREATE TABLE `eduos_questionnaire` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`name` varchar(128) DEFAULT NULL COMMENT '问卷名称',
+`description` text DEFAULT NULL COMMENT '问卷说明',
+`creater_id` bigint(20) NOT NULL COMMENT '创建者',
+`start_time` bigint(20) DEFAULT NULL COMMENT '收集开始时间, -1不限',
+`end_time` bigint(20) DEFAULT NULL COMMENT '收集截止时间, -1不限',
+`stop_collect_num` bigint(20) DEFAULT NULL COMMENT '停止收集份数',
+`stop_collect_flag` smallint(2) DEFAULT NULL COMMENT '收集满停止收集标志 0 不限制收集份数 1 收集满停止收集',
+`anonymity_flag` smallint(2) DEFAULT NULL COMMENT '匿名标志, 0 非匿名, 1 匿名',
+`open_result_flag` smallint(2) DEFAULT NULL COMMENT '公开调查结果标志, 0 非公开, 1 公开',
+`publish_status` smallint(2) DEFAULT NULL COMMENT '问卷发布状态, 1 草稿, 2 已发布, 3 已撤回（下线）',
+`publish_time` bigint(20) DEFAULT NULL COMMENT '问卷发布时间',
+`biz_type` smallint(2) DEFAULT NULL COMMENT '业务方自定义的问卷类型',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效'
+
+
+
+1.3、爱多思 题库
+CREATE TABLE `eduos_paper` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`name` varchar(400) DEFAULT NULL COMMENT 'name',
+`description` text,
+`release_time` bigint(20) DEFAULT NULL COMMENT '考试发布时间',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`biz_type` bigint(20) DEFAULT NULL COMMENT '业务方自定义的试卷类型',
+`deadline_time` bigint(20) DEFAULT NULL COMMENT '截止时间',
+`start_time` bigint(20) DEFAULT NULL COMMENT '开考时间',
+
+
+`publish_status` smallint(2) DEFAULT NULL COMMENT '问卷发布状态, 1 草稿, 2 已发布, 3 已撤回（下线）',
+`creater_id` bigint(20) NOT NULL COMMENT '创建者',
+`apply_type` bigint(20) NOT NULL COMMENT '应用类型， 1 习题考试，2 问卷',
+
+
+`from_type` smallint(2) NOT NULL COMMENT '标示自建还是被授予的 1:自建，2：授权',
+`disorder` smallint(2) NOT NULL DEFAULT '0' COMMENT '题目是否乱序 0:不乱序，1：乱序',
+`re_judge_status` smallint(2) NOT NULL DEFAULT '0' COMMENT '判分状态 0:默认状态，1：正在就行重新判分',
+`score_published` smallint(2) DEFAULT '0' COMMENT '是否已经发布成绩，0 未发布，1 已经发布',
+`authorization_status` smallint(2) NOT NULL DEFAULT '0' COMMENT '如果是授权试卷，标示是否有效，0有效，-1取消授权',
+`source_application_id` varchar(32) DEFAULT NULL COMMENT '源app id',
+`source_scene_id` bigint(20) DEFAULT NULL COMMENT '源scene id',
+`source_scene_type` smallint(2) DEFAULT NULL COMMENT '源scene type',
+`optional_question_count` smallint(2) DEFAULT NULL COMMENT '可选题目总数，包括随机包中所有题目数量',
+`selected_question_count` smallint(2) DEFAULT NULL COMMENT '选出的题目总数（不包括随机包中不被选出的题目数量）',
+`total_score` decimal(10,2) DEFAULT NULL COMMENT '试卷卷面总分',
+
+PRIMARY KEY (`id`),
+KEY `index_scope_release_gmt` (`application_id`,`scene_id`,`scene_type`,`release_time`,`gmt_create`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 试卷表' /* BF=id, POLICY=eduos_user, STARTID=410000000003001, ASSIGNIDTYPE=USB */;
+
+
+
+
+CREATE TABLE `eduos_paper_setting` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`paper_id` bigint(20) NOT NULL COMMENT 'eduos_paper表中的id',
+`setting_key` varchar(128) NOT NULL COMMENT '试卷配置key',
+`setting_value` varchar(512) NOT NULL COMMENT '试卷配置value',
+`validate` smallint(2) NOT NULL COMMENT '是否有效 0：有效，-1：无效',
+
+
+`apply_type` bigint(20) NOT NULL COMMENT '应用类型， 1 习题考试，2 问卷',
+
+
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_id_setting_key` (`paper_id`,`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 试卷设置表' /* BF=paper_id, POLICY=eduos_user, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+设置字段：
+
+`stop_collect_num` bigint(20) DEFAULT NULL COMMENT '停止收集份数',
+`stop_collect_flag` smallint(2) DEFAULT NULL COMMENT '收集满停止收集标志 0 不限制收集份数 1 收集满停止收集',
+`anonymity_flag` smallint(2) DEFAULT NULL COMMENT '匿名标志, 0 非匿名, 1 匿名',
+`open_result_flag` smallint(2) DEFAULT NULL COMMENT '公开调查结果标志, 0 非公开, 1 公开',
+
+
+
+
+
+
+2、问卷 对应的 题库：
+2.1、分析
+（1）是否可复用 题库？
+CREATE TABLE `eduos_question_bank` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '题库所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '题库所属场景类型',
+`from_type` smallint(2) NOT NULL COMMENT '标示自建题库还是被授予的题库',
+`status` smallint(2) NOT NULL COMMENT '是否有效 0：有效，-1：无效',
+`create_type` smallint(2) DEFAULT NULL COMMENT '题库来源，0:自建，1:来自题库授权，2:来自试卷授权',
+`source_application_id` varchar(32) DEFAULT NULL COMMENT '源app id',
+`source_scene_id` bigint(20) DEFAULT NULL COMMENT '源scene id',
+`source_scene_type` smallint(2) DEFAULT NULL COMMENT '源scene type',
+PRIMARY KEY (`id`),
+KEY `idx_applicationId_sceneid_scenetype` (`application_id`,`scene_id`,`scene_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 题库表' /* BF=id, POLICY=eduos_user, STARTID=5001, ASSIGNIDTYPE=USB */;
+
+问卷场景：
+	暂无授权概念： ——> 
+		from_type = 1 （自建）、create_type = 0（自建）；
+		source_application_id 、 source_scene_id 、 source_scene_type 为null；
+
+结论：题库实体表 字段 基本满足需求；
+扩展：增加 biz_type 来区分 习题场景 还是 问卷场景 的题库；
+	1： 习题题库； 2：问卷题库；
+
+alter table eduos_question_bank add column `biz_type` smallint(2) NOT NULL DEFAULT '1' COMMENT '题库应用场景类型，1：习题题库，2：问卷题库';
+
+
+1、问卷场景分析：
+	暂无授权概念： ——> 
+		from_type = 1 （自建）、create_type = 0（自建）；
+		source_application_id 、 source_scene_id 、 source_scene_type 为null；
+
+结论：题库实体表 字段 基本满足需求，所以 复用爱多思现有题库表；
+扩展：增加 biz_type 来区分 习题场景 还是 问卷场景 的题库；
+	alter table eduos_question_bank add column `biz_type` smallint(2) NOT NULL DEFAULT '1' COMMENT '题库应用场景类型，1：习题题库，2：问卷题库';
+
+
+
+2.2、题库与问卷 关联
+
+CREATE TABLE `eduos_scope_source_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '题库所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '题库所属场景类型',
+`source_id` bigint(20) NOT NULL COMMENT '资源ID',
+`source_type` smallint(2) NOT NULL COMMENT '资源类型',
+`status` smallint(2) NOT NULL COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uni_scope_resource` (`application_id`,`scene_id`,`scene_type`,`source_id`,`source_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 scope资源关联' /* BF=source_id, POLICY=s2_p1, STARTID=1097000, ASSIGNIDTYPE=USB */;
+
+
+2.3、 题库 与 题目 关联
+
+CREATE TABLE `eduos_question_question_bank_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`question_id` bigint(20) NOT NULL COMMENT 'eduos_question表中的id',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank表中的id',			// 题库id
+`status` smallint(2) DEFAULT '0' COMMENT '是否删除 -1：删除 0：未删除',
+`need_index` smallint(2) DEFAULT '0' COMMENT '是否需要建搜索索引 0：不需要，1：需要',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',							// scope
+`qtype` smallint(2) NOT NULL DEFAULT '-1' COMMENT '类型： 1单选题 2多选题 3客观填空题 4判断题 5 问答题 6 组合题',		// 题型
+`sub_question` text COMMENT '子题',
+`from_type` smallint(2) DEFAULT '0' COMMENT '标示自建还是被授予的 0:自建，1：授权',
+`authorization_status` smallint(2) DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`auth_source_question_bank_id` bigint(20) DEFAULT NULL COMMENT '授权源题库id',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uni_question_bank_id_question_id` (`question_bank_id`,`question_id`),
+KEY `index_application_id_gmt_create` (`application_id`,`status`,`gmt_create`),
+KEY `index_question_id_application_id` (`question_id`,`application_id`),
+KEY `index_need_index_id` (`need_index`,`id`),
+KEY `index_question_bank_db_update` (`question_bank_id`,`db_update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 题目题库关联表' /* BF=question_bank_id, POLICY=eduos_user, STARTID=12001, ASSIGNIDTYPE=USB */;
+
+
+问卷场景：
+	使用字段：
+		question_id （题目id）、question_bank_id (题库id)、status （取 0，正常未删除）、application_id （来源于 scope）、qtype （题型）、from_type （取 0，自建）
+	暂未使用字段：
+		sub_question 、 authorization_status 、 auth_source_question_bank_id 取 null；
+
+
+3、题目
+3.1、题目实体
+
+CREATE TABLE `eduos_question` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`type` smallint(2) NOT NULL COMMENT '类型： 1单选题 2多选题 3客观填空题 4判断题 5 问答题 10 组合题',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 题目表' /* BF=id, POLICY=eduos_user, STARTID=410000000000001, ASSIGNIDTYPE=USB */;
+
+CREATE TABLE `eduos_question_detail` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`content` text COMMENT '题目的正文，根据type的类型不同内容不同',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 题目详情表' /* BF=id, POLICY=eduos_user, STARTID=30001, ASSIGNIDTYPE=USB */;
+
+结论：题目存储 完全复用 爱多思存储；
+
+
+单选题：	支持选项随机排列； eduos_question_detail 的 content 中 设置 random属性；
+多选题： 支持选项随机排列； eduos_question_detail 的 content 中 设置 random属性；
+		至多选择 X 项 ： eduos_question_detail 的 content 中 扩展 设置 max_selected_num 属性；（仅针对多选题）
+量表题： 扩展的新题型；
+		对应设置 存储在 eduos_question_detail 的 content 中；
+
+
+3.2、题目和 问卷 关联关系
+
+（1）爱多思 题目 和试卷关联：
+CREATE TABLE `eduos_paper_question_rel_draft` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`paper_id` bigint(20) NOT NULL COMMENT 'eduos_paper表中的id',
+`node_id` bigint(20) DEFAULT NULL COMMENT 'eduos_section表中的id',
+`question_id` bigint(20) NOT NULL COMMENT 'eduos_question表中的id',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank表中的id',
+`question_score` decimal(10,2) DEFAULT '0.00' COMMENT '题目分数',
+`position` smallint(6) DEFAULT NULL COMMENT '排序值',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`question_type` smallint(2) NOT NULL COMMENT '冗余的题目类型。',
+`sub_question` text COMMENT '子题',
+`from_type` smallint(2) DEFAULT '0' COMMENT '标示自建还是被授予的 0:自建，1：授权',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_question_rel` (`paper_id`,`question_id`),
+KEY `pid_validate_fromtype` (`paper_id`,`validate`,`from_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 试卷题目关联表' /* BF=paper_id, POLICY=eduos_user, STARTID=158001, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `eduos_paper_question_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`paper_id` bigint(20) NOT NULL COMMENT 'eduos_paper表中的id',
+`node_id` bigint(20) DEFAULT NULL COMMENT 'eduos_section表中的id',
+`question_id` bigint(20) NOT NULL COMMENT 'eduos_question表中的id',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank表中的id',
+`question_score` decimal(10,2) DEFAULT '0.00' COMMENT '题目分数',
+`position` smallint(6) DEFAULT NULL COMMENT '排序值',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`question_type` smallint(2) NOT NULL COMMENT '冗余的题目类型。',
+`sub_question` text COMMENT '子题',
+`from_type` smallint(2) DEFAULT '0' COMMENT '标示自建还是被授予的 0:自建，1：授权',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_question_rel` (`paper_id`,`question_id`),
+KEY `pid_validate_fromtype` (`paper_id`,`validate`,`from_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 试卷题目关联表' /* BF=paper_id, POLICY=eduos_user, STARTID=8001, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `eduos_paper_tree_node_draft` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`paper_id` bigint(20) NOT NULL COMMENT '试卷ID',
+`resource_id` bigint(20) NOT NULL COMMENT '资源ID',
+`resource_type` int(20) NOT NULL COMMENT '资源类型, 0试卷,1题目,2大题,3随机包',
+`parent_id` bigint(20) NOT NULL COMMENT '父节点ID',
+`next_id` bigint(20) DEFAULT NULL COMMENT '后序节点ID',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_resource` (`paper_id`,`resource_type`,`resource_id`),
+KEY `index_pid_next_parent` (`paper_id`,`next_id`,`parent_id`,`validate`),
+KEY `index_pid_parent` (`paper_id`,`parent_id`,`validate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 试卷节点树草稿' /* BF=paper_id, POLICY=eduos_user, STARTID=1, ASSIGNIDTYPE=USB */;
+
+CREATE TABLE `eduos_paper_tree_node` (
+`id` bigint(20) NOT NULL COMMENT '同eduos_paper_tree_node_draft表ID',
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`paper_id` bigint(20) NOT NULL COMMENT '试卷ID',
+`resource_id` bigint(20) NOT NULL COMMENT '资源ID',
+`resource_type` int(20) NOT NULL COMMENT '资源类型, 0试卷,1题目,2大题,3随机包',
+`parent_id` bigint(20) NOT NULL COMMENT '父节点ID',
+`next_id` bigint(20) DEFAULT NULL COMMENT '后序节点ID',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_resource` (`paper_id`,`resource_type`,`resource_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 试卷节点树' /* BF=paper_id, POLICY=eduos_user, STARTID=1001, ASSIGNIDTYPE=USB */;
+
+
+（2）分析：
+问卷场景 是否 需要强的 草稿特性？   
+	问卷的入口 是 问卷实体表；
+	问卷的 状态 控制 问卷的访问；
+
+已发布的问卷，如果再修改题目
+
+
+企业云：
+	1、问卷没有草稿；题目也没有草稿；
+	2、问卷创建完成之后 ： 草稿状态；
+		添加题目，直接生成： s2_question_questionnaire_rel 记录；
+	3、发布问卷，问卷： 发布状态；
+		取消发布 ——> 已下线状态；
+		结束收集 ——> 已发布状态 + 结束时间 为 当前时间，停止收集；
+
+		已发布的问卷，不能再编辑问卷；
+		需要编辑，可以： 
+			下线问卷：编辑题目，重新发布；	（已下线 ——> 已发布）
+			结束收集：编辑题目，取消结束——> 设置有效结束时间，可以正常收集；继续保持发布状态；
+
+
+设计方案：
+问卷不需要严格的草稿状态！
+
+CREATE TABLE `eduos_questionnaire_question_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`questionnaire_id` bigint(20) NOT NULL COMMENT '问卷id， eduos_questionnaire 表中的id',
+`question_id` bigint(20) NOT NULL COMMENT '题目id， eduos_question 表中的id',
+`question_type` smallint(2) NOT NULL COMMENT '冗余的题目类型',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank 表中的id',
+`necessary_type` tinyint(4) DEFAULT NULL COMMENT '是否必答, 0 非必答, 1 必答',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_question_rel` (`questionnaire_id`,`question_id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 问卷题目关联表' /* BF=questionnaire_id, POLICY=eduos_user, STARTID=8001, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `eduos_questionnaire_tree_node` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`questionnaire_id` bigint(20) NOT NULL COMMENT '问卷ID',
+`resource_id` bigint(20) NOT NULL COMMENT '资源ID',
+`resource_type` int(20) NOT NULL COMMENT '资源类型, 1题目',
+`next_id` bigint(20) DEFAULT NULL COMMENT '后序节点ID',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_resource` (`questionnaire_id`,`resource_type`,`resource_id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 问卷节点树' /* BF=questionnaire_id, POLICY=eduos_user, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `eduos_paper_tree_node` (
+`id` bigint(20) NOT NULL COMMENT '同eduos_paper_tree_node_draft表ID',
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`paper_id` bigint(20) NOT NULL COMMENT '试卷ID',
+`resource_id` bigint(20) NOT NULL COMMENT '资源ID',
+`resource_type` int(20) NOT NULL COMMENT '资源类型, 0试卷,1题目,2大题,3随机包',
+`parent_id` bigint(20) NOT NULL COMMENT '父节点ID',
+`next_id` bigint(20) DEFAULT NULL COMMENT '后序节点ID',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+
+
+`apply_type` bigint(20) NOT NULL COMMENT '应用类型， 1 习题考试，2 问卷',
+
+
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_resource` (`paper_id`,`resource_type`,`resource_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 试卷节点树' /* BF=paper_id, POLICY=eduos_user, STARTID=1001, ASSIGNIDTYPE=USB */;
+
+
+
+二、问卷列表：
+
+1、问卷提交
+
+（1）企业云
+问卷提交：
+http://edu.study.163.com/p/org/questionnaire/submitQuestionnaire.do
+
+
+
+CREATE TABLE `s2_questionnaire_answerform` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`submit_time` bigint(20) NOT NULL COMMENT '提交时间',
+`answer_duration` bigint(20) DEFAULT NULL COMMENT '答卷时长, 秒数',
+`submit_status` smallint(2) DEFAULT '0' COMMENT '提交状态, 1 正常结束提交, 2 中止答卷提交',
+`questionnaire_id` bigint(20) NOT NULL COMMENT '问卷id',
+`answerer_id` bigint(20) NOT NULL COMMENT '答卷者id，匿名为 -1',
+`statistics_status` smallint(2) NOT NULL COMMENT '统计状态, 1 计入统计, 2 不统计',
+`anonymous_flag` tinyint(4) DEFAULT NULL COMMENT '本次提交是否匿名, 0 非匿名, 1 匿名',
+PRIMARY KEY (`id`),
+KEY `idx_answererId` (`answerer_id`),
+KEY `idx_questionnaireid_answererid` (`questionnaire_id`,`answerer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调查问卷 用户答卷表' /* BF=questionnaire_id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `s2_questionnaire_answerform_detail` (
+`id` bigint(20) NOT NULL COMMENT 's2_questionnare_answerform 表id',
+`gmt_create` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`content` mediumtext COMMENT '调查问卷快照',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调查问卷 用户答卷详情表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+// 填空题 和 问答题 需要分页展示 答题记录
+CREATE TABLE `s2_questionnaire_question_answer_record` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`questionnaire_id` bigint(20) NOT NULL COMMENT '问卷ID',
+`question_id` bigint(20) NOT NULL COMMENT '题目ID',
+`answerer_id` bigint(20) NOT NULL COMMENT '答卷者ID',
+`questionnaire_answerform_id` bigint(20) NOT NULL COMMENT '问卷答题记录ID',
+`statistic_flag` tinyint(4) NOT NULL COMMENT '计入统计状态 0：不计入 1:计入',
+PRIMARY KEY (`id`),
+KEY `idx_questionnaireid_questionid_gmtcreate` (`questionnaire_id`,`question_id`,`gmt_create`),
+KEY `idx_questionnaireanswerformid` (`questionnaire_answerform_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调查问卷 用户题目回答记录表(只记录填空和问答题）' /* BF=questionnaire_id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+（2）爱多思 考试提交
+
+eduos_paper_answerform +  eduos_paper_answerform_detail  + eduos_paper_question_answerform 【存放答题内容】
+
+
+CREATE TABLE `eduos_paper_answerform` (
+`id` bigint(20) NOT NULL DEFAULT '0',
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`member_id` bigint(20) NOT NULL COMMENT '用户id',
+`paper_id` bigint(20) DEFAULT NULL COMMENT '试卷id',
+`submit_time` bigint(20) DEFAULT NULL COMMENT '提交时间',
+`submit_status` smallint(2) DEFAULT '1' COMMENT '是否草稿 1：（草稿）保存未提交 2：（非草稿）已提交',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) DEFAULT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) DEFAULT NULL COMMENT '所属场景类型',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '删除状态，0：正常，-1:删除',
+
+
+`answer_duration` bigint(20) DEFAULT NULL COMMENT '答卷时长, 秒数',
+`statistics_status` smallint(2) NOT NULL COMMENT '统计状态, 1 计入统计, 2 不统计',
+`anonymous_flag` tinyint(4) DEFAULT NULL COMMENT '本次提交是否匿名, 0 非匿名, 1 匿名',
+`biz_type` smallint(2) NOT NULL DEFAULT '1' COMMENT '试卷应用场景类型，1：习题考试，2：问卷',
+
+
+`effect_status` smallint(2) DEFAULT '0' COMMENT '是否有效 0无效 1有效',
+`correcting_people` bigint(20) DEFAULT NULL COMMENT '批改人id',
+`user_object_score` decimal(10,2) DEFAULT NULL COMMENT '用户客观题原始得分',
+`user_subject_score` decimal(10,2) DEFAULT NULL COMMENT '用户主观题原始得分',
+`no_judge_subject_count` int(11) DEFAULT '0' COMMENT '待批改的主观题个数',
+`start_answer_time` bigint(20) DEFAULT NULL COMMENT '开始答题时间',
+`submit_after_deadline` smallint(2) DEFAULT '-1' COMMENT '是否是补交，0 是，-1 不是',
+`judge_status` smallint(4) DEFAULT '0' COMMENT '批改状态，0 未批改，1 批改完成，2 部分批改',
+`gmt_modified` bigint(20) DEFAULT NULL,
+`recommended` smallint(2) DEFAULT '-1' COMMENT '是否推荐，0：推荐，-1:不推荐',
+`passed` smallint(2) DEFAULT '0' COMMENT '是否通过标记,0：通过,-1:不通过',
+`score_published` smallint(2) DEFAULT NULL COMMENT '是否公布成绩,0：已公布,1:未公布',
+`user_total_score` decimal(10,2) DEFAULT NULL COMMENT '用户总得分',
+`judge_time` bigint(20) DEFAULT NULL COMMENT '批改时间',
+PRIMARY KEY (`id`),
+
+
+CREATE TABLE `eduos_paper_answerform_detail` (
+`id` bigint(20) NOT NULL COMMENT '同test_answerform_id',
+`gmt_create` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`object_content` mediumtext COMMENT '试卷客观题作答详情',				// 已不使用
+`subject_content` mediumtext COMMENT '试卷主观题作答详情',				// 已不使用
+`paper_info` mediumtext COMMENT '答题时的试卷信息',					// 目前只有 k12 使用拍照答题，存储答题图片
+`subject_content_md5` varchar(32) DEFAULT NULL COMMENT '试卷主观题作答详情Md5',		// 已废弃
+`paper_content_md5` varchar(32) DEFAULT NULL COMMENT '试卷所有题目作答详情Md5',		// 已废弃
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多斯 试卷作答详情表' /* BF=id, POLICY=eduos_user, STARTID=410000100003001, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `eduos_paper_question_answerform` (
+`id` bigint(20) NOT NULL DEFAULT '0',
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`answerform_id` bigint(20) NOT NULL COMMENT '答题记录表eduos_paper_answerform对应的id',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`paper_id` bigint(20) NOT NULL COMMENT '试卷id',
+`member_id` bigint(20) NOT NULL COMMENT '用户id',
+`question_id` bigint(20) NOT NULL COMMENT '题目id',
+`question_type` smallint(4) NOT NULL COMMENT '题目类型',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '删除状态，0：正常，-1:删除',
+`reply` text COMMENT '用户作答的内容',
+`submit_time` bigint(20) DEFAULT NULL COMMENT '提交时间',
+
+`parent_question_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '组合题父题题目id,单题为-1',
+`correcting_people_id` bigint(20) DEFAULT NULL COMMENT '批改人id',
+`reply_score` decimal(10,2) DEFAULT NULL COMMENT '用户得分',
+`flag` smallint(2) DEFAULT NULL COMMENT '得分类型：0 正确，10 错误，20 部分正确，30 未作答',
+`comment` text COMMENT '老师评语',
+`judge_content` text COMMENT '批改产生的内容',
+`position` int(11) NOT NULL COMMENT '题目答题记录在试卷中的位置',
+`last_use_platform` smallint(4) DEFAULT NULL COMMENT '上一次使用的平台，1 移动端，2 web端',
+`recommended` smallint(2) DEFAULT '-1' COMMENT '是否推荐，0：推荐，-1:不推荐',
+`score_point_info` text COMMENT '得分点得分详情',
+`judge_time` bigint(20) DEFAULT NULL COMMENT '批改时间',
+`judge_remark` text COMMENT '批改结果的一些附加信息',
+PRIMARY KEY (`id`),
+KEY `idx_answererformid_applicationid_question_id` (`answerform_id`,`application_id`,`question_id`),
+KEY `idx_paperid_applicationid_recommended_replyscore` (`paper_id`,`application_id`,`recommended`,`reply_score`),
+KEY `idx_paperid_applicationid_replyscore` (`paper_id`,`application_id`,`reply_score`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多斯试卷作答题目记录表' /* BF=answerform_id, POLICY=eduos_user, STARTID=3001, ASSIGNIDTYPE=USB */;
+
+
+（3）爱多思文件 场景分析：
+方案一： 复用爱多思 试卷提交 相关表；
+eduos_paper_answerform +  eduos_paper_answerform_detail  + eduos_paper_question_answerform 【存放答题内容】
+
+eduos_paper_answerform： 
+	可复用字段：	member_id + paper_id + submit_time + effect_status
+
+
+
+
+
+
+方案二： 新建 问卷提交记录表 + 复用 eduos_paper_question_answerform 【存放答题内容】；
+
+CREATE TABLE `eduos_questionnaire_answerform` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`submit_time` bigint(20) NOT NULL COMMENT '提交时间',
+`answer_duration` bigint(20) DEFAULT NULL COMMENT '答卷时长, 秒数',
+`submit_status` smallint(2) DEFAULT '0' COMMENT '提交状态, 1 正常结束提交, 2 中止答卷提交',
+`questionnaire_id` bigint(20) NOT NULL COMMENT '问卷id',
+`answerer_id` bigint(20) NOT NULL COMMENT '答卷者id，匿名为 -1',
+`statistics_status` smallint(2) NOT NULL COMMENT '统计状态, 1 计入统计, 2 不统计',
+`anonymous_flag` tinyint(4) DEFAULT NULL COMMENT '本次提交是否匿名, 0 非匿名, 1 匿名',
+PRIMARY KEY (`id`),
+KEY `idx_answererId` (`answerer_id`),
+KEY `idx_questionnaireid_answererid` (`questionnaire_id`,`answerer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 调查问卷 用户答卷表' /* BF=questionnaire_id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+复用 eduos_paper_question_answerform 【存放答题内容】：
+
+扩展：增加 biz_type 来区分 习题场景 还是 问卷场景 的题库；
+alter table eduos_paper_question_answerform add column `statistic_flag` tinyint(4) NOT NULL COMMENT '计入统计状态 0：不计入 1:计入';
+alter table eduos_paper_question_answerform add column `biz_type` smallint(2) NOT NULL DEFAULT '1' COMMENT '试卷应用场景类型，1：习题考试，2：问卷';
+
+
+
+// 还是需要 快照表，因为 问卷被修改后，已提交用户的 答题记录 不受影响
+CREATE TABLE `eduos_questionnaire_answerform_detail` (
+`id` bigint(20) NOT NULL COMMENT 's2_questionnare_answerform 表id',
+`gmt_create` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`content` mediumtext COMMENT '调查问卷快照',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 调查问卷 用户答卷详情表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+类似于 eduos_paper_answerform_detail ；
+
+
+
+问卷报告 - 统计结果 - 题目分页查看 详情
+	根据 问卷id + 题目id  查询  eduos_paper_question_answerform 即可，reply 即为答题内容；
+	application_id = ？ and paper_id = ? and question_id = ? and statistic_flag = 1 and biz_type = 2；
+
+问卷报告 - 答卷详情 - 列表
+（1）列表
+字段：
+	答卷人、提交时间、是否统计
+数据查询：
+	查询 eduos_questionnaire_answerform 即可；
+
+（2）计入统计 / 不计入统计
+更新 ： 
+	eduos_paper_question_answerform 的 statistic_flag 标识 ——> 控制 题目分页查看 的显示；
+	eduos_questionnaire_answerform 的 statistics_status；——> 控制 计入/不计入统计 列表的 显示状态；
+	异步消息 更新 问卷统计数据；
+
+
+
+2、问卷 统计
+
+（1）企业云 问卷统计
+
+CREATE TABLE `s2_questionnaire_stat` (
+`id` bigint(20) NOT NULL COMMENT '问卷ID',
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`submit_count` int(10) DEFAULT NULL COMMENT '填写问卷数',
+`valid_count` int(10) DEFAULT NULL COMMENT '有效答卷数',
+`not_stat_count` int(10) DEFAULT NULL COMMENT '人为排除数',
+`terminate_count` int(10) DEFAULT NULL COMMENT '中止人数',
+`version` bigint(20) NOT NULL COMMENT '版本号',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='问卷统计表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `s2_questionnaire_stat_detail` (
+`id` bigint(20) NOT NULL COMMENT '问卷ID',
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`detail` text COMMENT '问卷详情',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='问卷统计详情表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+（2）爱多思 问卷统计：
+
+复用企业云 问卷统计表；
+
+CREATE TABLE `eduos_questionnaire_stat` (
+`id` bigint(20) NOT NULL COMMENT '问卷ID',
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`submit_count` int(10) DEFAULT NULL COMMENT '填写问卷数',
+`valid_count` int(10) DEFAULT NULL COMMENT '有效答卷数',
+`not_stat_count` int(10) DEFAULT NULL COMMENT '人为排除数',
+`terminate_count` int(10) DEFAULT NULL COMMENT '中止人数',
+`version` bigint(20) NOT NULL COMMENT '版本号',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 问卷统计表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `eduos_questionnaire_stat_detail` (
+`id` bigint(20) NOT NULL COMMENT '问卷ID',
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`detail` text COMMENT '问卷详情',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 问卷统计详情表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+（1）头部 		questionnaire_Stat
+	发出问卷：问卷指派总数；			// 不考虑
+	未答卷： 指派人员范围中 未提交的 人数；		// 不考虑
+	收集问卷： 已提交总数；
+	有效问卷：
+	有效率：
+
+（2）列表			s2_questionnaire_stat_detail
+题目 总答题人数；
+各个选项 答题人数
+
+
+提交试卷：
+	s2_questionnaire_stat ： 
+		submit_count + 1，  
+		valid_count + 1 / not_stat_count + 1： 根据 问卷答题记录的 StatisticsStatus ；
+
+计入统计：
+	s2_questionnaire_stat ： 
+		valid_count + 1，  
+		not_stat_count - 1 
+
+不计入统计：
+	s2_questionnaire_stat ： 
+		valid_count - 1，  
+		not_stat_count + 1 
+
+
+
+目标：串行更新，避免记录并发丢失更新问题；
+
+方案一：
+乐观锁机制实现：version
+
+
+方案二：  redis实现计数 + 定时更新数据库表；
+实现稍微复杂；
+
+
+方案三：redis 的分布式锁（问卷维度的锁）来实现 串行更新；
+
+
+
+
+此外，再配上 每天的定时任务，按照 问卷维度，全量计算 问卷的 统计结果；
+for（questionnaire ： ）
+	for（questionnaire_answerform ：）
+		......
+	update eduos_questionnaire_stat ...
+	update eduos_questionnaire_stat_detail ...
+
+
+
+
+
+
+1、设置
+eduso_setting 新建，采用k-v， 但是 target_id + target_type；
+eduso_setting 接口放在哪里？
+
+2、tree_node 表 通用化！！
+`target_id` bigint(20) NOT NULL COMMENT '实体的id',
+`target_type` smallint(2) DEFAULT NULL COMMENT '实体类型',
+
+3、新增 rel；
+
+scene_type  来同时区分 scene_id维度 和 习题/问卷场景； 
+还是 scene_type区分 scene_id 维度，新增  biz_type 来区分 习题/问卷场景；
+
+建立 eduos_questionnaire_answerform 通用表；
+
+
+
+select * from eduos_cert_img_builder where  cert_id=410000000004015 and status =1 and UNIX_TIMESTAMP(db_update_time)*1000  >=1526526000000;
+
+
+
+
+
+**************************************************************** 20180517 
+
+详细估时：
+
+
+1、搭建环境
+2、搭建新工程
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1335,4 +1335,138 @@ passed
 
 
 
+admin@WW_20180427
+
+update user set authentication_string=password('root') where user='root';
+
+
+
+
+CREATE TABLE IF NOT EXISTS `user_info`(
+   `id` bigint(20) not null AUTO_INCREMENT,
+   `name` VARCHAR(100) NOT NULL,
+   `realName` VARCHAR(40) NOT NULL,
+   PRIMARY KEY ( `id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+insert into user_info (name, realName) values ('ww', 'weiwei');
+
+
+
+设计模式：策略 + 委托
+
+/**
+ * @author Clinton Begin
+ */
+/**
+ * 路由选择语句处理器,有点像代理模式
+ * 
+ */
+public class RoutingStatementHandler implements StatementHandler {
+
+  private final StatementHandler delegate;
+
+  public RoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+
+    //根据语句类型，委派到不同的语句处理器(STATEMENT|PREPARED|CALLABLE)
+    switch (ms.getStatementType()) {
+      case STATEMENT:
+        delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+        break;
+      case PREPARED:
+        delegate = new PreparedStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+        break;
+      case CALLABLE:
+        delegate = new CallableStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+        break;
+      default:
+        throw new ExecutorException("Unknown statement type: " + ms.getStatementType());
+    }
+
+  }
+
+  @Override
+  public Statement prepare(Connection connection) throws SQLException {
+    return delegate.prepare(connection);
+  }
+
+  @Override
+  public void parameterize(Statement statement) throws SQLException {
+    delegate.parameterize(statement);
+  }
+
+  @Override
+  public void batch(Statement statement) throws SQLException {
+    delegate.batch(statement);
+  }
+
+  @Override
+  public int update(Statement statement) throws SQLException {
+    return delegate.update(statement);
+  }
+
+  @Override
+  public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
+    return delegate.<E>query(statement, resultHandler);
+  }
+
+  @Override
+  public BoundSql getBoundSql() {
+    return delegate.getBoundSql();
+  }
+
+  @Override
+  public ParameterHandler getParameterHandler() {
+    return delegate.getParameterHandler();
+  }
+}
+
+
+
+宁波银行手机app
+付波 720027
+回拨 95574
+
+
+3灭火器
+
+
+
+
+http://axure.yixin.im/view?id=3778&pid=109&mid=444  答题器交互稿
+http://223.252.202.49/EDU-OS/PRD/_book/lms/questionnaire/ 问卷交互稿
+Jupyter 官方文档地址：http://jupyter.readthedocs.io/en/latest/
+https://github.com/jupyter/kernel_gateway.git kernal网关地地址
+https://github.com/ipython/ipykernel.git kernal地址
+
+
+
+
+
+
+
+目标：
+/home/appops/eds-cert-server/eds-cert-server-test/instance1/approot/logs
+
+
+
+
+deployUserHome=${user.home}
+appRootDir=${deployUserHome}/${deployAppName}/${deployAppClusterName}/instance1/approot
+appLogRootDir=${appRootDir}/logs
+
+
+
+
+
+
+deployAppName=eds-cert-server
+deployAppClusterName=eds-cert-server-${spring.profiles.active}
+
+
+
+
+
+
 

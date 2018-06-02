@@ -64,6 +64,11 @@ ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa 
 
 
 
+	
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.78 -L 20093:127.0.0.1:20093 -N
+
+
+
 	预发1
 study-platform
 ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.219 -L 18363:127.0.0.1:18363 -N
@@ -107,6 +112,11 @@ ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa 
 
 course-server
 ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.151 -L 18013:127.0.0.1:18013 -N
+statistic-server
+ssh -i /Users/weiwei/work/program_tools/id_rsa_bac/ykt-work-ssh(windows)/id_rsa -p1046 hzweiwei2015@10.171.160.233 -L 18733:127.0.0.1:18733 -N
+	
+
+
 
 
 dev-t1

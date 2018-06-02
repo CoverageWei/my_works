@@ -1,0 +1,39 @@
+
+
+s2_user_project_learn_time_date_slave
+1526054400000	2018-05-12  		slave 有，master 无；
+
+
+s2_department_learn_duration_date_master
+2018-05-12  		slave 有，master 无；
+
+s2_position_learn_duration_date_master
+2018-05-12  		slave 有，master 无；
+
+
+s2_group_learn_duration_date_master
+2018-05-12  		master 有， slave 无；
+
+
+s2_user_learn_time_stat_date_master 
+1526054400000		master 有， slave 无；
+
+
+s2_user_project_learn_time_date_master
+2018-05-12  		slave 有，master 无；
+
+
+
+
+
+
+/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java -jar /home/appops/edu-bi-store/target/edu-bi-store-1.0-snapshot-uberjar.jar AllDayIncrementTableFix20180515 online 2018-05-12 2018-05-12
+
+
+1031887891  		400000002879002
+					400000002883001
+
+
+
+
+

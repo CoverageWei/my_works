@@ -1,0 +1,1192 @@
+
+一、问卷列表
+
+1.1、企业云已有实现
+机构独立问卷/ 课程内问卷：
+http://edu.study.163.com/j/questionnaire/getList.json
+limit: 10
+offset: 0
+pageIndex: 1
+pageSize: 10
+relativeOffset: 0
+scopeId: 400000000046001
+scopeType: 1			// 课程内问卷： 2， 机构独立问卷： 1
+name: 111 				// 问卷名称
+publishStatus: 4		// 按状态
+
+
+1.2、重要点：
+（1）搜索：   完全走 DB 表匹配；
+名称：name
+状态：publish_status + start_time + end_time ；
+
+
+1.3、待办工作量 
+（1）问卷实体表，是否复用？  	1d
+	问卷名称是否 模糊搜索？		1d 【待确认，暂不定】
+
+1.4、工作量
+1d
+
+
+
+
+二、创建问卷
+
+2.1、企业云已有实现
+http://edu.study.163.com/j/questionnaire/create.do
+scopeType: 1
+scopeId: 400000000046001
+answerBeforeEnroll: 0 		// 报名前必答问卷
+name: ww-ceshi
+
+CREATE TABLE `s2_questionnaire` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`name` varchar(128) DEFAULT NULL COMMENT '问卷名称',
+`description` varchar(256) DEFAULT NULL COMMENT '问卷说明',
+`creater_id` bigint(20) NOT NULL COMMENT '创建者',
+`start_time` bigint(20) DEFAULT NULL COMMENT '收集开始时间, -1不限',
+`end_time` bigint(20) DEFAULT NULL COMMENT '收集截止时间, -1不限',
+`stop_collect_num` bigint(20) DEFAULT NULL COMMENT '停止收集份数',
+`stop_collect_flag` smallint(2) DEFAULT NULL COMMENT '收集满停止收集标志 0 不限制收集份数 1 收集满停止收集',
+`anonymity_flag` smallint(2) DEFAULT NULL COMMENT '匿名标志, 0 非匿名, 1 匿名',
+`open_result_flag` smallint(2) DEFAULT NULL COMMENT '公开调查结果标志, 0 非公开, 1 公开',
+`publish_status` smallint(2) DEFAULT NULL COMMENT '问卷发布状态, 1 草稿, 2 已发布, 3 下线',
+`publish_time` bigint(20) DEFAULT NULL COMMENT '问卷发布时间',
+`answer_before_enroll` smallint(2) DEFAULT NULL COMMENT '报名前必答, 0 非必答, 1 必答',
+`scope_type` smallint(2) NOT NULL COMMENT '场景类型, 1 机构, 2 期次',
+`scope_id` bigint(20) NOT NULL COMMENT '场景id',
+`questions_order` varchar(10240) DEFAULT NULL COMMENT '题目顺序 [qid,qid,qid]',
+PRIMARY KEY (`id`),
+KEY `idx_scopeid_scopetype_createrid_name` (`scope_id`,`scope_type`,`creater_id`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='问卷表' /* BF=scope_id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+2.2、爱多思流程：
+
+（1）编辑问卷内容
+保存 题目 ；
+保存 问卷 + 题目依赖关系；
+删除；
+预览问卷；
+
+
+
+1.1、保存题目：
+
+1.1.1、【企业云】 【和题库的区别，没有答案设置和 分值设置！】
+http://edu.study.163.com/p/questionnaire/question/create.do
+
+CREATE TABLE `s2_question` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`type` smallint(2) NOT NULL COMMENT '类型： 1单选题 2多选题 3客观填空题 4判断题 10主观题',
+`score` decimal(5,2) DEFAULT '0.00' COMMENT '分值',
+`random` smallint(4) DEFAULT '1' COMMENT '是否随机 1随机 0不随机',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='2.0 问题表' /* BF=id, POLICY=s2_p1, STARTID=400000000003001, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `s2_question_detail` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`content` text COMMENT 'title,subject_std_answer 普通主观题标准答案存这个’choices_answer 选择题选项存这个 matches_answer 匹配类型答案存这个 analyse 解析 judgerules',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='2.0 问题详情表' /* BF=id, POLICY=s2_p1, STARTID=400000000001001, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `s2_question_questionnaire_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`question_id` bigint(20) NOT NULL COMMENT '题目id',
+`questionnaire_id` bigint(20) NOT NULL COMMENT '问卷id',
+`necessary_type` tinyint(4) DEFAULT NULL COMMENT '是否必答, 0 非必答, 1 必答',
+`max_selected_num` smallint(4) DEFAULT NULL COMMENT '多选题最大可选数目,-1为不限制',
+PRIMARY KEY (`id`),
+KEY `idx_questionnaireid_questionid` (`questionnaire_id`,`question_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='问卷题目关联表' /* BF=questionnaire_id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+【修改点】
+题目插入顺序！！
+复制文本快速录题； 【题库已做】【量表题 需要 开发】
+
+
+选项随机排列；【题库支持】
+必答题；【题库不支持】【需要开发！！】
+
+
+填空题：
+	增加 “提示” 字段；
+	增加 类型 字段： 区分；
+		1. 单行文本（无填写提示）
+		2. 多行文本（无填写提示）
+		3. 手机号码
+		4. 日期
+		5. 时间
+		6. 日期和时间
+	无 answerList 属性；
+
+
+*****************************************************************************
+
+【企业云】【题库】【创建题目】
+http://edu.study.163.com/api/v1/questionBank/question/save
+{
+	"type": 3,
+	"questionContent": {
+		"title": "<p>填空题1</p>",
+		"matchType": 1,
+		"singleAnswer": true,
+		"answerList": ["1"]
+	}
+}
+
+
+*****************************************************************************
+
+1.1.2、【爱多思题库】【创建题目】
+http://question.study.163.com/api/v1/questionBank/question/save
+{
+	"type": 3,
+	"questionContent": {
+		"title": "<p>填空题1</p>",
+		"matchType": 2,
+		"singleAnswer": true,
+		"answerList": ["标准答案"]
+	},
+	"bankId": "27003",
+	"t": "1526020956830"
+}
+
+
+questionBankAPI.addQuestion(scope,questionBankId,question)
+	...
+	contentBaseDto.setTitle(ContentFilter.filterRichText(contentBaseDto.getTitle()));	// 富文本过滤
+	...
+	QuestionDto ret = questionService.addEduosQuestion(scope.getApplicationId(), questionBankId, questionDto);
+
+
+
+// id=410000000464020
+CREATE TABLE `eduos_question` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`type` smallint(2) NOT NULL COMMENT '类型： 1单选题 2多选题 3客观填空题 4判断题 5 问答题 10 组合题',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 题目表' /* BF=id, POLICY=eduos_user, STARTID=410000000000001, ASSIGNIDTYPE=USB */;
+
++
+
+// id= 410000000464020
+CREATE TABLE `eduos_question_detail` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`content` text COMMENT '题目的正文，根据type的类型不同内容不同',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 题目详情表' /* BF=id, POLICY=eduos_user, STARTID=30001, ASSIGNIDTYPE=USB */;
+
+{"title":" 填空题1
+ ","attachmentId":null,
+  "titleAnalyse":null,
+   "attachment":null,
+   "matchType":2,
+   "answerList":["标准答案11"],
+   "singleAnswer":true
+}
+
++
+CREATE TABLE `eduos_question_question_bank_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`question_id` bigint(20) NOT NULL COMMENT 'eduos_question表中的id',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank表中的id',
+`status` smallint(2) DEFAULT '0' COMMENT '是否删除 -1：删除 0：未删除',
+`need_index` smallint(2) DEFAULT '0' COMMENT '是否需要建搜索索引 0：不需要，1：需要',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`qtype` smallint(2) NOT NULL DEFAULT '-1' COMMENT '类型： 1单选题 2多选题 3客观填空题 4判断题 5 问答题 6 组合题',
+`sub_question` text COMMENT '子题',
+`from_type` smallint(2) DEFAULT '0' COMMENT '标示自建还是被授予的 0:自建，1：授权',
+`authorization_status` smallint(2) DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`auth_source_question_bank_id` bigint(20) DEFAULT NULL COMMENT '授权源题库id',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uni_question_bank_id_question_id` (`question_bank_id`,`question_id`),
+KEY `index_application_id_gmt_create` (`application_id`,`status`,`gmt_create`),
+KEY `index_question_id_application_id` (`question_id`,`application_id`),
+KEY `index_need_index_id` (`need_index`,`id`),
+KEY `index_question_bank_db_update` (`question_bank_id`,`db_update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 题目题库关联表' /* BF=question_bank_id, POLICY=eduos_user, STARTID=12001, ASSIGNIDTYPE=USB */;
+
+
+【总结】
+题库中创建题目：
+eduos_question + eduos_question_detail + eduos_question_question_bank_rel ；
+
+【问卷接入】 
+1、自动为其 scope 创建题库；【用户暂时不感知】
+2、复用 题库创建题目逻辑；
+3、变更：
+	增加 题型： 量表题；
+	题目增加 设置字段；【必答题】
+	多选题 增加 “至多选择XX项” ；
+
+
+***************************************************************************** 题库
+
+【爱多思】创建题库：
+
+CREATE TABLE `eduos_question_bank` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '题库所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '题库所属场景类型',
+`from_type` smallint(2) NOT NULL COMMENT '标示自建题库还是被授予的题库',
+`status` smallint(2) NOT NULL COMMENT '是否有效 0：有效，-1：无效',
+`source_application_id` varchar(32) DEFAULT NULL COMMENT '源app id',
+`source_scene_id` bigint(20) DEFAULT NULL COMMENT '源scene id',
+`source_scene_type` smallint(2) DEFAULT NULL COMMENT '源scene type',
+`create_type` smallint(2) DEFAULT NULL COMMENT '题库来源，0:自建，1:来自题库授权，2:来自试卷授权',
+PRIMARY KEY (`id`),
+KEY `idx_applicationId_sceneid_scenetype` (`application_id`,`scene_id`,`scene_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 题库表' /* BF=id, POLICY=s2_p1, STARTID=498000, ASSIGNIDTYPE=USB */;
+
+
+CREATE TABLE `eduos_scope_source_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '题库所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '题库所属场景类型',			
+`source_id` bigint(20) NOT NULL COMMENT '资源ID',					// 题库id
+`source_type` smallint(2) NOT NULL COMMENT '资源类型',				// 题库资源类型
+`status` smallint(2) NOT NULL COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uni_scope_resource` (`application_id`,`scene_id`,`scene_type`,`source_id`,`source_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 scope资源关联' /* BF=source_id, POLICY=s2_p1, STARTID=1095000, ASSIGNIDTYPE=USB */;
+
+
+
+获取scope下所有的题库id
+http://question.study.163.com/api/v1/questionBank/list?bankId=1&type=1%2C2%2C3%2C4%2C5%2C6%2C11
+bankId: 1
+type: 1,2,3,4,5,6,11		// 题型
+
+application_id = ? and scene_type = ? and scene_id = ? and status = QuestionBankConstants.StatusEnum.STATUS_NORMAL.getValue();
+
+{
+	"code": 0,
+	"message": "ok",
+	"result": [{			// 题库列表
+		"id": 1,
+		"gmtCreate": 1499171128527,
+		"applicationId": "pub1",
+		"sceneId": 10001,
+		"sceneType": 1,
+		"fromType": 1,
+		"status": 0,
+		"createType": 0,
+		"sourceApplicationId": null,
+		"sourceSceneId": null,
+		"sourceSceneType": null
+	}, {
+		"id": 114034,
+		"gmtCreate": 1513598353314,
+		"applicationId": "pub1",
+		"sceneId": 10001,
+		"sceneType": 1,
+		"fromType": 2,
+		"status": 0,
+		"createType": 1,
+		"sourceApplicationId": "pub2",
+		"sourceSceneId": 10002,
+		"sourceSceneType": 2
+	}]
+}
+
+
+根据题库id列表，题目类型列表，题目标签（还未实现），题干关键字等获取题目列表
+http://question.study.163.com/api/v1/question/list?pageIndex=1&pageSize=20&bankIdList=1%2C114034&_t=1526385589751&relativeOffset=0&type=1%2C2%2C3%2C4%2C5%2C6%2C11
+pageIndex: 1
+pageSize: 20
+bankIdList: 1,114034
+_t: 1526385589751
+relativeOffset: 0
+type: 1,2,3,4,5,6,11		// 题型
+
+
+CREATE TABLE `eduos_question_question_bank_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`question_id` bigint(20) NOT NULL COMMENT 'eduos_question表中的id',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank表中的id',			// 题库id
+`status` smallint(2) DEFAULT '0' COMMENT '是否删除 -1：删除 0：未删除',
+`need_index` smallint(2) DEFAULT '0' COMMENT '是否需要建搜索索引 0：不需要，1：需要',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',							// scope
+`qtype` smallint(2) NOT NULL DEFAULT '-1' COMMENT '类型： 1单选题 2多选题 3客观填空题 4判断题 5 问答题 6 组合题',		// 题型
+`sub_question` text COMMENT '子题',
+`from_type` smallint(2) DEFAULT '0' COMMENT '标示自建还是被授予的 0:自建，1：授权',
+`authorization_status` smallint(2) DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`auth_source_question_bank_id` bigint(20) DEFAULT NULL COMMENT '授权源题库id',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uni_question_bank_id_question_id` (`question_bank_id`,`question_id`),
+KEY `index_application_id_gmt_create` (`application_id`,`status`,`gmt_create`),
+KEY `index_question_id_application_id` (`question_id`,`application_id`),
+KEY `index_need_index_id` (`need_index`,`id`),
+KEY `index_question_bank_db_update` (`question_bank_id`,`db_update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 题目题库关联表' /* BF=question_bank_id, POLICY=eduos_user, STARTID=12001, ASSIGNIDTYPE=USB */;
+
+
+
+
+*****************************************************************************
+
+爱多思创建考试：
+1、创建考试
+（1）【保存试卷草稿】
+http://question.study.163.com/api/v1/paper/draft/save
+{
+	name: "ww-试卷测试1",
+	bankId: "27002",
+	t: "1526222307506"
+}
+
+
+// id = 410000000408008
+CREATE TABLE `eduos_paper_draft` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`from_type` smallint(2) NOT NULL COMMENT '标示自建还是被授予的 1:自建，2：授权',
+`status` smallint(2) NOT NULL COMMENT ' 0：草稿，1.正在发布2：发布，3：修改',
+`name` varchar(400) DEFAULT NULL COMMENT 'name',
+`description` text,
+`deadline_time` bigint(20) DEFAULT NULL COMMENT '截止时间',
+`release_time` bigint(20) DEFAULT NULL COMMENT '考试发布时间',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`disorder` smallint(2) NOT NULL DEFAULT '0' COMMENT '题目是否乱序 0:不乱序，1：乱序',
+`start_time` bigint(20) DEFAULT NULL COMMENT '开考时间',
+`authorization_status` smallint(2) NOT NULL DEFAULT '0' COMMENT '如果是授权试卷，标示是否有效，0有效，-1取消授权',
+`source_application_id` varchar(32) DEFAULT NULL COMMENT '源app id',
+`source_scene_id` bigint(20) DEFAULT NULL COMMENT '源scene id',
+`source_scene_type` smallint(2) DEFAULT NULL COMMENT '源scene type',
+`biz_type` bigint(20) DEFAULT NULL COMMENT '业务方自定义的试卷类型',
+PRIMARY KEY (`id`),
+KEY `index_scope_gmt_validate_create` (`application_id`,`scene_id`,`scene_type`,`validate`,`gmt_create`),
+KEY `idx_applicationid_validate_dbupdatetime` (`application_id`,`validate`,`db_update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 试卷表' /* BF=id, POLICY=eduos_user, STARTID=410000000141001, ASSIGNIDTYPE=USB */;
+
++
+
+CREATE TABLE `eduos_scope_source_rel` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '题库所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '题库所属场景类型',
+`source_id` bigint(20) NOT NULL COMMENT '资源ID',					// id = 410000000408008
+`source_type` smallint(2) NOT NULL COMMENT '资源类型',				// 习题库类型：1， 试卷类型：2
+`status` smallint(2) NOT NULL COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uni_scope_resource` (`application_id`,`scene_id`,`scene_type`,`source_id`,`source_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 scope资源关联' /* BF=source_id, POLICY=eduos_user, STARTID=1, ASSIGNIDTYPE=USB */;
+
+总结：
+创建考试 ——> eduos_paper_draft（草稿状态） + eduos_scope_source_rel (试卷资源类型) + 更新索引：EduosPaperDocument
+
+
+（2）试卷内创建题目 ——> 保存题目
+2.1、http://question.study.163.com/api/v1/questionBank/question/save
+{
+	"nodeId": "0_t1526224240758",
+	"questionContent": {
+		"title": "<p>单选题1</p>",
+		"random": 4,
+		"choicesAnswers": [{
+			"content": "<p>1<br/></p>",
+			"correct": true
+		}, {
+			"content": "<p>2</p>",
+			"correct": false
+		}, {
+			"content": "<p>3</p>",
+			"correct": false
+		}, {
+			"content": "<p>4</p>",
+			"correct": false
+		}, {
+			"content": "<p>5</p>",
+			"correct": false
+		}]
+	},
+	"score": "2",
+	"setting": {
+		"questionAnalyse": true,
+		"answerAnalyse": true,
+		"randomShow": {
+			"selected": true,
+			"random": 4
+		}
+	},
+	"type": 1,
+	"choicesAnswers": [{
+		"content": "<p>1<br/></p>",
+		"correct": true
+	}, {
+		"content": "<p>2</p>",
+		"correct": false
+	}, {
+		"content": "<p>3</p>",
+		"correct": false
+	}, {
+		"content": "<p>4</p>",
+		"correct": false
+	}, {
+		"content": "<p>5</p>",
+		"correct": false
+	}],
+	"title": "<p>单选题1</p>",
+	"questionScore": 2,
+	"t": "1526222308320",
+	"paperId": "410000000408008"
+}
+
+
+【总结】该接口 只是创建、保存了 题目信息；
+eduos_question + eduos_question_detail + eduos_question_question_bank_rel ；
+
+paperId : 410000000408008
+queation_id : 410000000464024
+
+
+
+2.2、添加试卷节点
+http://question.study.163.com/api/v1/paper/draft/410000000408008/node/add
+[{
+	"id": null,
+	"resourceId": 410000000464024,			// 题目id
+	"nextId": -1,
+	"parentId": -1,
+	"resourceType": 0,
+	"editStatus": true,
+	"fromBank": false,
+	"data": {
+		"nodeId": "0_t1526224240758",
+		"questionContent": {
+			......
+			"random": 4
+		},
+		"score": "2",
+		"setting": {
+			...... 
+		},
+		"type": 1,
+		"choicesAnswers": [{
+			"content": "<p>1<br/></p>",
+			"correct": true,
+			"analyse": null
+		}, ......
+		}],
+		"title": "<p>单选题1</p>",
+		"questionScore": 2,
+		"t": "1526222308320",
+		"paperId": "410000000408008",
+		"id": 410000000464024,
+		"gmtCreate": 1526224286917,
+		"questionBankId": 4,
+		"applicationId": "test1",
+		"fromScope": null
+	},
+	"extend": {
+		"mode": 2,
+		"nextSibling": -1
+	},
+	"children": [],
+	"level": 2,
+	"stat": {
+		"totalNum": 1,
+		"totalScore": 0,
+		"index": 0
+	},
+	"paperId": "410000000408008" 		// 试卷id
+}]
+
+......
+List<PaperTreeNodeDto> result = paperTreeNodeFacade.addPaperDraftNodeList(scope, paperId, nodes);
+	com.netease.edu.eds.question.facade.impl.AbstractPaperNodeExecutorImpl#executeCreate
+		Long resourceId = resourceHandlerForCreate(scope, node, parent);
+			...
+			eduosPaperQuestionRelDraftDao.add(relDraft2Add);
+			...
+			eduosPaperSettingDraftDao.add(settingAdd);
+		...
+		paperTreeNodeDraftService.addOrUpdatePaperTreeNode(scope, node, pre);
+			...
+			int t = paperTreeNodeDraftDao.add(newNode);
+
+
+CREATE TABLE `eduos_paper_question_rel_draft` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`paper_id` bigint(20) NOT NULL COMMENT 'eduos_paper表中的id',
+`node_id` bigint(20) DEFAULT NULL COMMENT 'eduos_section表中的id',
+`question_id` bigint(20) NOT NULL COMMENT 'eduos_question表中的id',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank表中的id',
+`question_score` decimal(10,2) DEFAULT '0.00' COMMENT '题目分数',
+`position` smallint(6) DEFAULT NULL COMMENT '排序值',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+`question_type` smallint(2) NOT NULL COMMENT '冗余的题目类型。',
+`sub_question` text COMMENT '子题',
+`from_type` smallint(2) DEFAULT '0' COMMENT '标示自建还是被授予的 0:自建，1：授权',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_question_rel` (`paper_id`,`question_id`),
+KEY `pid_validate_fromtype` (`paper_id`,`validate`,`from_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 试卷题目关联表' /* BF=paper_id, POLICY=eduos_user, STARTID=158001, ASSIGNIDTYPE=USB */;
+
+917031	1526224287089	2018-05-13 23:11:27	410000000408008	null	410000000464024	4	2.00	null	0	1	null	0
+
++
+
+CREATE TABLE `eduos_paper_tree_node_draft` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`scene_id` bigint(20) NOT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) NOT NULL COMMENT '所属场景类型',
+`paper_id` bigint(20) NOT NULL COMMENT '试卷ID',
+`resource_id` bigint(20) NOT NULL COMMENT '资源ID',
+`resource_type` int(20) NOT NULL COMMENT '资源类型, 0试卷,1题目,2大题,3随机包',
+`parent_id` bigint(20) NOT NULL COMMENT '父节点ID',
+`next_id` bigint(20) DEFAULT NULL COMMENT '后序节点ID',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_resource` (`paper_id`,`resource_type`,`resource_id`),
+KEY `index_pid_next_parent` (`paper_id`,`next_id`,`parent_id`,`validate`),
+KEY `index_pid_parent` (`paper_id`,`parent_id`,`validate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 试卷节点树草稿' /* BF=paper_id, POLICY=eduos_user, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+821031	1526224287093	1526224287097	2018-05-13 23:11:27	test1	6000	6	410000000408008	410000000464024	0	-1	-1	0
+
+
+总结： 做题目和试卷的关联：
+eduos_paper_question_rel_draft 【试卷题目关联关系】+ eduos_paper_tree_node_draft
+
+
+
+2.3、更新试卷下题目分数
+http://question.study.163.com/api/v1/paper/draft/410000000408008/question/score/update
+[{
+	"paperId": "410000000408008",
+	"questionId": 410000000464024,
+	"score": "2"
+}]
+
+paperDraftService.updatePaperQuestionScore(scope, paper, paperQuestionScores);
+	...
+	eduosPaperQuestionRelDraftDao.batchUpdateById(relDraftOrigins);
+
+【总结】更新题目分数：
+eduos_paper_question_rel_draft
+
+
+【总结】【爱多思】创建试卷，添加并保存题目：
+1、创建考试：
+eduos_paper_draft（草稿状态） + eduos_scope_source_rel (试卷资源类型) + 更新索引：EduosPaperDocument
+2.1、创建、保存 题目信息；
+eduos_question + eduos_question_detail + eduos_question_question_bank_rel ；
+2.2、题目和试卷的关联：
+eduos_paper_question_rel_draft 【试卷题目关联关系】+ eduos_paper_tree_node_draft【维护试卷内 题目顺序，通过 next_id 字段】
+2.3、更新题目分数：
+eduos_paper_question_rel_draft
+
+
+
+2、获取考试题目列表
+http://question.study.163.com/api/v1/paper/draft/list
+pageIndex=1&pageSize=20&keywords=&bankId=27002&t=1526222307509
+
+
+
+
+3、试卷-获取试卷草稿
+http://question.study.163.com/api/v1/paper/draft/410000000408008?bankId=27002
+
+
+
+4、设置发布信息
+http://question.study.163.com/api/v1/paper/draft/410000000408008/setting/update
+[{
+	"settingKey": "answer_limit_time",
+	"settingValue": -1
+}, {
+	"settingKey": "release_time",
+	"settingValue": 1526227200000
+}, {
+	"settingKey": "start_time",
+	"settingValue": 1526313600000
+}, {
+	"settingKey": "deadline_time",
+	"settingValue": 1527696000000
+}, {
+	"settingKey": "allow_resubmit",
+	"settingValue": -1
+}, {
+	"settingKey": "allow_uneffective_view_submit",
+	"settingValue": -1
+}, {
+	"settingKey": "objective_judge_type",
+	"settingValue": 0
+}, {
+	"settingKey": "subjective_judge_type",
+	"settingValue": 1
+}, {
+	"settingKey": "submit_way",
+	"settingValue": 0
+}, {
+	"settingKey": "judge_submit_times",
+	"settingValue": 1
+}, {
+	"settingKey": "judge_sys_effective_score_way",
+	"settingValue": 0
+}, {
+	"settingKey": "announce_analysis",
+	"settingValue": 0
+}, {
+	"settingKey": "announce_score_way",
+	"settingValue": 1
+}, {
+	"settingKey": "paper_type",
+	"settingValue": "1"
+}, {
+	"settingKey": "setting_type",
+	"settingValue": "1"
+}]
+
+......
+eduosPaperSettingDraftDao.add(addList);
+eduosPaperDraftDao.updatePaperSetting(...  		// 更新试卷草稿中的 发布时间、起始时间等；
+......
+
+
+CREATE TABLE `eduos_paper_setting_draft` (
+`id` bigint(20) NOT NULL,
+`paper_id` bigint(20) NOT NULL COMMENT 'eduos_paper表中的id',
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`setting_key` varchar(128) NOT NULL COMMENT '试卷配置key',
+`setting_value` varchar(512) NOT NULL COMMENT '试卷配置value',
+`validate` smallint(2) NOT NULL COMMENT '是否有效 0：有效，-1：无效',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_id_setting_key` (`paper_id`,`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 试卷设置草稿表' /* BF=paper_id, POLICY=eduos_user, STARTID=1, ASSIGNIDTYPE=USB */;
+
+【总结】更新 试卷设置草稿；
+eduos_paper_setting_draft
+
+
+*****************************************************************************
+
+试卷发布
+http://question.study.163.com/api/v1/paper/draft/410000000408008/publish
+{"bankId":"27002"}
+
+{code: 0, message: "ok", result: true}
+
+eduos_paper_draft ——> eduos_paper
+eduos_paper_question_rel_draft ——> eduos_paper_question_rel
+eduos_paper_setting_draft ——> eduos_paper_setting
+eduos_paper_tree_node_draft ——> eduos_paper_tree_node
+
+
+
+*****************************************************************************
+考试提交
+http://question.study.163.com/api/v1/paper/410000000337001/submit
+
+{
+	"paperId": "410000000337001",
+	"answerFormId": 410000002778009,
+	"paperQuestionAnswerFormList": [{
+		"questionId": 410000000383001,
+		"questionType": 1,
+		"content": "1520219769809",
+		"reply": {
+			"reply": "1520219769809",
+			"questionType": 1,
+			"choiceIds": [1520219769808, 1520219769809, 1520219769810]
+		},
+		"parentQuestionId": -1,
+		"index": 0,
+		"lastUsePlatform": 2,
+		"position": 0
+	}, {
+		"questionId": 410000000383004,
+		"questionType": 2,
+		"content": "1520219769809",
+		"reply": {
+			"reply": "1520219769809",
+			"questionType": 2,
+			"choiceIds": [1520219769808, 1520219769809, 1520219769810, 1520219769811]
+		},
+		"parentQuestionId": -1,
+		"index": 1,
+		"lastUsePlatform": 2,
+		"position": 1
+	}, {
+		"questionId": 410000000383002,
+		"content": 0,
+		"reply": {
+			"reply": 0,
+			"questionType": 4
+		},
+		"questionType": 4,
+		"parentQuestionId": -1,
+		"index": 2,
+		"lastUsePlatform": 2,
+		"position": 2
+	}, {
+		"questionId": 410000000383003,
+		"content": "10",
+		"reply": {
+			"reply": "10",
+			"questionType": 3
+		},
+		"parentQuestionId": -1,
+		"questionType": 3,
+		"index": 3,
+		"lastUsePlatform": 2,
+		"position": 3
+	}],
+	"submitWay": "0",
+	"autoSubmit": false,
+	"userId": "10086",
+	"memberId": "10086",
+	"t": "1526229156555"
+}
+
+
+// paper_id = 410000000337001
+// id=410000002778009
+CREATE TABLE `eduos_paper_answerform` (
+`id` bigint(20) NOT NULL DEFAULT '0',
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`member_id` bigint(20) NOT NULL COMMENT '用户id',
+`paper_id` bigint(20) DEFAULT NULL COMMENT '试卷id',
+`submit_time` bigint(20) DEFAULT NULL COMMENT '提交时间',
+`submit_status` smallint(2) DEFAULT '1' COMMENT '是否草稿 1：（草稿）保存未提交 2：（非草稿）已提交',
+`effect_status` smallint(2) DEFAULT '0' COMMENT '是否有效 0无效 1有效',
+`correcting_people` bigint(20) DEFAULT NULL COMMENT '批改人id',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`user_object_score` decimal(10,2) DEFAULT NULL COMMENT '用户客观题原始得分',
+`user_subject_score` decimal(10,2) DEFAULT NULL COMMENT '用户主观题原始得分',
+`no_judge_subject_count` int(11) DEFAULT '0' COMMENT '待批改的主观题个数',
+`start_answer_time` bigint(20) DEFAULT NULL COMMENT '开始答题时间',
+`submit_after_deadline` smallint(2) DEFAULT '-1' COMMENT '是否是补交，0 是，-1 不是',
+`judge_status` smallint(4) DEFAULT '0' COMMENT '批改状态，0 未批改，1 批改完成，2 部分批改',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '删除状态，0：正常，-1:删除',
+`scene_id` bigint(20) DEFAULT NULL COMMENT '所属场景ID',
+`scene_type` smallint(2) DEFAULT NULL COMMENT '所属场景类型',
+`gmt_modified` bigint(20) DEFAULT NULL,
+`recommended` smallint(2) DEFAULT '-1' COMMENT '是否推荐，0：推荐，-1:不推荐',
+`passed` smallint(2) DEFAULT '0' COMMENT '是否通过标记,0：通过,-1:不通过',
+`score_published` smallint(2) DEFAULT NULL COMMENT '是否公布成绩,0：已公布,1:未公布',
+`user_total_score` decimal(10,2) DEFAULT NULL COMMENT '用户总得分',
+`judge_time` bigint(20) DEFAULT NULL COMMENT '批改时间',
+PRIMARY KEY (`id`),
+KEY `idx_member_id` (`member_id`,`paper_id`,`application_id`,`effect_status`,`submit_status`,`gmt_create`),
+KEY `idx_applicationid_sceneid_scenetype_paperid` (`application_id`,`scene_id`,`scene_type`,`paper_id`),
+KEY `idx_applicationid_validate_id` (`application_id`,`validate`,`id`),
+KEY `idx_paper_id` (`paper_id`,`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多斯 试卷作答表' /* BF=member_id, POLICY=eduos_user, STARTID=410000000012001, ASSIGNIDTYPE=USB */;
+
+410000002778009	1526253066983	2018-05-14 07:14:04	10086	410000000337001	1526253244871	2	1	null	pub1	7.00	null	0	1526253050296	null	1	0	10001	1	null	null	null	null	7.00	null
+
++ 
+
+CREATE TABLE `eduos_paper_answerform_detail` (
+`id` bigint(20) NOT NULL COMMENT '同test_answerform_id',			// 410000002778009
+`gmt_create` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`object_content` mediumtext COMMENT '试卷客观题作答详情',
+`subject_content` mediumtext COMMENT '试卷主观题作答详情',
+`paper_info` mediumtext COMMENT '答题时的试卷信息',
+`subject_content_md5` varchar(32) DEFAULT NULL COMMENT '试卷主观题作答详情Md5',
+`paper_content_md5` varchar(32) DEFAULT NULL COMMENT '试卷所有题目作答详情Md5',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多斯 试卷作答详情表' /* BF=id, POLICY=eduos_user, STARTID=410000100003001, ASSIGNIDTYPE=USB */;
+
+410000002778009	1526253066984	2018-05-14 07:11:06	null	null	null	null	null
+
+
++
+
+CREATE TABLE `eduos_paper_question_answerform` (
+`id` bigint(20) NOT NULL DEFAULT '0',
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`answerform_id` bigint(20) NOT NULL COMMENT '答题记录表eduos_paper_answerform对应的id',			// 410000002778009
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`paper_id` bigint(20) NOT NULL COMMENT '试卷id',
+`member_id` bigint(20) NOT NULL COMMENT '用户id',
+`question_id` bigint(20) NOT NULL COMMENT '题目id',
+`question_type` smallint(4) NOT NULL COMMENT '题目类型',
+`parent_question_id` bigint(20) NOT NULL DEFAULT '-1' COMMENT '组合题父题题目id,单题为-1',
+`correcting_people_id` bigint(20) DEFAULT NULL COMMENT '批改人id',
+`validate` smallint(2) NOT NULL DEFAULT '0' COMMENT '删除状态，0：正常，-1:删除',
+`reply_score` decimal(10,2) DEFAULT NULL COMMENT '用户得分',
+`flag` smallint(2) DEFAULT NULL COMMENT '得分类型：0 正确，10 错误，20 部分正确，30 未作答',
+`reply` text COMMENT '用户作答的内容',
+`comment` text COMMENT '老师评语',
+`judge_content` text COMMENT '批改产生的内容',
+`position` int(11) NOT NULL COMMENT '题目答题记录在试卷中的位置',
+`last_use_platform` smallint(4) DEFAULT NULL COMMENT '上一次使用的平台，1 移动端，2 web端',
+`submit_time` bigint(20) DEFAULT NULL COMMENT '提交时间',
+`recommended` smallint(2) DEFAULT '-1' COMMENT '是否推荐，0：推荐，-1:不推荐',
+`score_point_info` text COMMENT '得分点得分详情',
+`judge_time` bigint(20) DEFAULT NULL COMMENT '批改时间',
+`judge_remark` text COMMENT '批改结果的一些附加信息',
+PRIMARY KEY (`id`),
+KEY `idx_answererformid_applicationid_question_id` (`answerform_id`,`application_id`,`question_id`),
+KEY `idx_paperid_applicationid_recommended_replyscore` (`paper_id`,`application_id`,`recommended`,`reply_score`),
+KEY `idx_paperid_applicationid_replyscore` (`paper_id`,`application_id`,`reply_score`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多斯试卷作答题目记录表' /* BF=answerform_id, POLICY=eduos_user, STARTID=3001, ASSIGNIDTYPE=USB */;
+
++
+
+CREATE TABLE `eduos_paper_aggre_score` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`paper_id` bigint(20) NOT NULL,
+`member_id` bigint(20) NOT NULL COMMENT '用户ID',
+`extra_score` decimal(10,2) DEFAULT NULL COMMENT '额外成绩',
+`effective_score_plus_extra` decimal(10,2) DEFAULT NULL COMMENT '有效分+bonus分数',
+`correcting_people` bigint(20) DEFAULT NULL COMMENT '批改人id',
+`application_id` varchar(32) NOT NULL COMMENT '给app分配的id',
+`view_answer_status` smallint(4) DEFAULT '0' COMMENT '用户查看答案标记 0 未查看 1 已查看',
+`submit_time` bigint(20) DEFAULT NULL COMMENT '最后一次有效提交的时间',
+`effective_answerform_id` bigint(20) DEFAULT NULL COMMENT '有效分数对应的答题记录id',
+`effective_score` decimal(10,2) DEFAULT NULL COMMENT '有效成绩',
+`judge_status` smallint(4) DEFAULT '0' COMMENT '批改状态，0 未批改，1 批改完成，2 部分批改',
+`score_published` smallint(2) DEFAULT NULL COMMENT '是否公布成绩,0：已公布,1:未公布',
+`recommended` smallint(2) DEFAULT '-1' COMMENT '是否推荐，0：推荐，-1:不推荐',
+`passed` smallint(2) DEFAULT '0' COMMENT '是否通过标记,0：通过,-1:不通过',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_member_paper` (`member_id`,`paper_id`),
+KEY `idx_paper_id_application_id_espe` (`paper_id`,`application_id`,`effective_score_plus_extra`),
+KEY `idx_pid_esps` (`paper_id`,`effective_score_plus_extra`),
+KEY `idx_pid_stime` (`paper_id`,`submit_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多斯 试卷聚合成绩' /* BF=member_id, POLICY=eduos_user, STARTID=410000000008001, ASSIGNIDTYPE=USB */;
+
+
+【总结】提交试卷：
+eduos_paper_answerform + eduos_paper_answerform_detail + eduos_paper_question_answerform 【存放答题内容】+ eduos_paper_aggre_score
+
+
+
+*****************************************************************************
+试卷统计
+http://question.study.163.com/api/v1/paper/410000000337001/stat?paperId=410000000337001&t=1526254713980
+
+{
+	"code": 0,
+	"message": "ok",
+	"result": {
+		"id": 410000000337001,
+		"paperName": "没有提交",
+		"gmtCreate": 1520219773744,
+		"submitPaperCount": 2,
+		"noJudgeCount": 0,
+		"avgScore": 8.50,
+		"sumScore": 17.00,
+		"highestScore": 10.00,
+		"lowestScore": 7.00,
+		"deadlineTime": null,
+		"notPassedCount": null,
+		"recommendedCount": null
+	}
+}
+
+CREATE TABLE `eduos_paper_stat` (
+`id` bigint(20) NOT NULL,					// paperId
+`gmt_create` bigint(20) DEFAULT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`submit_paper_count` int(16) DEFAULT '0' COMMENT '试卷提交人数',
+`highest_score` decimal(10,2) DEFAULT NULL COMMENT '试卷的最高得分',
+`lowest_score` decimal(10,2) DEFAULT NULL COMMENT '试卷的最低得分',
+`no_judge_count` int(16) DEFAULT '0' COMMENT '待批改人数',
+`sum_score` decimal(10,2) DEFAULT NULL COMMENT '试卷提交的累计总得分',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多斯 试卷统计表' /* BF=id, POLICY=eduos_user, STARTID=410000000000001, ASSIGNIDTYPE=USB */;
+410000000337001	1520219773744	2018-05-14 07:38:12	2	10.00	7.00	0	17.00
+
+
+数据从 eduos_paper_aggre_score 记录来；
+
+
+
+
+
+
+
+答题成绩list：
+http://question.study.163.com/api/v1/paper/410000000337001/aggreScore/list
+pageIndex=1&pageSize=20&relativeOffset=0&keywords=&status=&sortField=0&sortType=0&paperId=410000000337001&t=1526254713985
+
+
+
+
+提交时间分布
+http://question.study.163.com/api/v1/paper/410000000337001/scoreDistribution?paperId=410000000337001&bankId=1&t=1526254714006
+
+CREATE TABLE `eduos_paper_score_distribution` (
+`id` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) NOT NULL,
+`paper_id` bigint(20) NOT NULL COMMENT '试卷ID',
+`step` int(20) NOT NULL COMMENT '统计步长',
+`stat_info` varchar(500) DEFAULT NULL COMMENT '统计信息(人数数值数组json)',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_id` (`paper_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='爱多思 试卷分数人数统计表' /* BF=paper_id, POLICY=eduos_user, STARTID=9001, ASSIGNIDTYPE=USB */;
+
+
+
+
+题目数据统计：
+
+http://question.study.163.com/api/v1/paper/410000000337001/backend/questionStat/list?limit=20&offset=0&pageIndex=1&pageSize=20&relativeOffset=0&orderType=&paperId=410000000337001&bankId=1&t=1526254714054
+
+
+ 平均分：2
+ 正确率：100.0%
+ 总分：2
+ 
+定时任务计算；
+
+CREATE TABLE `eduos_paper_question_stat` (
+`id` bigint(20) NOT NULL,
+`gmt_create` bigint(20) DEFAULT NULL,
+`gmt_modified` bigint(20) NOT NULL,
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`question_id` bigint(20) NOT NULL COMMENT 'eduos_question表中的id',
+`paper_id` bigint(20) NOT NULL COMMENT 'eduos_paper表中的id',
+`question_bank_id` bigint(20) NOT NULL COMMENT 'eduos_question_bank表中的id',
+`accuracy` decimal(10,3) DEFAULT NULL COMMENT '题目正确率',
+`avg_score` decimal(10,2) DEFAULT NULL COMMENT '题目平均得分',
+`total_score` decimal(10,2) DEFAULT '0.00' COMMENT '题目总分',
+`question_type` smallint(2) NOT NULL COMMENT '题目类型',
+`combination_question_id` bigint(20) DEFAULT NULL COMMENT '子题对应的组合题id',
+`submit_count` int(16) DEFAULT '0' COMMENT '试卷有效提交总人数',
+`right_count` int(16) DEFAULT '0' COMMENT '试卷正确提交人数',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uq_paper_question_rel` (`paper_id`,`question_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='爱多思 试卷题目统计表' /* BF=paper_id, POLICY=eduos_user, STARTID=1, ASSIGNIDTYPE=USB */;
+
+
+
+*****************************************************************************
+
+
+
+
+1.2、获取问卷题目列表
+http://edu.study.163.com/j/questionnaire/question/getList.json
+limit: 200
+offset: 0
+pageIndex: 1
+pageSize: 200
+relativeOffset: 0
+questionnaireId: 688004
+scopeId: 400000000046001
+scopeType: 1
+
+
+
+（2）发布设置
+http://edu.study.163.com/p/questionnaire/edit.do
+
+问卷实体表 存储 设置信息； 可完全复用 问卷实体表；
+
+
+（3）指派管理
+暂定 业务方上层处理；爱多思 不处理！ 
+
+
+
+
+
+
+
+统计报告-获取题目答题结果：
+http://edu.study.163.com/j/questionnaire/getQuestionnaireQASummaryStatistics.json?_t=1526453278661&limit=10&offset=0&pageIndex=1&pageSize=10&relativeOffset=0&questionId=400000002842032&questionnaireId=706002
+_t: 1526453278661
+limit: 10
+offset: 0
+pageIndex: 1
+pageSize: 10
+relativeOffset: 0
+questionId: 400000002842032
+questionnaireId: 706002
+
+ 
+查询 QuestionnaireQuestionAnswerRecord 记录；
+
+
+
+调查报告 - 答卷详情
+
+http://edu.study.163.com/j/questionnaire/getItem.json?_t=1526455356195&id=421001
+_t: 1526455356195
+id: 421001			// 问卷id
+
+
+
+// 列表
+http://edu.study.163.com/j/questionnaire/getPaperList.json?_t=1526455356246&limit=20&offset=0&pageIndex=1&pageSize=20&relativeOffset=0&questionnaireId=421001&statisticsStatus=
+_t: 1526455356246
+limit: 20
+offset: 0
+pageIndex: 1
+pageSize: 20
+relativeOffset: 0
+questionnaireId: 421001
+statisticsStatus: 
+
+
+questionnaireAnswerform ——> answererIds
+机构独立问卷：
+	questionnaireAssignRel <—— questionnaire_id=? and member_id in ?
+期次内问卷：
+	aggregationlearn <—— term_id=? and member_id in ?
+
+
+
+
+http://edu.study.163.com/j/questionnaire/updateStat.do
+questionnaireAnswerformIds: 285003
+statisticsStatus: 2
+
+{code: 0, message: "ok", result: true, uuid: null}
+
+
+更新 ：	s2_questionnaire_question_answer_record ： questionnaire_answerform_id = ？
+		s2_questionnaire_answerform ： id = ？ 
+		发消息 更新 统计：
+			questionnaireStatJmsProvider.sendMessage(sendQuesionnaireAnswerformIds, QuestionnaireStatConstants.StatFlag.INCLUDE_STAT);
+
+
+
+问卷统计：
+http://edu.study.163.com/j/questionnaire/getQuestionnaireSummaryStatistics.json?_t=1526460645830&questionnaireId=421001&id=421001
+_t: 1526460645830
+questionnaireId: 421001
+
+
+CREATE TABLE `s2_questionnaire_stat` (
+`id` bigint(20) NOT NULL COMMENT '问卷ID',
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`submit_count` int(10) DEFAULT NULL COMMENT '填写问卷数',
+`valid_count` int(10) DEFAULT NULL COMMENT '有效答卷数',
+`not_stat_count` int(10) DEFAULT NULL COMMENT '人为排除数',
+`terminate_count` int(10) DEFAULT NULL COMMENT '中止人数',
+`version` bigint(20) NOT NULL COMMENT '版本号',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='问卷统计表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+421001	1506046589757	2018-05-16 16:06:01	5	4	1	0	6
+
+
+// 问卷每道题目的 统计（包括对应选项）
+CREATE TABLE `s2_questionnaire_stat_detail` (
+`id` bigint(20) NOT NULL COMMENT '问卷ID',
+`gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+`db_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`detail` text COMMENT '问卷详情',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='问卷统计详情表' /* BF=id, POLICY=s2_p1, STARTID=1, ASSIGNIDTYPE=USB */;
+
+{
+	"questions": [
+	{
+		"choices": [{
+			"choiceId": "15245238687461",
+			"count": 4
+		}, {
+			"choiceId": "15245238687462",
+			"count": 3
+		}],
+		"count": 7,
+		"qid": 400000002745083
+	}, 
+	{
+		"choices": [{
+			"choiceId": "15245239280601",
+			"count": 5
+		}, {
+			"choiceId": "15245239280602",
+			"count": 2
+		}],
+		"count": 7,
+		"qid": 400000002758022
+	}, 
+	{
+		"choices": [],					
+		"count": 7,
+		"qid": 400000002754053			// 普通问答题，非选择题
+	}]
+}
+
+
+头部数据：	填报人数、有效答卷、有效率	<——	questionnaire_Stat
+列表数据：	s2_questionnaire_stat_detail ——>  本题答题人数
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,566 @@
+server {
+    server_name study.163.com;
+    access_log /home/srv/log/study.log main;
+    set $deny_ddos 0;
+
+    if ($study_access_deny_uri) {
+        set $deny_ddos 1;
+    }
+
+    if ($study_access_deny_ip = "") {
+        set $deny_ddos 0;
+    }
+
+    if ($deny_ddos) {
+        return 503;
+    }
+    deny 218.205.115.221;
+
+    location / {
+        rewrite ^/course/jianli$ /activities/qiaobutang.htm last;
+        rewrite ^/course/gwy$ /course/introduction/383002.htm last;
+        rewrite ^/activities/mooc.htm$ http://www.icourse163.org/index.htm last;
+        proxy_pass http://study;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location ~ /course/introduction.htm {
+        if ($args ~* "^courseId=1245002$") {
+            rewrite ^.*$ /course/introduction/1054012.htm last;
+        }
+        proxy_pass http://study;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location ~ /course/courseMain.htm$ {
+        if ($args ~* "^courseId=1245002$") {
+            rewrite ^.*$ /course/introduction/1054012.htm last;
+        }
+        proxy_pass http://study;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location ~ ^/(photoview|photoset|photonew)/ {
+        proxy_pass http://help163com;
+        proxy_set_header Host "study.163.com";
+    }
+
+    location /passport {
+        proxy_pass http://study-passport;
+    }
+
+    location /sns {
+        proxy_pass http://study-passport;
+    }
+
+    location /api/account/ {
+        proxy_pass http://study-api;
+    }
+
+    location /api/course {
+        proxy_pass http://study-api;
+    }
+
+    location /mob/s2 {
+        proxy_pass http://study-mobile;
+    }
+
+    location /mob/ykt {
+        proxy_pass http://study-mobile;
+    }
+
+    location ~ "__utm.gif" {
+        proxy_pass http://wr.da.netease.com;
+    }
+
+    location ~ "ga.js" {
+        proxy_pass http://wr.da.netease.com;
+    }
+
+    location ~ /\.svn {
+        deny all;
+    }
+
+    location ~ .*\.ico {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ "^/\d{2}/\d{4}/\d{2}/.*\.html" {
+        proxy_pass http://help163com;
+        proxy_set_header Host "study.163.com";
+    }
+
+    location ~ "/sitemap(.*)\.xml" {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location /crossdomain.xml {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/baidu.*\.(html|txt) {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ /pub/(.*)\.apk$ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location ~ ^/pub/h/ {
+        proxy_set_header Host "s2.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/pub {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location /pages {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/innerservice/ {
+        deny all;
+    }
+
+    location ~ ^/task/invoke.htm$ {
+        deny all;
+    }
+
+    location ~ ^/dataCorrect/invoke.htm$ {
+        deny all;
+    }
+
+    location ~ ^/(WEB-INF|META-INF)/ {
+        deny all;
+    }
+
+    location ~ ^/template/ {
+        deny all;
+    }
+
+    location /dwr/index.html {
+        deny all;
+    }
+
+    location ~ /dwr/test/ {
+        deny all;
+    }
+
+    location /env {
+        deny all;
+    }
+
+    location ~ /favicon.ico {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/h/ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/special/ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/res/imgages/seo/ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ /s2category {
+        deny all;
+    }
+
+    location /src {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location /lib {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location /res {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location /actuatoradmin {
+        deny all;
+    }
+
+    location ~ ^/(\w)+\.txt$ {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+}
+
+server {
+    server_name study.163.com;
+    listen 443;
+    ssl on;
+    ssl_certificate /etc/nginx/cert/sha2163.com.crt;
+    ssl_certificate_key /etc/nginx/cert/163.com.key;
+    access_log /home/srv/log/study.log main;
+    set $deny_ddos 0;
+
+    if ($study_access_deny_uri) {
+        set $deny_ddos 1;
+    }
+
+    if ($study_access_deny_ip = "") {
+        set $deny_ddos 0;
+    }
+
+    if ($deny_ddos) {
+        return 503;
+    }
+
+    location / {
+        rewrite ^/course/jianli$ /activities/qiaobutang.htm last;
+        rewrite ^/course/gwy$ /course/introduction/383002.htm last;
+        rewrite ^/activities/mooc.htm$ http://www.icourse163.org/index.htm last;
+        proxy_pass http://study;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+    }
+
+    location ~ /course/introduction.htm {
+        if ($args ~* "^courseId=1245002$") {
+            rewrite ^.*$ /course/introduction/1054012.htm last;
+        }
+        proxy_pass http://study;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+    }
+
+    location ~ /course/courseMain.htm$ {
+        if ($args ~* "^courseId=1245002$") {
+            rewrite ^.*$ /course/introduction/1054012.htm last;
+        }
+        proxy_pass http://study;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+    }
+
+    location ~ ^/(photoview|photoset|photonew)/ {
+        proxy_pass http://help163com;
+        proxy_set_header Host "study.163.com";
+    }
+
+    location /passport {
+        proxy_pass http://study-passport;
+    }
+
+    location /sns {
+        proxy_pass http://study-passport;
+    }
+
+    location /api/account/ {
+        proxy_pass http://study-api;
+    }
+
+    location /api/course {
+        proxy_pass http://study-api;
+    }
+
+    location /mob/s2 {
+        proxy_pass http://study-mobile;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+    }
+
+    location /mob/ykt {
+        proxy_pass http://study-mobile;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+    }
+
+    location ~ "__utm.gif" {
+        proxy_pass http://wr.da.netease.com;
+    }
+
+    location ~ "ga.js" {
+        proxy_pass http://wr.da.netease.com;
+    }
+
+    location ~ /\.svn {
+        deny all;
+    }
+
+    location ~ .*\.ico {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ "^/\d{2}/\d{4}/\d{2}/.*\.html" {
+        proxy_pass http://help163com;
+        proxy_set_header Host "study.163.com";
+    }
+
+    location ~ "/sitemap(.*)\.xml" {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location /crossdomain.xml {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location /baidu_verify_eZ9vPhCUmO.html {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ /pub/(.*)\.apk$ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location ~ ^/pub/h/ {
+        proxy_set_header Host "s2.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/pub {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location /pages {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/innerservice/ {
+        deny all;
+    }
+
+    location ~ ^/task/invoke.htm$ {
+        deny all;
+    }
+
+    location ~ ^/dataCorrect/invoke.htm$ {
+        deny all;
+    }
+
+    location ~ ^/(WEB-INF|META-INF)/ {
+        deny all;
+    }
+
+    location ~ ^/template/ {
+        deny all;
+    }
+
+    location /dwr/index.html {
+        deny all;
+    }
+
+    location ~ /dwr/test/ {
+        deny all;
+    }
+
+    location /env {
+        deny all;
+    }
+
+    location ~ /favicon.ico {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/h/ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/special/ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ ^/res/imgages/seo/ {
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+
+    location ~ /s2category {
+        deny all;
+    }
+
+    location /src {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location /lib {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location /res {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://study-static;
+    }
+
+    location /actuatoradmin {
+        deny all;
+    }
+
+    location ~ ^/(\w)+\.txt$ {
+        proxy_set_header Access-Control-Allow-Origin *;
+        proxy_set_header Host "s.stu.126.net";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://k12-static;
+    }
+}
+
+upstream study-mobile {
+    server 10.201.89.230:18252;
+    server 10.201.89.231:18252;
+    server 10.201.89.232:18252;
+    server 10.201.89.233:18252;
+    check interval=3000 rise=2 fall=3 timeout=5000 type=http;
+    check_http_send "HEAD /health/status HTTP/1.0\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+
+upstream help163com {
+    server 61.135.251.152;
+    server 220.181.8.152;
+}
+
+upstream study {
+    server 10.172.1.214:18362;
+    server 10.172.1.215:18362;
+    server 10.172.1.216:18362;
+    server 10.172.1.217:18362;
+    server 10.172.1.210:18362;
+    server 10.201.89.175:18362;
+    server 10.201.89.177:18362;
+    server 10.201.89.179:18362;
+    server 10.201.89.178:18362;
+    server 10.201.89.176:18362;
+    check interval=3000 rise=2 fall=3 timeout=5000 type=http;
+    check_http_send "HEAD /health/status HTTP/1.0\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+
+upstream k12-static {
+    server 10.164.143.36:8080;
+    server 10.164.143.38:8080;
+    server 10.122.138.94:8080;
+    server 10.122.138.95:8080;
+}
+
+upstream study-passport {
+    server 10.164.143.208:18292;
+    server 10.122.138.124:18292;
+    check interval=3000 rise=2 fall=3 timeout=5000 type=http;
+    check_http_send "HEAD /health/status HTTP/1.0\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+
+upstream wr.da.netease.com {
+    server 10.172.136.201:8088;
+    server 10.172.136.200:8088;
+    server 10.172.136.202:8088;
+    server 10.172.136.230:8088;
+    server 10.172.136.229:8088;
+    server 10.172.136.231:8088;
+}
+
+upstream study-api {
+    server 10.172.1.240:18562;
+    server 10.172.1.242:18562;
+    check interval=3000 rise=2 fall=3 timeout=5000 type=http;
+    check_http_send "HEAD /health/status HTTP/1.0\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+
+upstream study-static {
+    server 10.164.143.129;
+    server 10.122.138.72;
+}
