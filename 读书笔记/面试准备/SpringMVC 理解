@@ -1,0 +1,180 @@
+第一节：
+
+首先就是SpringMVC的入口类，DispatcherServlet，它实现了Servlet接口，不再详细说DispatcherServlet的细节，不然又是一大堆的内容。
+每次请求都会调用它的 doService->doDispatch，我们关注的重点就在doDispatch方法中。
+
+
+
+doService->doDispatch
+	//这个是重点，第一步由 HandlerMapping找到对应的handler   
+	HandlerExecutionChain mappedHandler = getHandler(processedRequest);
+
+	//这是第二步，找到合适的HandlerAdapter，然后由它来调度执行handler的方法  
+	HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+	...
+
+	// Actually invoke the handler. 
+	// 调用 Handler 执行 
+	ModelAndView mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+
+
+一、HandlerMapping找到对应的handler ：getHandler(processedRequest);
+
+for (HandlerMapping hm : this.handlerMappings) {
+	...
+	HandlerExecutionChain handler = hm.getHandler(request);
+	if (handler != null) {  
+		return handler;  
+	} 
+}
+
+【总结】遍历所有已注册的HandlerMapping来找到对应的handler,然后构建出一个HandlerExecutionChain，它包含了handler和HandlerMapping本身的一些拦截器（HandlerInterceptor）；
+
+hm.getHandler(request)：
+	获取到的handler如果为空,则获取默认配置的handler，如果handler为String类型，则表示这个则会去Spring容器里面去找这样名字的bean；
+
+举例： BeanNameUrlHandlerMapping 来说：
+bean的name必须以/开头，它才处理，将信息存储在Map<String, Object> handlerMap 中，对于本工程来说就是{'/index': controller对象}
+
+
+
+二、 HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());的具体实现：
+
+for (HandlerAdapter ha : this.handlerAdapters) {
+	if (ha.supports(handler)) {
+		return ha;
+	}
+	throw new ServletException("No adapter for handler [...
+}
+
+【总结】遍历所有的HandlerAdapter, 判断他们是否支持这个handler，至此则 返回该 Adapter 来适配。
+
+举例：SimpleControllerHandlerAdapter 实现：
+public boolean supports(Object handler) { 
+	return (handler instanceof Controller); 	// 就是判断 handler 是否实现了 Controller 接口
+}
+
+public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler){
+	// 调用 Handler 来执行，本质上就会调用 HomeAction 实现Controller接口的方法
+	return ((Controller) handler).handleRequest(request, response);		
+}
+
+
+
+三、DispatcherServlet 的 handlerMappings 和 handlerAdapters 的来源问题：
+
+DispatcherServlet 初始化的时候，会调用一个方法如下：
+
+protected void onRefresh(ApplicationContext context) {
+	initStrategies(context);
+}
+
+protected void initStrategies(ApplicationContext context) { 
+	...
+	//初始化一些HandlerMapping  
+	initHandlerMappings(context); 
+
+	//初始化一些HandlerAdapter  
+	initHandlerAdapters(context); 
+	...
+}
+
+3.1、初始化一些HandlerMapping
+initHandlerMappings(ApplicationContext context) {
+	...
+}
+
+【总结】
+1、如果detectAllHandlerMappings 默认为true（web.xml中可配置），会从本工程 mvc-servlet.xml 文件中去探测所有实现了 HandlerMapping 的 bean，如果有，则加入DispatcherServlet 的 handlerMappings中（List<HandlerMapping>）；
+如果detectAllHandlerMappings为false,则直接去容器中找id="handlerMapping"且实现了HandlerMapping的bean.
+如果以上都没找到，则会去加载默认的 HandlerMapping。
+
+2、加载 默认的 HandlerMapping：
+使用静态代码块来加载配置文件 DispatcherServlet.properties，它所在位置就是和 DispatcherServlet 同一目录下面；
+
+#这里就是默认的HandlerMapping的配置  
+org.springframework.web.servlet.HandlerMapping=org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,\  
+     org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping  
+
+#这里就是默认的HandlerAdapter的配置  
+org.springframework.web.servlet.HandlerAdapter=org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,\  
+     org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,\       org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter  
+
+
+【总结】什么都没有配置时，默认会加载以上的配置；
+
+HandlerMapping接口的实现 ：
+BeanNameUrlHandlerMapping ：通过对比 url 和 bean 的name找到对应的对象 (<bean name="/index" class=...)
+SimpleUrlHandlerMapping ：也是直接配置url和对应bean,比BeanNameUrlHandlerMapping功能更多 
+DefaultAnnotationHandlerMapping : 主要是针对注解配置@RequestMapping的，已过时 
+RequestMappingHandlerMapping ：取代了上面一个 
+
+
+HandlerAdapter 接口实现：
+HttpRequestHandlerAdapter ： 要求handler实现HttpRequestHandler接口，该接口的方法为 void handleRequest(HttpServletRequest request, HttpServletResponse response)也就是  handler必须有一个handleRequest方法；
+SimpleControllerHandlerAdapter：要求handler实现Controller接口，该接口的方法为ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)，也就是本工程采用的；
+AnnotationMethodHandlerAdapter ：和上面的DefaultAnnotationHandlerMapping配对使用的，也已过时；
+RequestMappingHandlerAdapter : 和上面的RequestMappingHandlerMapping配对使用，针对@RequestMapping；
+
+
+
+
+第二节：
+mvc:annotation-driven 对默认策略的改变。它背后到底注册了哪些 HandlerMapping 和 HandlerAdapter ？
+
+
+DispatcherServlet 的 initStrategies 中注册了以下 HandlerMapping 和 HandlerAdapter ：
+HandlerMapping：注册了 RequestMappingHandlerMapping 和 BeanNameUrlHandlerMapping
+HandlerAdapter：注册了 RequestMappingHandlerAdapter、HttpRequestHandlerAdapter 和 SimpleControllerHandlerAdapter
+
+
+具体的注册过程：
+
+MvcNamespaceUtils.registerDefaultComponents(parserContext, source); 
+	registerBeanNameUrlHandlerMapping(parserContext, source);  
+	registerHttpRequestHandlerAdapter(parserContext, source);  
+	registerSimpleControllerHandlerAdapter(parserContext, source);
+
+
+体验下RequestMappingHandlerMapping：
+
+
+
+for (String beanName : beanNames) {  
+     if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX) &&  
+             isHandler(getApplicationContext().getType(beanName))){  
+         detectHandlerMethods(beanName);  
+     }  
+ }  
+ handlerMethodsInitialized(getHandlerMethods());
+
+
+protected boolean isHandler(Class<?> beanType) {  
+ 	return ((AnnotationUtils.findAnnotation(beanType, Controller.class) != null) ||  
+         (AnnotationUtils.findAnnotation(beanType, RequestMapping.class) != null));  
+} 
+
+
+
+
+
+org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod#invokeAndHandle
+org.springframework.web.method.support.InvocableHandlerMethod#invokeForRequest
+// 解析参数
+Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);
+Object returnValue = doInvoke(args);
+return returnValue;
+
+org.springframework.web.method.support.InvocableHandlerMethod#doInvoke(Object... args)
+ReflectionUtils.makeAccessible(getBridgedMethod());
+try {
+	return getBridgedMethod().invoke(getBean(), args);
+} ...
+
+
+
+
+
+
+
+

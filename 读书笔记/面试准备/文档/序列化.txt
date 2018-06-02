@@ -1,0 +1,13 @@
+****************02
+Serialiazble接口？
+与对象持久化存储有关；	obj ——> 硬盘 ——> obj
+对象实现了Serialiazble接口，才能使用java机制保存对象，持久化存储；
+
+ObjectOutputStream.writeObject(obj);
+ObjectInputStream.readObject(obj);
+new ObjectOutputStream(FileOutputStream fos);
+
+包装思想：
+FileOutputStream向持久化设备(如硬盘)中写入二进制数据，所以需要将对象类型以某种方式转化为二进制类型，通过FileOutputStream持久化存储；
+ObjectOutputStream包装FileOutputStream，直接将对象类型作为参数，隐藏转化二进制类型的细节，通过具体的FileOutputStream来持久化存储。
+【20150208】

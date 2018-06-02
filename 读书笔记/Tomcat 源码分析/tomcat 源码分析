@@ -1,0 +1,78 @@
+
+***************************** 第12章 StandardContext
+
+http请求 ——> Context.map(Request) ——> wrapper
+				findMapper(request——> prorocol): StabdContextMapper
+				mapper.map(): wrapper 
+
+支持重载：
+	通过 载入器 webapploader - reloadable；
+	检查 WEB-INF	目录下的 所有类 和 jar 文件的时间戳来实现；
+
+
+tomcat5:   backgroundProcess()
+
+容器组件启动时候开启后台线程；
+ContainerBase.start() ——》 threadStart() ——》 new Thread(new ContainerBackgroundProcessor(),...).start()
+		ContainerBase 类的内部类 ContainerBackgroundProcessor 实现 runnable；
+			内部 while循环 ——》 processChildren()
+									1、调用自身 backgroundProcess()
+											1.1 manager.backgroundProcess()		: session 超时失效处理
+											1.2 reload()	: 重载
+									2、子容器的 processChildren()，递归；
+总结：
+所有后台处理同共享一个线程。若某个组件或 servlet容器需要一个周期性地执行一个操作，只需要将代码写到其 backgroundProcess() 方法中即可；
+
+
+***************************** 第13章 Host 和 Engine
+
+ContainerBase
+	StandardHost [start()、invoke()]		StandardHostMapper [map():Container]		StandardHostValve [invoke()]
+		StandardContext		StandardContextMapper		StandardContextValve
+			......
+
+
+Engine 容器是 tomcat 的 servlet引擎；当部署 tomcat 时要支持多个虚拟机的话，就需要使用 Engine 容器； Engine 容器可以与一个 服务实例相关联；
+
+	
+http请求 ——》 engine.invoke（）
+					engine.pipeline().invoke()
+					standeardEngineValve.invoke()
+							engine.map() : Host
+							host.invoke()
+								......
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,69 @@
+
+									【5】Servlet容器
+********************Wrapper应用程序
+【connector调用servlet容器的invoke()方法：此为Wrapper实例】
+container.invoke(Request request, Response response);
+	【容器调用其管道Pipeline的invoke()方法，将处理工作交由管道完成】
+	pipeline.invoke(Request request, Response response);
+		valveContext.invokeNext(request,response);
+			valve.invoke(reuqest,response,valveContext);
+		...
+			...
+			basic.invoke(reuqest,response,valveContext);【调用基础阀】
+			【基础阀负责处理request对象及其对应的response对象，不再需要调用valveContext的invokeNext()方法】
+			【Wrapper的基础阀负责载入相关连的servlet类，并对请求进行响应】
+				wrapper.allocate();【获取Wrapper实例表示的Servlet的实例servlet】
+				servlet.service();【基础阀调用了servlet实例的service()方法】
+
+********************Wrapper接口
+wrapper容器要负责管理其基础servlet类的servlet生命周期，即调用servlet的init()、service()、destroy()等方法。
+
+load()
+	载入并初始化servlet类
+allocate()
+	分配一个已经初始化的servlet实例
+
+********************Context应用程序
+映射器：Mapper接口【只存在于tomcat4中】
+	组件，帮助servlet容器【Context实例】选择一个子容器【Wrapper实例】来处理某个指定的请求。
+
+【connector调用Context容器的invoke()方法：】
+context.invoke(Request request, Response response);
+	【容器调用其管道Pipeline的invoke()方法，将处理工作交由管道完成】
+	pipeline.invoke(Request request, Response response);
+		valveContext.invokeNext(request,response);
+			valve.invoke(reuqest,response,valveContext);
+		...
+			...
+			basic.invoke(reuqest,response,valveContext);【调用基础阀】
+			【在Context容器的基础阀的invoke()方法中，使用Context实例的映射器来查找Wrapper实例。】
+				Wrapper wrapper = (Wrapper) context.map(request,true);
+				wrapper.invoke(request,response);
+					重复上述Wrapper程序过程...
+
+
+									【8】载入器
+
+父子继承关系：
+引导类装载器：引导启动java虚拟机；载入运行JVM所需要的类，以及所有的java的核心类；
+	扩展类装载器
+		系统类装载器：默认的类载入器，搜索在环境变量CLASSPATH中指明的路径和JAR文件。
+
+Tomcat中的载入器：web应用程序载入器
+载入器的实现中，会使用一个自定义类载入器；【loader.getClassLoader()】
+Loader <-- WebappLoader
+		URLClassLoader <--WebappClassLoader作为类载入器，负责载入类
+
+WebappLoader.start():
+1、创建一个类载入器
+2、设置仓库：【WEB-INF/classes目录和WEB-INF/lib目录】
+3、设置类路径
+4、设置访问权限
+5、启动一个新线程来支持自动重载
+	WebappLoader类实现java.lang.Runnable接口来支持自动重载；
+	使用一个线程周期性地检查每个资源的时间戳。
+
+WebappClassLoader
+在仓库列表和指定的JAR文件中搜索需要载入的类。
+
+总结：【载入类】、【载入类缓存】、【被修改类的自动重载】

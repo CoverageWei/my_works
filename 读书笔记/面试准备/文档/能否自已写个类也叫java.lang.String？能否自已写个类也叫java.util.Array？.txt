@@ -1,0 +1,11 @@
+能否自已写个类也叫java.lang.String？能否自已写个类也叫java.util.ArrayList？
+ 
+第一个问题，答案相对简单：
+自己定义java.lang.String类语法上没有错误，但由于JVM类加载器的父委托机制，JVM只会加载jre.jar包中的java.lang.String。
+如果调用自定义String类中方法，会出现三种情况：
+1>调用的方法在jdk中String类中存在，将不会报错也没有任务影响，并且执行的是jdk中的String类方法；
+2>调用的方法在jdk中String类中不存在，但在自定义String中存在，将抛出java.lang.NoSuchMethodError异常。
+3>调用的方法在jdk中String类中存在，但在自定义String中不存在，编辑出错，运行抛出java.lang.Error: Unresolved compilation problem
+ 
+第二个问题，虽然也存在类加载的问题，但是java提供了endorsed技术：
+关于endorsed：可以的简单理解为-Djava.endorsed.dirs指定的目录面放置的jar文件，将有覆盖系统API的功能。可以牵强的理解为，将自己修改后的API打入到虚拟机指定的启动API中，取而代之。但是能够覆盖的类是有限制的，其中不包括java.lang包中的类。

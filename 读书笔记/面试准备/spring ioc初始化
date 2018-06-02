@@ -1,0 +1,126 @@
+IoC容器的初始化包括BeanDefinition的Resource定位、载入和注册这三个基本的过程。
+
+Spring IoC容器对Bean定义资源的载入是从refresh()函数开始的;
+在创建IoC容器前，如果已经有容器存在，则需要把已有的容器销毁和关闭，以保证在refresh之后使用的是新建立起来的IoC容器。
+refresh的作用类似于对IoC容器的重启，在新建立好的容器中对容器进行初始化，对Bean定义资源进行载入
+
+1.1、定位
+通过 ResourceLoader 来完成资源文件位置的定位，可以从类路径，文件系统, URL 等方式来定为资源位置。
+在Spring 中我们看到它提供 的各种资源抽象，比如ClassPathResource, URLResource,FileSystemResource
+
+1.2、载入：
+创建XmlBeanDefinitionReader，即创建Bean读取器，并通过回调设置到容器中去，容 器使用该读取器读取Bean定义资源
+将Bean定义资源转换为Document对象，该过程由documentLoader实现；这些Document对象并没有按照Spring的Bean规则进行解析。这一步是载入的过程
+
+1.3、解析
+启动对Bean定义解析的详细过程，该解析过程会用到Spring的Bean配置规则，将其解析为Spring IoC管理的Bean对象并将其注册到容器中的。
+
+//从Document的根元素开始进行Bean定义的Document对象 
+    //获取Bean定义的Document对象根元素的所有子节点
+
+
+使用Spring的Bean规则解析 Document元素节点，从根元素节点开始：
+遍历Document对象根元素的所有子节点：
+    //2.1、如果元素节点是<Import>导入元素，进行导入解析 
+
+    //2.2、解析<Alias>别名元素，为Bean向Spring IoC容器注册别名
+
+    //2.3、元素节点既不是导入元素，也不是别名元素，即普通的<Bean>元素，按照Spring的Bean规则解析元素 
+        // BeanDefinitionHolder是对BeanDefinition的封装，即Bean定义的封装类 
+        	
+        //向Spring IoC容器注册解析得到的Bean定义，这是Bean定义向IoC容器注册的入口 （由 BeanDefinitionParserDelegate 实现）
+        	//解析Bean定义资源文件中的<Bean>元素，这个方法中主要处理<Bean>元素的 id，name 和别名属性
+        	//这里只读取<Bean>元素中配置的class名字，然后载入到BeanDefinition中去 ，只是记录配置的class名字，不做实例化，对象的实例化在依赖注入时完成 
+
+        	//解析<Bean>元素的<property>设置
+			    //解析获取property的值
+			    //根据property的名字和值创建property实例 PropertyValue
+			        //获取<property>的所有子元素，只能是其中一种类型:ref,value,list等
+			            ref被封装为指向依赖对象一个引用。
+			            value配置都会封装成一个字符串类型的对象。
+			        // 对<property>元素中配置的Array、List、Set、Map、Prop等各种集合子元素的都通过上述方法解析
+
+	使用一个HashMap的集合对象存放IoC容器中注册解析的BeanDefinition，key 为 beanName，value 为 BeanDefinition 对象；		        
+
+【小结】在解析<Bean>元素过程中没有创建和实例化Bean对象，只是创建了Bean对象的定义类BeanDefinition，将<Bean>元素中的配置信息设置到BeanDefinition中作为记录，当依赖注入时才使用这些记录信息创建和实例化具体的Bean对象。
+
+
+
+依赖注入：
+
+(1).用户第一次通过getBean方法向IoC容索要Bean时，IoC容器触发依赖注入。
+(2).当用户在Bean定义资源中为<Bean>元素配置了lazy-init属性，即让容器在解析注册Bean定义时进行预实例化，触发依赖注入。
+
+
+//1、根据指定的名称获取被管理Bean的名称
+
+2、先从缓存中取是否已经有被创建过的单态类型的Bean，对于单态模式的Bean整个IoC容器中只创建一次，不需要重复创建
+    //如果指定名称的Bean在容器中已有单态模式的Bean被创建，直接返回已经创建的Bean
+
+3、检查是否能在当前的BeanFactory中获取的所需要的Bean，如果不能则委托当前容器的父级容器去查找，如果还是找不到则沿着容器的继承体系向父级容器查找
+        //当前容器的父级容器存在，且当前容器中不存在指定名称的Bean
+            //委派父级容器根据指定名称和显式的参数查找
+
+		if 如果是单例
+            创建单态模式Bean的实例对象，获取给定Bean的实例对象
+        else 
+            //IoC容器创建原型模式Bean实例对象  
+            //原型模式(Prototype)是每次都会创建一个新的对象 
+        else
+            //要创建的Bean既不是单态模式，也不是原型模式，则根据Bean定义资源中  
+            //配置的生命周期范围，选择实例化Bean的合适方法，这种在Web应用程序中  
+            //比较常用，如：request、session、application等生命周期
+
+
+
+//1、单态模式的Bean，先从容器中缓存中获取同名Bean
+    没有，//创建实例对象  
+    instanceWrapper = createBeanInstance(beanName, mbd, args);  
+    	在createBeanInstance方法中，根据指定的初始化策略，调用相应的工厂方法 或者 参数匹配的构造方法 即可完成实例化对象的工作；
+    	否则，默认 无参构造函数：
+    		//如果Bean定义中没有方法覆盖，则就不需要CGLIB父类类的方法  
+			//JDK： 使用BeanUtils实例化，通过反射机制调用”构造方法.newInstance(arg)”来进行实例化  
+			【小结】如果Bean有方法被覆盖了，则使用JDK的反射机制进行实例化，否则，使用CGLIB进行实例化。
+
+
+
+//2、Bean对象的初始化，依赖注入在此触发 
+//将Bean实例对象封装，并且Bean定义中配置的属性值赋值给实例对象
+populateBean(beanName, mbd, instanceWrapper);
+
+
+2.1、属性值解析：
+	//将Bean属性设置到生成的实例对象上
+	//对属性进行注入  
+	applyPropertyValues(beanName, mbd, bw, pvs);  // 用到了PropertyValues
+		Bean定义属性值解析器，将Bean定义中的属性值解析为Bean实例对象的实际值  ： BeanDefinitionValueResolver
+
+(1).属性值类型不需要转换时，不需要解析属性值，直接准备进行依赖注入。
+(2).属性值需要进行类型转换时，如对其他对象的引用等，首先需要解析属性值，然后对解析后的属性值进行依赖注入。
+当容器在对属性进行依赖注入时，如果发现属性值需要进行类型转换，如属性值是容器中另一个Bean实例对象的引用，则容器首先需要根据属性值解析出所引用的对象，然后才能将该引用对象注入到目标实例对象的属性上去
+
+	//对引用类型的属性进行解析 
+		//获取引用的Bean名称
+    	//如果引用的对象在父类容器中，则从父类容器中获取指定的引用对象
+    	否则， //从当前的容器中获取指定的引用Bean对象，如果指定的Bean没有被实例化 则会递归触发引用Bean的初始化和依赖注入 
+
+	//对集合数组类型、list、set等的属性解析
+
+
+2.2、属性值注入：
+	属性值解析完成后就可以进行依赖注入了，依赖注入的过程就是Bean对象实例设置到它所依赖的Bean对象属性上去：
+
+//对非集合类型的属性注入
+        //无法获取到属性名或者属性没有提供setter(写方法)方法
+            /如果属性值是可选的，即不是必须的，则忽略该属性值
+            //如果属性值是必须的，则抛出无法给属性赋值，因为每天提供setter方法异常
+        //设置属性的注入值  
+         //根据JDK的内省机制，获取属性的setter(写方法)方法  //将属性值设置到属性上去
+
+
+【小结】
+(1).对于集合类型的属性，将其属性值解析为目标类型的集合后直接赋值给属性。
+(2).对于非集合类型的属性，大量使用了JDK的反射和内省机制，通过属性的getter方法(reader method)获取指定属性注入以前的值，同时调用属性的setter方法(writer method)为属性设置注入后的值。
+
+
+

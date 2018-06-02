@@ -1,0 +1,21 @@
+/* BTrace Script Template */
+import com.sun.btrace.annotations.*;
+import static com.sun.btrace.BTraceUtils.*;
+
+@BTrace
+public class TracingScript {
+	/* put your code here */
+    @OnMethod(
+        clazz="com.ww.javaSE.jvm.MonitorTest",
+        method="add",
+        location=@Location(Kind.RETURN)
+    )
+    
+    public static void func(@Self com.ww.javaSE.jvm.MonitorTest instance, int a, int b,
+    @Return int result){
+            println("调用堆栈:");
+            jstack();
+            println(strcat("pram a: ", str(a)));
+            println(strcat("pram b: ", str(b)));
+        }
+}

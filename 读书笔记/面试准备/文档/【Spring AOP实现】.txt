@@ -1,0 +1,106 @@
+AOP代理对象的生成：
+AopProxy[interface]
+	JdkDynamicAopProxy
+	Cglib2AopProxy
+
+
+回调JdkDynamicAopProxy的invoke【实现了InvocationHandle接口】
+	【AdvisedSupport advised,】
+	getProxy()	->	getProxy(ClassUtils.getDefaultClassLoader())
+		getProxy(ClassLoader classLoader)
+			Class[] proxiedInterfaces...;【从advised对象取得所有代理接口】
+			findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
+			Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);【JDK中类Proxy定义的静态方法,this为InvocationHandle对象，对目标对象的回调为invoke()】
+
+Cglib2AopProxy
+	【AdvisedSupport advised,】
+	getProxy()	->	getProxy(null)
+		getProxy(ClassLoader classLoader)
+			...
+			Enhancer enhancer = createEnhancer();【CGLIB的主要操作类】
+			Callback[] callbacks = getCallbacks(rootClass);
+				Callback aopInterceptor = new DynamicAdvisedInterceptor(this.advised);【对目标对象的回调接口为intercept()】
+			enhancer.setCallbacks(callbacks);
+			...
+			proxy = enhancer.create(...);
+
+3.4 拦截器调用实现【拦截机制】
+原理：
+2种方式：设置拦截器回调
+	InvocationHandle
+		Proxy对象代理方法被调用 —————> 回调JdkDynamicAopProxy的invoke()方法 —————> 对目标对象方法调用的拦截或功能增强;
+		【创建ReflectiveMethodInvocation对象，对AOP功能实现进行封装】	
+		invoke()：
+			target = targetSource.getTarget();
+			List<Object> chain = ...
+			if(chain.isEmpty())【没有设置拦截器】
+				AopUtils.invokeJoinpointUsingReflection(target, method, args);【反射机制，直接调用目标对象方法】
+			else
+				MethodInvocation invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain)；
+				invocation.proceed();【逐个调用拦截器】
+			...
+	DynamicAdvisedInterceptor 
+		Proxy对象代理方法被调用 —————> 回调Cglib2AopProxy中的内部类DynamicAdvisedInterceptor的intercept()方法 —————> 对目标对象方法调用的拦截或功能增强;
+		【创建CglibMethodInvocation对象，对AOP功能实现进行封装】
+		intercept()：
+			target = targetSource.getTarget();
+			List<Object> chain = ...
+			if (chain.isEmpty())
+				methodProxy.invoke(target, args);	【直接调用目标对象方法】
+			else
+				new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed();
+
+目标对象方法的调用：
+	2种机制对应的方式：
+		JdkDynamicAopProxy
+			AopUtils.invokeJoinpointUsingReflection(target, method, args);【反射机制，直接调用目标对象方法】
+		Cglib2AopProxy
+			methodProxy.invoke(target, args);	【直接调用目标对象方法】
+
+AOP拦截器链的调用：
+	【ReflectiveMethodInvocation】的proceed():
+		if()【拦截器链末尾】
+			invokeJoinpoint();【直接调用目标对象方法】
+				AopUtils.invokeJoinpointUsingReflection(target, method, args);【反射机制，直接调用目标对象方法】
+		else
+			Object interceptorOrInterceptionAdvice =this.interceptorsAndDynamicMethodMatchers.get(..);
+			【interceptorsAndDynamicMethodMatchers，拦截器链，实际上为JdkDynamicAopProxy 的invoke()方法中的chain参数】
+			【从拦截器链中按序获取拦截器，并接下来对其所属的两种类型进行判断】
+				if(InterceptorAndDynamicMethodMatcher)
+				【该对象中封装MethodInterceptor对象和MethodMatcher对象；需要对该拦截器进行动态匹配，判断是否执行该advice】
+					InterceptorAndDynamicMethodMatcher dm = ...
+					if (dm.methodMatcher.matches(...))【匹配，执行该advice】
+						dm.interceptor.invoke(this);
+					else	【不匹配】
+						proceed();
+				else
+					【MethodInterceptor】直接调用对应的方法	
+					MethodInterceptor.invoke(this);	
+
+
+获取拦截器链：【由advised对象完成】
+JdkDynamicAopProxy
+	invoke():
+		List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
+		【advised：AdvisedSupport对象】			
+			DefaultAdvisorChainFactory().getInterceptorsAndDynamicInterceptionAdvice(Advisor config,...)
+			【DefaultAdvisorChainFactory()：AdvisorChainFactory实现类，实现了interceptor链的获取过程】
+				List<Object> interceptorList = ...【拦截器链】
+				AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();【DefaultAdvisorAdapterRegistry】
+				for(Advisor advisor : config.getAdvisors()){
+					...
+					... = registry.getInterceptors(advisor);
+					【这一步，将advice才能够advisor中取出，重新封装成经过adapter适配过的具体adviceInterceptor】
+					interceptorList.add(
+					或者interceptorList.addAll(
+				}
+			
+ProxyFactoryBean【实现了BeanFactoryAware接口】
+	getObject();
+		initializeAdvisorChain();【对advisor进行初始化时，从XML配置中获取了advisor通知器】
+			【advisor通知器的取得是委托给IoC容器完成的】
+			advice = this.beanFactory.getBean(name);【单例】【回调IoC容器的getBean()方法】
+			或者	advice = new PrototypePlaceholderAdvisor(name);【原型】
+			addAdvisorOnChainCreation(advice, name);
+				Advisor advisor = 
+				addAdvisor(advisor);
